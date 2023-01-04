@@ -2,30 +2,34 @@
 <html>
 <head>
     <style>
-    .damage-grid-container {
+    .spell-grid-container {
+        width : 60%;
         display: grid;
-        grid-template-rows : 1fr;
-        grid-template-columns: 1fr 1fr;
         background-color: #1E1F1B;
         padding: 1px;
     }
     .grid-container {
         display: grid;
-        grid-template-rows : 1fr 1fr;
         background-color: #1E1F1B;
         padding: 1px;
     }
     .grid-item {
         background-color: rgba(255, 255, 255, 0.8);
         border: 1px solid rgba(0, 0, 0, 0.8);
-        padding: 20px;
+        padding: 4px;
         font-size: 30px;
         text-align: center;
     }
     </style>
 </head>
 
+<script type="text/javascript" src="./utils.js"></script>
 <script>
+    // Layout of spells
+    const layout = `
+        Ralentissement Téléportation Rembobinage Frappe de Xélor Gelure Sablier de Xélor Poussière Temporelle
+        Raulebaque Démotivation Paradoxe Temporel Contre Fuite Désynchronisation
+    `
     // Globals
     let numberOfBoosts = 0
     let expectedDamage = 0
@@ -35,21 +39,118 @@
     let rangeFactor = 1
     let fixedAirRes = 0
     let percentAirRes = 0
-    
 
-    // Loading and Init
-    
+    const boost = {
+        'Slow Down': false,
+        'Teleportation': false,
+        'Rewind': false,
+        "Xelor's Punch": false,
+        'Frostbite': false,
+        "Xelor's Sandglass": false,
+        'Temporal Dust': false,
+        'Rhol Bak': false,
+        'Loss of Motivation': false,
+        'Temporal Paradox': false,
+        'Counter': false,
+        'Flight': false,
+        'Desynchronisation': false,
+    }
 
     // Functions and Methods
+    function toggleSpellBoost(spell) {
+        const clickedSpell = spell
+        if (!canTelefrag(spell)) {return}
+        const myNode = document.getElementById(`spellGridItem-${getShortName(spell)}`)
+        if (typeof(boost[spell])!=="undefined") {
+            boost[spell] = !boost[spell]
+        }
+        else {
+            spell = getVariantOf(spell)
+            boost[spell] = !boost[spell]
+        }
+        if (boost[spell]) {
+            myNode.style.setProperty("background-color", "rgba(0,255,0,1)")
+            if (canTelefrag(getVariantOf(clickedSpell))) {
+                document.getElementById(`spellGridItem-${getShortName(getVariantOf(clickedSpell))}`).style.setProperty("background-color", "#1E1F1B")
+            }
+        }
+        else {
+            // reset background, also reset for variant if eligible
+            myNode.style.setProperty("background-color", "rgba(255,255,255,0.8)")
+            if (canTelefrag(getVariantOf(clickedSpell))) {
+                document.getElementById(`spellGridItem-${getShortName(getVariantOf(clickedSpell))}`).style.setProperty("background-color", "rgba(255,255,255,0.8)")
+            }
+        }
+        updateExpectedDamage()
+    }
+    function createSpellGrid(layout) {
+        const spellGridContainerNode = document.getElementById("spellGridContainer")
+        spellGridContainerNode.replaceChildren()
+        const columns = layout.reduce((maxCol, line) => Math.max(maxCol, line.length), 0)
+        const rows = layout.length
+        spellGridContainerNode.style.setProperty('grid-template-columns', "1fr ".repeat(columns))
+        spellGridContainerNode.style.setProperty('grid-template-rows', "1fr ".repeat(2*rows))
+        for (line of layout) {
+            const lineA =[]
+            const lineB =[]
+            for (spell of line) {
+                /*
+                const myGridNode = document.createElement("div")
+                myGridNode.setAttribute("id",`spellGridItem-${getShortName(spell)}`)
+                myGridNode.classList.add("grid-item")
+                */
+                const myImage = document.createElement("input")
+                myImage.setAttribute("id",`spellGridItem-${getShortName(spell)}`)
+                if (!canTelefrag(spell)) myImage.style.setProperty("background-color", "#1E1F1B")
+                myImage.classList.add("grid-item")
+                myImage.setAttribute("type", "image")
+                myImage.setAttribute("src", getImagePath(spell))
+                myImage.setAttribute("alt", `[ICON : ${getShortName(spell)}]`)
+                myImage.setAttribute("onclick", `toggleSpellBoost("${spell}");`)
+                lineA.push(myImage)
+
+                const variantSpell = getVariantOf(spell)
+                const myVariantImage = document.createElement("input")
+                myVariantImage.setAttribute("id",`spellGridItem-${getShortName(variantSpell)}`)
+                if (!canTelefrag(variantSpell)) myVariantImage.style.setProperty("background-color", "#1E1F1B")
+                myVariantImage.classList.add("grid-item")
+                myVariantImage.setAttribute("type", "image")
+                myVariantImage.setAttribute("src", getImagePath(variantSpell))
+                myVariantImage.setAttribute("alt", `[ICON : ${getShortName(variantSpell)}]`)
+                myVariantImage.setAttribute("onclick", `toggleSpellBoost("${variantSpell}");`)
+                lineB.push(myVariantImage)
+
+            }
+            for (node of lineA) {
+                spellGridContainerNode.appendChild(node)
+            }
+            for (let i=0; i< columns - lineA.length; ++i) {
+                const node = document.createElement("div")
+                node.classList.add("grid-item")
+                node.style.setProperty("padding","0px")
+                node.style.setProperty("border","0px")
+                spellGridContainerNode.appendChild(node)
+            }
+            for (node of lineB) {
+                spellGridContainerNode.appendChild(node)
+            }
+        }
+
+    }
+    function validDamage(floatDamage) {
+        return  Math.max(Math.floor(floatDamage),0)
+    }
     function recalculateFinalFactor() {
         // TODO : check all nodes related to final reduction and multiply active ones
         return
     }
     function recalculateExpectedDamages() {
         // Dégâts=(368-RéFixAir)x(1-Ré%Air/100)x(1-Ré%Final/100)x(2xNombreBoosts-1)
+        refreshAllValues()
+        refreshBoosts()
         recalculateFinalFactor()
-        expectedDamage_melee = Math.floor((368 - fixedAirRes) * (1 - percentAirRes/100) * (finalFactor * meleeFactor) * (2 * numberOfBoosts - 1))
-        expectedDamage_range = Math.floor((368 - fixedAirRes) * (1 - percentAirRes/100) * (finalFactor * rangeFactor) * (2 * numberOfBoosts - 1))
+        expectedDamage_melee = validDamage((368 - fixedAirRes) * (1 - percentAirRes/100) * (finalFactor * meleeFactor) * (2 * numberOfBoosts - 1))
+        expectedDamage_range = validDamage((368 - fixedAirRes) * (1 - percentAirRes/100) * (finalFactor * rangeFactor) * (2 * numberOfBoosts - 1))
     }
     function updateExpectedDamageDisplays() {
         const myNodeM = document.getElementById("expectedDamageNode-Melee")
@@ -69,42 +170,67 @@
         numberOfBoosts -= 1
         updateExpectedDamage()
     }
+    function refreshBoosts() {
+        s = 0
+        for (spell in boost) {
+            s+= boost[spell] ? 1 : 0
+        }
+        numberOfBoosts = s
+    }
+    function resetBoost() {
+        numberOfBoosts = 0
+        updateExpectedDamage()
+    }
     function refreshMeleeRes() {
         const myNode = document.getElementById("resMelee")
         meleeFactor = 1 - Number(myNode.value)/100
-        updateExpectedDamage()
     }
     function refreshRangeRes() {
         const myNode = document.getElementById("resRange")
         rangeFactor = 1 - Number(myNode.value)/100
-        console.log(Number("-10"))
-        updateExpectedDamage()
     }
-    
+
+
+    function refreshAllValues() {
+        refreshMeleeRes()
+        refreshRangeRes()
+    }
 
 </script>
 
 
 
 <body>
-    <div class="damage-grid-container" id ="damageGridContainer">
-        <div class="grid-item" id="expectedDamageNode-Melee">default</div>
-        <div class="grid-item" id="expectedDamageNode-Range">default</div>
+    <div style="display: grid; justify-items : center;  width : 50%;">
+        <div class="grid-container" id ="damageGridContainer" style ="grid-template-columns: 1fr 1fr; grid-template-rows: 1fr; width : 80%">
+            <div class="grid-item" id="expectedDamageParentNode-Melee">
+                <img src="./images/melee.png" alt ='[MELEE ICON]' style="float:left;padding-left: 20%;">
+                <div id="expectedDamageNode-Melee">0</div>
+            </div>
+            <div class="grid-item" id="expectedDamageParentNode-Range">
+                <img src="./images/range.png" alt ='[RANGE ICON]' style="float:left;padding-left: 20%;">
+                <div id="expectedDamageNode-Range">0</div>
+            </div>
+        </div>
     </div>
     
     <br><br>
     <label for="resMelee">% Melee </label>
-    <input type="text" id="resMelee" oninput="refreshMeleeRes()"><br>
+    <input type="text" id="resMelee" oninput="updateExpectedDamage()"><br>
     <label for="resRange">% Range</label>
-    <input type="text" id="resRange" oninput="refreshRangeRes()"><br>
+    <input type="text" id="resRange" oninput="updateExpectedDamage()"><br>
     <label for=""></label>
     <input type="text" id=""><br>
     <label for=""></label>
     <input type="text" id=""><br>
     <label for=""></label>
     <input type="text" id=""><br>
-    <button type="button" onclick="addBoost()">+1</button>
-    <button type="button" onclick="removeBoost()">-1</button>
+    <div class="spell-grid-container" id ="spellGridContainer" style = "width : flex; justify-items: center;"></div>
 
 </body>
+<script>
+// Loading and Init
+    const layoutArray = parseLayoutString(layout)
+    createSpellGrid(layoutArray)
+</script>
 </html>
