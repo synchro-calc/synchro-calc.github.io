@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+    .damage-grid-container {
+        display: grid;
+        grid-template-rows : 1fr;
+        grid-template-columns: 1fr 1fr;
+        background-color: #1E1F1B;
+        padding: 1px;
+    }
+    .grid-container {
+        display: grid;
+        grid-template-rows : 1fr 1fr;
+        background-color: #1E1F1B;
+        padding: 1px;
+    }
+    .grid-item {
+        background-color: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(0, 0, 0, 0.8);
+        padding: 20px;
+        font-size: 30px;
+        text-align: center;
+    }
+    </style>
+</head>
+
+<script>
+    // Globals
+    let numberOfBoosts = 0
+    let expectedDamage = 0
+
+    let finalFactor = 1
+    let meleeFactor = 1
+    let rangeFactor = 1
+    let fixedAirRes = 0
+    let percentAirRes = 0
+    
+
+    // Loading and Init
+    
+
+    // Functions and Methods
+    function recalculateFinalFactor() {
+        // TODO : check all nodes related to final reduction and multiply active ones
+        return
+    }
+    function recalculateExpectedDamages() {
+        // Dégâts=(368-RéFixAir)x(1-Ré%Air/100)x(1-Ré%Final/100)x(2xNombreBoosts-1)
+        recalculateFinalFactor()
+        expectedDamage_melee = Math.floor((368 - fixedAirRes) * (1 - percentAirRes/100) * (finalFactor * meleeFactor) * (2 * numberOfBoosts - 1))
+        expectedDamage_range = Math.floor((368 - fixedAirRes) * (1 - percentAirRes/100) * (finalFactor * rangeFactor) * (2 * numberOfBoosts - 1))
+    }
+    function updateExpectedDamageDisplays() {
+        const myNodeM = document.getElementById("expectedDamageNode-Melee")
+        myNodeM.textContent = String(expectedDamage_melee)
+        const myNodeR = document.getElementById("expectedDamageNode-Range")
+        myNodeR.textContent = String(expectedDamage_range)
+    }
+    function updateExpectedDamage() {
+        recalculateExpectedDamages()
+        updateExpectedDamageDisplays()
+    }
+    function addBoost() {
+        numberOfBoosts += 1
+        updateExpectedDamage()
+    }
+    function removeBoost() {
+        numberOfBoosts -= 1
+        updateExpectedDamage()
+    }
+    function refreshMeleeRes() {
+        const myNode = document.getElementById("resMelee")
+        meleeFactor = 1 - Number(myNode.value)/100
+        updateExpectedDamage()
+    }
+    function refreshRangeRes() {
+        const myNode = document.getElementById("resRange")
+        rangeFactor = 1 - Number(myNode.value)/100
+        console.log(Number("-10"))
+        updateExpectedDamage()
+    }
+    
+
+</script>
+
+
+
+<body>
+    <div class="damage-grid-container" id ="damageGridContainer">
+        <div class="grid-item" id="expectedDamageNode-Melee">default</div>
+        <div class="grid-item" id="expectedDamageNode-Range">default</div>
+    </div>
+    
+    <br><br>
+    <label for="resMelee">% Melee </label>
+    <input type="text" id="resMelee" oninput="refreshMeleeRes()"><br>
+    <label for="resRange">% Range</label>
+    <input type="text" id="resRange" oninput="refreshRangeRes()"><br>
+    <label for=""></label>
+    <input type="text" id=""><br>
+    <label for=""></label>
+    <input type="text" id=""><br>
+    <label for=""></label>
+    <input type="text" id=""><br>
+    <button type="button" onclick="addBoost()">+1</button>
+    <button type="button" onclick="removeBoost()">-1</button>
+
+</body>
+</html>
