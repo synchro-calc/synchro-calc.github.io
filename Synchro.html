@@ -71,7 +71,7 @@
         if (boost[spell]) {
             myNode.style.setProperty("background-color", "rgba(0,255,0,1)")
             if (canTelefrag(getVariantOf(clickedSpell))) {
-                document.getElementById(`spellGridItem-${getShortName(getVariantOf(clickedSpell))}`).style.setProperty("background-color", "#1E1F1B")
+                document.getElementById(`spellGridItem-${getShortName(getVariantOf(clickedSpell))}`).style.setProperty("background-color", "rgba(255,255,255,0.2)")
             }
         }
         else {
@@ -101,7 +101,7 @@
                 */
                 const myImage = document.createElement("input")
                 myImage.setAttribute("id",`spellGridItem-${getShortName(spell)}`)
-                if (!canTelefrag(spell)) myImage.style.setProperty("background-color", "#1E1F1B")
+                if (!canTelefrag(spell)) myImage.style.setProperty("background-color", "rgba(0,0,0,0)")
                 myImage.classList.add("grid-item")
                 myImage.setAttribute("type", "image")
                 myImage.setAttribute("src", getImagePath(spell))
@@ -112,7 +112,7 @@
                 const variantSpell = getVariantOf(spell)
                 const myVariantImage = document.createElement("input")
                 myVariantImage.setAttribute("id",`spellGridItem-${getShortName(variantSpell)}`)
-                if (!canTelefrag(variantSpell)) myVariantImage.style.setProperty("background-color", "#1E1F1B")
+                if (!canTelefrag(variantSpell)) myVariantImage.style.setProperty("background-color", "rgba(0,0,0,0)")
                 myVariantImage.classList.add("grid-item")
                 myVariantImage.setAttribute("type", "image")
                 myVariantImage.setAttribute("src", getImagePath(variantSpell))
@@ -135,7 +135,6 @@
                 spellGridContainerNode.appendChild(node)
             }
         }
-
     }
     function validDamage(floatDamage) {
         return  Math.max(Math.floor(floatDamage),0)
