@@ -33,16 +33,40 @@
         iconSRC : "./images/Rampart.png",
         alt : "RAMPART",
         value : 154
-        },
-        {
+        },{
         iconSRC : "./images/Rampart.png",
         alt : "RAMPART",
         value : 110
-        },
-        {
+        },{
         iconSRC : "./images/Fortification.png",
         alt : "FORTIF",
         value : 220
+        },{
+        iconSRC : "./images/Valkyr's_Embrace.png",
+        alt : "VALKYR",
+        value : 132
+        },
+    ]
+    const FinalReductionBonuses = [{
+        iconSRC : "./images/Rage.png",
+        alt : "RAGE",
+        value : 10
+        },{
+        iconSRC : "./images/Rage.png",
+        alt : "RAGE",
+        value : 10
+        },{
+        iconSRC : "./images/Watchdog.png",
+        alt : "WATCHDOG",
+        value : 15
+        },{
+        iconSRC : "./images/Feca_Shield.png",
+        alt : "F SHIELD",
+        value : 35
+        },{
+        iconSRC : "./images/Ataraxia.png",
+        alt : "ATARAXIA",
+        value : 75
         },
     ]
     // Globals
@@ -50,9 +74,12 @@
     let expectedDamage = 0
 
     let finalFactor = 1
+    const activeAdditionalFinalResIDS = []
     let meleeFactor = 1
     let rangeFactor = 1
     let fixedAirRes = 0
+    let fixedAdditionalRes = 0
+    const activeAdditionalFixedResIDS = []
     let percentAirRes = 0
 
     const boost = {
@@ -84,7 +111,7 @@
             boost[spell] = !boost[spell]
         }
         if (boost[spell]) {
-            myNode.style.setProperty("background-color", "#367E18")
+            myNode.style.setProperty("background-color", "#267E08")
             if (canTelefrag(getVariantOf(clickedSpell))) {
                 document.getElementById(`spellGridItem-${getShortName(getVariantOf(clickedSpell))}`).style.setProperty("background-color", "rgba(255,255,255,0.2)")
             }
@@ -160,6 +187,21 @@
             }
         }
     }
+    function toggleAdditionalFixedReduction(nodeID) {
+        const myNode = document.getElementById(nodeID)
+        if (activeAdditionalFixedResIDS.includes(nodeID)) {
+            // Deactivate
+            myNode.style.setProperty("background-color", "#757674")
+            activeAdditionalFixedResIDS.splice(activeAdditionalFixedResIDS.indexOf(nodeID),1)
+            // Fuck you JS, can't even remove an element properly
+        }
+        else {
+            // Activate
+            myNode.style.setProperty("background-color", "#267E08")
+            activeAdditionalFixedResIDS.push(nodeID)
+        }
+        updateExpectedDamage()
+    }
     function addNewAdditionalFixedReduction() {
         const containerNode = document.getElementById("additionalFixedReductionContainer")
         const width = containerNode.childNodes.length
@@ -177,10 +219,10 @@
 
             const newImg = document.createElement("input")
             newImg.setAttribute("type", "image")
-            newImg.setAttribute("src", "./images/Teleportation.png") // FIXME : add image for custom reduction
+            newImg.setAttribute("src", "./images/unknown_shield.png") // FIXME : add image for custom reduction
             newImg.setAttribute("width", "54px")
-            newImg.setAttribute("alt", "[ADD]")
-            newImg.setAttribute("onclick","") // FIXME : TOGGLE
+            newImg.setAttribute("alt", "[CUSTOM]")
+            newImg.setAttribute("onclick",`toggleAdditionalFixedReduction("additionalFixedReductionItem-${width}")`)
             newNode.appendChild(newImg)
 
             const newText = document.createElement("p")
@@ -216,7 +258,7 @@
             newImg.setAttribute("type", "image")
             newImg.setAttribute("src", FixedReductionBonuses[i].iconSRC)
             newImg.setAttribute("alt", FixedReductionBonuses[i].alt)
-            // ONCLICK
+            newImg.setAttribute("onclick",`toggleAdditionalFixedReduction("additionalFixedReductionItem-${i}")`)
             newNode.appendChild(newImg)
 
             const newText = document.createElement("p")
@@ -258,10 +300,121 @@
         newNode.appendChild(newText)
 
         containerNode.appendChild(newNode)
+    }
+    // Same as fixed
+    function toggleAdditionalFinalReduction(nodeID) {
+        const myNode = document.getElementById(nodeID)
+        if (activeAdditionalFinalResIDS.includes(nodeID)) {
+            // Deactivate
+            myNode.style.setProperty("background-color", "#757674")
+            activeAdditionalFinalResIDS.splice(activeAdditionalFinalResIDS.indexOf(nodeID),1)
+            // Fuck you JS, can't even remove an element properly
+        }
+        else {
+            // Activate
+            myNode.style.setProperty("background-color", "#267E08")
+            activeAdditionalFinalResIDS.push(nodeID)
+        }
+        updateExpectedDamage()
+    }
+    function addNewAdditionalFinalReduction() {
+        const containerNode = document.getElementById("additionalFinalReductionContainer")
+        const width = containerNode.childNodes.length
+        const newValue = document.getElementById("additionalFinalReductionItem-CustomInput").value
 
+        // Only work if the new Value is valid
+        if (newValue !== "" && Number(newValue)==parseInt(newValue)) {
+
+            containerNode.style.setProperty("grid-template-columns","1fr ".repeat(width +1 ))
+
+            const newNode = document.createElement("div")
+            newNode.classList.add("grid-item")
+            newNode.setAttribute("id", `additionalFinalReductionItem-${width}`)
+            newNode.style.setProperty("background-color", "#757674")
+
+            const newImg = document.createElement("input")
+            newImg.setAttribute("type", "image")
+            newImg.setAttribute("src", "./images/unknown_shield.png") // FIXME : add image for custom reduction
+            newImg.setAttribute("width", "54px")
+            newImg.setAttribute("alt", "[CUSTOM]")
+            newImg.setAttribute("onclick",`toggleAdditionalFinalReduction("additionalFinalReductionItem-${width}")`)
+            newNode.appendChild(newImg)
+
+            const newText = document.createElement("p")
+            newText.style.setProperty("color","#EAEBE7")
+            newText.style.setProperty("font-size","16px")
+            newText.style.setProperty("text-align","center")
+            newText.style.setProperty("margin-top","-8px")
+            newText.style.setProperty("margin-left","0px")
+            newText.style.setProperty("margin-bottom","-4px")
+
+            const newInput = document.createTextNode(newValue)
+            newText.appendChild(newInput)
+
+            newNode.appendChild(newText)
+
+            containerNode.insertBefore(newNode, containerNode.childNodes[width-1])
+        }
+        else {
+            console.log("invalid custom final reduction, not adding")
+        }
     }
     function fillAdditionalFinalReductionGrid() {
-        
+        const containerNode = document.getElementById("additionalFinalReductionContainer")
+        containerNode.replaceChildren()
+        containerNode.style.setProperty("grid-template-columns","1fr ".repeat(FinalReductionBonuses.length +1 ))
+        for (i in FinalReductionBonuses) {
+            const newNode = document.createElement("div")
+            newNode.classList.add("grid-item")
+            newNode.setAttribute("id", `additionalFinalReductionItem-${i}`)
+            newNode.style.setProperty("background-color", "#757674")
+
+            const newImg = document.createElement("input")
+            newImg.setAttribute("type", "image")
+            newImg.setAttribute("src", FinalReductionBonuses[i].iconSRC)
+            newImg.setAttribute("alt", FinalReductionBonuses[i].alt)
+            newImg.setAttribute("onclick",`toggleAdditionalFinalReduction("additionalFinalReductionItem-${i}")`)
+            newNode.appendChild(newImg)
+
+            const newText = document.createElement("p")
+            newText.style.setProperty("color","#EAEBE7")
+            newText.style.setProperty("font-size","16px")
+            newText.style.setProperty("text-align","center")
+            newText.style.setProperty("margin-top","-8px")
+            newText.style.setProperty("margin-left","0px")
+            newText.style.setProperty("margin-bottom","-4px")
+            const t = document.createTextNode(FinalReductionBonuses[i].value)
+            newText.appendChild(t)
+
+            newNode.appendChild(newText)
+
+            containerNode.appendChild(newNode)
+        }
+        const newNode = document.createElement("div")
+        newNode.classList.add("grid-item")
+        newNode.setAttribute("id", 'additionalFinalReductionItem-Custom')
+        newNode.style.setProperty("background-color", "#757674")
+
+        const newImg = document.createElement("input")
+        newImg.setAttribute("type", "image")
+        newImg.setAttribute("src", "./images/New.png")
+        newImg.setAttribute("width", "54px")
+        newImg.setAttribute("alt", "[ADD]")
+        newImg.setAttribute("onclick","addNewAdditionalFinalReduction()")
+        newNode.appendChild(newImg)
+
+        const newText = document.createElement("div")
+        newText.style.setProperty("margin-top","-20px")
+        newText.style.setProperty("margin-bottom","-10px")
+        const newInput = document.createElement("input")
+        newInput.setAttribute("id", 'additionalFinalReductionItem-CustomInput')
+        newInput.setAttribute("type","text")
+        newInput.style.setProperty("width","30px")
+        newText.appendChild(newInput)
+
+        newNode.appendChild(newText)
+
+        containerNode.appendChild(newNode)
     }
     function fillAdditionalReductionGrids() {
         fillAdditionalFixedReductionGrid()
@@ -270,17 +423,29 @@
     function validDamage(floatDamage) {
         return  Math.max(Math.floor(floatDamage),0)
     }
+    function recalculateAdditionalFixedRes() {
+        let r = 0
+        for (nodeID of activeAdditionalFixedResIDS) {
+            r += Number(document.getElementById(nodeID).childNodes[1].childNodes[0].textContent)
+        }
+        fixedAdditionalRes = r
+    }
     function recalculateFinalFactor() {
-        // TODO : check all nodes related to final reduction and multiply active ones
-        return
+        let factor = 1
+        for (nodeID of activeAdditionalFinalResIDS) {
+            // take the value, multiply
+            factor *= 1-(Number(document.getElementById(nodeID).childNodes[1].childNodes[0].textContent)/100)
+        }
+        finalFactor = factor
     }
     function recalculateExpectedDamages() {
-        // Dégâts=(368-RéFixAir)x(1-Ré%Air/100)x(1-Ré%Final/100)x(2xNombreBoosts-1)
+        // Dégâts=(368-RéFix)x(1-Ré%Air/100)x(1-Ré%Final/100)x(2xNombreBoosts-1)
         refreshAllValues()
         refreshBoosts()
         recalculateFinalFactor()
-        expectedDamage_melee = validDamage((368 - fixedAirRes) * (1 - percentAirRes/100) * (finalFactor * meleeFactor) * (2 * numberOfBoosts - 1))
-        expectedDamage_range = validDamage((368 - fixedAirRes) * (1 - percentAirRes/100) * (finalFactor * rangeFactor) * (2 * numberOfBoosts - 1))
+        recalculateAdditionalFixedRes()
+        expectedDamage_melee = validDamage((368 - (fixedAirRes + fixedAdditionalRes)) * (1 - percentAirRes/100) * (finalFactor * meleeFactor) * (2 * numberOfBoosts - 1))
+        expectedDamage_range = validDamage((368 - (fixedAirRes + fixedAdditionalRes)) * (1 - percentAirRes/100) * (finalFactor * rangeFactor) * (2 * numberOfBoosts - 1))
     }
     function updateExpectedDamageDisplays() {
         const myNodeM = document.getElementById("expectedDamageNode-Melee")
@@ -315,7 +480,6 @@
         const myNode = document.getElementById("percentAirRes")
         percentAirRes = Number(myNode.value)
     }
-
 
     function refreshAllValues() {
         refreshMeleeRes()
@@ -357,19 +521,11 @@
         </div>
     </div>
 
-    <label for="additionalReductionContainer" style="color : #EAEBE7;">Fixed Reductions</label>
-    <div class="grid-container" id="additionalFixedReductionContainer" style="grid-template-columns: 1fr 1fr 1fr 1fr; width: 0px;">
-        <div class="grid-item" id="additionalFixedReductionItem-0" style="background-color : #757674;">
-            <input type="image" src="./images/Rampart.png" alt ='[ICON : RP]' style="float:left;padding-left: 0%;" onclick="toggleAdditionalReduction()">
-            <b><p style="color : #EAEBE7; font-size: 16px; margin-top: 50px; margin-left: 0px; margin-bottom: 0px;">154</p></b>
-        </div>
-        <div class="grid-item" id="additionalFixedReductionItem-1" style="background-color : #757674;">
-            <img src="./images/Rampart.png" alt ='[ICON : RP]' style="float:left;padding-left: 0%;">
-            <b><p style="color : #EAEBE7; font-size: 16px; margin-top: 50px; margin-left: 0px; margin-bottom: 0px;">110</p></b>
-        </div>
-
-
-    </div>
+    <label for="additionalFixedReductionContainer" style="color : #EAEBE7;">Fixed Reductions</label>
+    <div class="grid-container" id="additionalFixedReductionContainer" style="width: 0px;"></div>
+    <label for="additionalFinalReductionContainer" style="color : #EAEBE7;">Final Reductions</label>
+    <div class="grid-container" id="additionalFinalReductionContainer" style="width: 0px;"></div>
+    <br>
 
     <div class="spell-grid-container" id ="spellGridContainer" style = "width : 0px; "></div>
 
