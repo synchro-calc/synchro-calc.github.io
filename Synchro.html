@@ -14,7 +14,6 @@
         padding: 1px;
     }
     .grid-item {
-        background-color: rgba(255, 255, 255, 0.8);
         border: 1px solid rgba(0, 0, 0, 0.8);
         padding: 4px;
         font-size: 30px;
@@ -27,9 +26,25 @@
 <script>
     // Layout of spells
     const layout = `
-        Ralentissement Téléportation Rembobinage Frappe de Xélor Gelure Sablier de Xélor Poussière Temporelle
-        Raulebaque Démotivation Paradoxe Temporel Contre Fuite Désynchronisation
+        Ralentissement Téléportation Rembobinage Frappe de Xélor Gelure Sablier de Xélor Poussière Temporelle Raulebaque Démotivation Paradoxe Temporel Contre Fuite Désynchronisation
     `
+    // Usual/Default Additional Reductions
+    const FixedReductionBonuses = [{
+        iconSRC : "./images/Rampart.png",
+        alt : "RAMPART",
+        value : 154
+        },
+        {
+        iconSRC : "./images/Rampart.png",
+        alt : "RAMPART",
+        value : 110
+        },
+        {
+        iconSRC : "./images/Fortification.png",
+        alt : "FORTIF",
+        value : 220
+        },
+    ]
     // Globals
     let numberOfBoosts = 0
     let expectedDamage = 0
@@ -69,16 +84,16 @@
             boost[spell] = !boost[spell]
         }
         if (boost[spell]) {
-            myNode.style.setProperty("background-color", "rgba(0,255,0,1)")
+            myNode.style.setProperty("background-color", "#367E18")
             if (canTelefrag(getVariantOf(clickedSpell))) {
                 document.getElementById(`spellGridItem-${getShortName(getVariantOf(clickedSpell))}`).style.setProperty("background-color", "rgba(255,255,255,0.2)")
             }
         }
         else {
             // reset background, also reset for variant if eligible
-            myNode.style.setProperty("background-color", "rgba(255,255,255,0.8)")
+            myNode.style.setProperty("background-color", "#757674")
             if (canTelefrag(getVariantOf(clickedSpell))) {
-                document.getElementById(`spellGridItem-${getShortName(getVariantOf(clickedSpell))}`).style.setProperty("background-color", "rgba(255,255,255,0.8)")
+                document.getElementById(`spellGridItem-${getShortName(getVariantOf(clickedSpell))}`).style.setProperty("background-color", "#757674")
             }
         }
         updateExpectedDamage()
@@ -102,6 +117,7 @@
                 const myImage = document.createElement("input")
                 myImage.setAttribute("id",`spellGridItem-${getShortName(spell)}`)
                 if (!canTelefrag(spell)) myImage.style.setProperty("background-color", "rgba(0,0,0,0)")
+                else myImage.style.setProperty("background-color", "#757674")
                 myImage.classList.add("grid-item")
                 myImage.setAttribute("type", "image")
                 myImage.setAttribute("src", getImagePath(spell))
@@ -113,6 +129,7 @@
                 const myVariantImage = document.createElement("input")
                 myVariantImage.setAttribute("id",`spellGridItem-${getShortName(variantSpell)}`)
                 if (!canTelefrag(variantSpell)) myVariantImage.style.setProperty("background-color", "rgba(0,0,0,0)")
+                else myVariantImage.style.setProperty("background-color", "#757674")
                 myVariantImage.classList.add("grid-item")
                 myVariantImage.setAttribute("type", "image")
                 myVariantImage.setAttribute("src", getImagePath(variantSpell))
@@ -142,6 +159,113 @@
                 spellGridContainerNode.appendChild(node)
             }
         }
+    }
+    function addNewAdditionalFixedReduction() {
+        const containerNode = document.getElementById("additionalFixedReductionContainer")
+        const width = containerNode.childNodes.length
+        const newValue = document.getElementById("additionalFixedReductionItem-CustomInput").value
+
+        // Only work if the new Value is valid
+        if (newValue !== "" && Number(newValue)==parseInt(newValue)) {
+
+            containerNode.style.setProperty("grid-template-columns","1fr ".repeat(width +1 ))
+
+            const newNode = document.createElement("div")
+            newNode.classList.add("grid-item")
+            newNode.setAttribute("id", `additionalFixedReductionItem-${width}`)
+            newNode.style.setProperty("background-color", "#757674")
+
+            const newImg = document.createElement("input")
+            newImg.setAttribute("type", "image")
+            newImg.setAttribute("src", "./images/Teleportation.png") // FIXME : add image for custom reduction
+            newImg.setAttribute("width", "54px")
+            newImg.setAttribute("alt", "[ADD]")
+            newImg.setAttribute("onclick","") // FIXME : TOGGLE
+            newNode.appendChild(newImg)
+
+            const newText = document.createElement("p")
+            newText.style.setProperty("color","#EAEBE7")
+            newText.style.setProperty("font-size","16px")
+            newText.style.setProperty("text-align","center")
+            newText.style.setProperty("margin-top","-8px")
+            newText.style.setProperty("margin-left","0px")
+            newText.style.setProperty("margin-bottom","-4px")
+
+            const newInput = document.createTextNode(newValue)
+            newText.appendChild(newInput)
+
+            newNode.appendChild(newText)
+
+            containerNode.insertBefore(newNode, containerNode.childNodes[width-1])
+        }
+        else {
+            console.log("invalid custom fixed reduction, not adding")
+        }
+    }
+    function fillAdditionalFixedReductionGrid() {
+        const containerNode = document.getElementById("additionalFixedReductionContainer")
+        containerNode.replaceChildren()
+        containerNode.style.setProperty("grid-template-columns","1fr ".repeat(FixedReductionBonuses.length +1 ))
+        for (i in FixedReductionBonuses) {
+            const newNode = document.createElement("div")
+            newNode.classList.add("grid-item")
+            newNode.setAttribute("id", `additionalFixedReductionItem-${i}`)
+            newNode.style.setProperty("background-color", "#757674")
+
+            const newImg = document.createElement("input")
+            newImg.setAttribute("type", "image")
+            newImg.setAttribute("src", FixedReductionBonuses[i].iconSRC)
+            newImg.setAttribute("alt", FixedReductionBonuses[i].alt)
+            // ONCLICK
+            newNode.appendChild(newImg)
+
+            const newText = document.createElement("p")
+            newText.style.setProperty("color","#EAEBE7")
+            newText.style.setProperty("font-size","16px")
+            newText.style.setProperty("text-align","center")
+            newText.style.setProperty("margin-top","-8px")
+            newText.style.setProperty("margin-left","0px")
+            newText.style.setProperty("margin-bottom","-4px")
+            const t = document.createTextNode(FixedReductionBonuses[i].value)
+            newText.appendChild(t)
+
+            newNode.appendChild(newText)
+
+            containerNode.appendChild(newNode)
+        }
+        const newNode = document.createElement("div")
+        newNode.classList.add("grid-item")
+        newNode.setAttribute("id", 'additionalFixedReductionItem-Custom')
+        newNode.style.setProperty("background-color", "#757674")
+
+        const newImg = document.createElement("input")
+        newImg.setAttribute("type", "image")
+        newImg.setAttribute("src", "./images/New.png")
+        newImg.setAttribute("width", "54px")
+        newImg.setAttribute("alt", "[ADD]")
+        newImg.setAttribute("onclick","addNewAdditionalFixedReduction()")
+        newNode.appendChild(newImg)
+
+        const newText = document.createElement("div")
+        newText.style.setProperty("margin-top","-20px")
+        newText.style.setProperty("margin-bottom","-10px")
+        const newInput = document.createElement("input")
+        newInput.setAttribute("id", 'additionalFixedReductionItem-CustomInput')
+        newInput.setAttribute("type","text")
+        newInput.style.setProperty("width","30px")
+        newText.appendChild(newInput)
+
+        newNode.appendChild(newText)
+
+        containerNode.appendChild(newNode)
+
+    }
+    function fillAdditionalFinalReductionGrid() {
+        
+    }
+    function fillAdditionalReductionGrids() {
+        fillAdditionalFixedReductionGrid()
+        fillAdditionalFinalReductionGrid()
     }
     function validDamage(floatDamage) {
         return  Math.max(Math.floor(floatDamage),0)
@@ -183,48 +307,77 @@
         const myNode = document.getElementById("resRange")
         rangeFactor = 1 - Number(myNode.value)/100
     }
+    function refreshFixedAirRes() {
+        const myNode = document.getElementById("fixedAirRes")
+        fixedAirRes = Number(myNode.value)
+    }
+    function refreshPercentAirRes() {
+        const myNode = document.getElementById("percentAirRes")
+        percentAirRes = Number(myNode.value)
+    }
 
 
     function refreshAllValues() {
         refreshMeleeRes()
         refreshRangeRes()
+        refreshFixedAirRes()
+        refreshPercentAirRes()
     }
 
 </script>
 
 
 
-<body>
+<body style="background-color: #1E1F1B; font-family: 'Courier New', Courier, monospace;">
     <div style="display: grid; justify-items : center;  width : 50%;">
         <div class="grid-container" id ="damageGridContainer" style ="grid-template-columns: 1fr 1fr; grid-template-rows: 1fr; width : 80%">
-            <div class="grid-item" id="expectedDamageParentNode-Melee">
+            <div class="grid-item" id="expectedDamageParentNode-Melee" style="background-color : #757674;">
                 <img src="./images/melee.png" alt ='[MELEE ICON]' style="float:left;padding-left: 20%;">
                 <div id="expectedDamageNode-Melee">0</div>
             </div>
-            <div class="grid-item" id="expectedDamageParentNode-Range">
+            <div class="grid-item" id="expectedDamageParentNode-Range" style="background-color : #757674;">
                 <img src="./images/range.png" alt ='[RANGE ICON]' style="float:left;padding-left: 20%;">
                 <div id="expectedDamageNode-Range">0</div>
             </div>
         </div>
     </div>
     
-    <br><br>
-    <label for="resMelee">% Melee </label>
-    <input type="text" id="resMelee" oninput="updateExpectedDamage()"><br>
-    <label for="resRange">% Range</label>
-    <input type="text" id="resRange" oninput="updateExpectedDamage()"><br>
-    <label for=""></label>
-    <input type="text" id=""><br>
-    <label for=""></label>
-    <input type="text" id=""><br>
-    <label for=""></label>
-    <input type="text" id=""><br>
-    <div class="spell-grid-container" id ="spellGridContainer" style = "width : flex; justify-items: center;"></div>
+    <div style="display : grid; justify-items : center; width : 50%">
+        <div>
+            <label for="percentAirRes" style="color : #EAEBE7;">% Air Res</label>
+            <input type="text" id="percentAirRes" oninput="updateExpectedDamage()" style="width : 40px;">
+            <label for="fixedAirRes" style="color : #EAEBE7;">&nbsp&nbsp Air Res</label>
+            <input type="text" id="fixedAirRes" oninput="updateExpectedDamage()" style="width : 40px;">
+            <br>
+
+            <label for="resMelee" style="color : #EAEBE7;">% Melee &nbsp</label>
+            <input type="text" id="resMelee" oninput="updateExpectedDamage()" style="width : 40px;">
+            <label for="resRange" style="color : #EAEBE7;">&nbsp&nbsp % Range</label>
+            <input type="text" id="resRange" oninput="updateExpectedDamage()" style="width : 40px;"><br>
+        </div>
+    </div>
+
+    <label for="additionalReductionContainer" style="color : #EAEBE7;">Fixed Reductions</label>
+    <div class="grid-container" id="additionalFixedReductionContainer" style="grid-template-columns: 1fr 1fr 1fr 1fr; width: 0px;">
+        <div class="grid-item" id="additionalFixedReductionItem-0" style="background-color : #757674;">
+            <input type="image" src="./images/Rampart.png" alt ='[ICON : RP]' style="float:left;padding-left: 0%;" onclick="toggleAdditionalReduction()">
+            <b><p style="color : #EAEBE7; font-size: 16px; margin-top: 50px; margin-left: 0px; margin-bottom: 0px;">154</p></b>
+        </div>
+        <div class="grid-item" id="additionalFixedReductionItem-1" style="background-color : #757674;">
+            <img src="./images/Rampart.png" alt ='[ICON : RP]' style="float:left;padding-left: 0%;">
+            <b><p style="color : #EAEBE7; font-size: 16px; margin-top: 50px; margin-left: 0px; margin-bottom: 0px;">110</p></b>
+        </div>
+
+
+    </div>
+
+    <div class="spell-grid-container" id ="spellGridContainer" style = "width : 0px; "></div>
 
 </body>
 <script>
 // Loading and Init
     const layoutArray = parseLayoutString(layout)
     createSpellGrid(layoutArray)
+    fillAdditionalReductionGrids()
 </script>
 </html>
