@@ -134,6 +134,13 @@
             for (node of lineB) {
                 spellGridContainerNode.appendChild(node)
             }
+            for (let i=0; i< columns - lineB.length; ++i) {
+                const node = document.createElement("div")
+                node.classList.add("grid-item")
+                node.style.setProperty("padding","0px")
+                node.style.setProperty("border","0px")
+                spellGridContainerNode.appendChild(node)
+            }
         }
     }
     function validDamage(floatDamage) {
@@ -161,24 +168,12 @@
         recalculateExpectedDamages()
         updateExpectedDamageDisplays()
     }
-    function addBoost() {
-        numberOfBoosts += 1
-        updateExpectedDamage()
-    }
-    function removeBoost() {
-        numberOfBoosts -= 1
-        updateExpectedDamage()
-    }
     function refreshBoosts() {
         s = 0
         for (spell in boost) {
             s+= boost[spell] ? 1 : 0
         }
         numberOfBoosts = s
-    }
-    function resetBoost() {
-        numberOfBoosts = 0
-        updateExpectedDamage()
     }
     function refreshMeleeRes() {
         const myNode = document.getElementById("resMelee")
