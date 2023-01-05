@@ -136,11 +136,6 @@
             const lineA =[]
             const lineB =[]
             for (spell of line) {
-                /*
-                const myGridNode = document.createElement("div")
-                myGridNode.setAttribute("id",`spellGridItem-${getShortName(spell)}`)
-                myGridNode.classList.add("grid-item")
-                */
                 const myImage = document.createElement("input")
                 myImage.setAttribute("id",`spellGridItem-${getShortName(spell)}`)
                 if (!canTelefrag(spell)) myImage.style.setProperty("background-color", "rgba(0,0,0,0)")
@@ -207,9 +202,10 @@
         const width = containerNode.childNodes.length
         const newValue = document.getElementById("additionalFixedReductionItem-CustomInput").value
 
-        // Only work if the new Value is valid
+        // Only work if the new Value is valid (= Number and ParseInt agree on value)
         if (newValue !== "" && Number(newValue)==parseInt(newValue)) {
 
+            // make room for 1 more element on the grid
             containerNode.style.setProperty("grid-template-columns","1fr ".repeat(width +1 ))
 
             const newNode = document.createElement("div")
@@ -219,7 +215,7 @@
 
             const newImg = document.createElement("input")
             newImg.setAttribute("type", "image")
-            newImg.setAttribute("src", "./images/unknown_shield.png") // FIXME : add image for custom reduction
+            newImg.setAttribute("src", "./images/unknown_shield.png") // Dev Note : Find better icon
             newImg.setAttribute("width", "54px")
             newImg.setAttribute("alt", "[CUSTOM]")
             newImg.setAttribute("onclick",`toggleAdditionalFixedReduction("additionalFixedReductionItem-${width}")`)
@@ -301,7 +297,7 @@
 
         containerNode.appendChild(newNode)
     }
-    // Same as fixed
+    // Same as fixed (next 3 functions are duplicates of previous 3)
     function toggleAdditionalFinalReduction(nodeID) {
         const myNode = document.getElementById(nodeID)
         if (activeAdditionalFinalResIDS.includes(nodeID)) {
@@ -322,7 +318,7 @@
         const width = containerNode.childNodes.length
         const newValue = document.getElementById("additionalFinalReductionItem-CustomInput").value
 
-        // Only work if the new Value is valid
+        // Only work if the new Value is valid (= Number and ParseInt agree on value)
         if (newValue !== "" && Number(newValue)==parseInt(newValue)) {
 
             containerNode.style.setProperty("grid-template-columns","1fr ".repeat(width +1 ))
@@ -334,7 +330,7 @@
 
             const newImg = document.createElement("input")
             newImg.setAttribute("type", "image")
-            newImg.setAttribute("src", "./images/unknown_shield.png") // FIXME : add image for custom reduction
+            newImg.setAttribute("src", "./images/unknown_shield.png") // Dev Note : Find better icon
             newImg.setAttribute("width", "54px")
             newImg.setAttribute("alt", "[CUSTOM]")
             newImg.setAttribute("onclick",`toggleAdditionalFinalReduction("additionalFinalReductionItem-${width}")`)
