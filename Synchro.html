@@ -454,7 +454,7 @@
     function createSpellGrid(layout) {
         const spellGridContainerNode = document.getElementById("spellGridContainer")
         spellGridContainerNode.replaceChildren()
-        const columns = layout.reduce((maxCol, line) => Math.max(maxCol, line.length), 0)
+        const columns = layout.reduce((maxCol, line, i) => Math.max(maxCol, line.length + (i===(layout.length-1) ? 1 : 0)), 0)
         const rows = layout.length
         spellGridContainerNode.style.setProperty('grid-template-columns', "1fr ".repeat(columns))
         spellGridContainerNode.style.setProperty('grid-template-rows', "1fr ".repeat(2*rows))
@@ -507,10 +507,6 @@
                 node.style.setProperty("padding","0px")
                 node.style.setProperty("border","0px")
                 spellGridContainerNode.appendChild(node)
-            }
-            for (spell of line) {
-                // we potentially have boosts already on, for this function is also called after a locale change
-                updateSpellNodeColor(spell)
             }
         }
     }
