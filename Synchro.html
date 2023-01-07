@@ -25,7 +25,7 @@
 
 <body style="background-color: #1E1F1B; font-family: 'Courier New', Courier, monospace; color: #EAEBE7;">
     <div style="display: grid;grid-template-columns: 1fr 1fr;">
-        <div style="display: grid; justify-items : center;">
+        <div style="display: grid; justify-items : left;">
             <div class="grid-container" id ="damageGridContainer" style ="grid-template-columns: 1fr 1fr; grid-template-rows: 1fr; width : 80%">
                 <div class="grid-item" id="expectedDamageParentNode-Melee" style="background-color : #757674;">
                     <img src="./images/melee.png" alt ='[MELEE ICON]' style="float:left;padding-left: 20%;">
@@ -47,17 +47,17 @@
             </div>
         </div>
     </div>
-    <div style="display : grid; justify-items : center; width : 50%">
-        <div>
+    <div style="display : grid; justify-items : left; width : 50%">
+        <div style="padding-left: 10%;">
             <label for="percentAirRes" id="percentAirResLabel">% Air Res</label>
             <input type="text" id="percentAirRes" oninput="updateExpectedDamage()" style="width : 40px;">
-            <label for="fixedAirRes" id="fixedAirResLabel">&nbsp&nbsp Air Res</label>
+            <label for="fixedAirRes" id="fixedAirResLabel">&nbsp Air Res</label>
             <input type="text" id="fixedAirRes" oninput="updateExpectedDamage()" style="width : 40px;">
             <br>
 
             <label for="meleeRes" id="meleeResLabel">% Melee &nbsp</label>
             <input type="text" id="meleeRes" oninput="updateExpectedDamage()" style="width : 40px;">
-            <label for="rangeRes" id="rangeResLabel">&nbsp&nbsp % Range</label>
+            <label for="rangeRes" id="rangeResLabel">&nbsp % Range</label>
             <input type="text" id="rangeRes" oninput="updateExpectedDamage()" style="width : 40px;"><br>
         </div>
     </div>
@@ -239,17 +239,17 @@
     const labels = {
         "EN" : {
             "percentAirResLabel" : "% Air Res",
-            "fixedAirResLabel" : "&nbsp&nbsp Air Res",
+            "fixedAirResLabel" : "&nbsp Air Res",
             "meleeResLabel" : "% Melee &nbsp",
-            "rangeResLabel" : "&nbsp&nbsp % Range",
+            "rangeResLabel" : "&nbsp % Range",
             "additionalFixedReductionContainerLabel" : "Fixed Reductions",
             "additionalFinalReductionContainerLabel" : "Final Reductions",
         },
         "FR" : {
             "percentAirResLabel" : "% Res Air",
-            "fixedAirResLabel" : "&nbsp&nbsp Res Air",
+            "fixedAirResLabel" : "&nbsp Res Air",
             "meleeResLabel" : "% Mélée &nbsp",
-            "rangeResLabel" : "&nbsp&nbsp % Dist. ",
+            "rangeResLabel" : "&nbsp % Dist. ",
             "additionalFixedReductionContainerLabel" : "Réductions Dégâts Fixes",
             "additionalFinalReductionContainerLabel" : "Réductions % Finaux",
         }
