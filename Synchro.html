@@ -293,10 +293,15 @@
         currentLocaleID = availableLocales[(i+1) % availableLocales.length]
         refreshLocalisedText()
     }
-    function refreshLocalisedText() {
+    function init() {
         const layoutArray = parseLayoutString(layout)
         createSpellGrid(layoutArray)
         fillAdditionalReductionGrids()
+        fillLabels()
+    }
+    function refreshLocalisedText() {
+        refreshSpellGridHoverText()
+        refreshAdditionalReductionNodes()
         fillLabels()
         const localeCodeNode = document.getElementById("currentLocaleCode")
         localeCodeNode.replaceChildren()
@@ -346,7 +351,14 @@
     }
     // utilitary
     function getBaseName(localisedSpellName) {
-        return (localisedSpellName in spellsEN) ? localisedSpellName : translateXelorSpells[localisedSpellName]
+        // console.log(`getBaseName('${localisedSpellName}') :\n  localisedSpellName in spellsALLXelor : ${spellsALLXelor.indexOf(localisedSpellName) > -1}\n    localisedSpellName in spellsEN : ${spellsEN.indexOf(localisedSpellName) > -1}\n  localisedSpellName in otherSpellsEN : ${otherSpellsEN.indexOf(localisedSpellName) > -1}`)
+        if (spellsALLXelor.indexOf(localisedSpellName) > -1) {
+            return (spellsEN.indexOf(localisedSpellName) > -1) ? localisedSpellName : translateXelorSpells[localisedSpellName]
+        }
+        else {
+            return (otherSpellsEN.indexOf(localisedSpellName) > -1) ? localisedSpellName : translateOtherSpells[localisedSpellName]
+        }
+        
     }
     function getShortName(spell) {
         return shortName[spell]
@@ -502,16 +514,33 @@
             }
         }
     }
+    function refreshSpellGridHoverText() {
+        const spellContainer = document.getElementById("spellGridContainer")
+        for (node of spellContainer.childNodes) {
+            node.title = getLocalisedName(getBaseName(node.title), currentLocaleID)
+        }
+    }
+    // Reductions
+    function refreshAdditionalReductionNodes() {
+        const fixedContainer = document.getElementById("additionalFixedReductionContainer")
+        const finalContainer = document.getElementById("additionalFinalReductionContainer")
+        for (node of fixedContainer.childNodes) {
+            refreshAdditionalFixedReductionNode(node)
+        }
+        for (node of finalContainer.childNodes) {
+            refreshAdditionalFinalReductionNode(node)
+        }
+    }
     // Fixed Reductions
-    function refreshAdditionalFixedReductionNode(nodeID) {
-        const myNode = document.getElementById(nodeID)
-        if (activeAdditionalFixedResIDS.includes(nodeID)) {
+    function refreshAdditionalFixedReductionNode(nodeObject) {
+        nodeObject.firstChild.title = getLocalisedName( getBaseName(nodeObject.firstChild.title), currentLocaleID)
+        if (activeAdditionalFixedResIDS.includes(nodeObject.id)) {
             // Activate
-            myNode.style.setProperty("background-color", "#267E08")
+            nodeObject.style.setProperty("background-color", "#267E08")
         }
         else {
             // Deactivate
-            myNode.style.setProperty("background-color", "#757674")
+            nodeObject.style.setProperty("background-color", "#757674")
         }
     }
     function toggleAdditionalFixedReduction(nodeID) {
@@ -582,7 +611,7 @@
             const newNodeID = `additionalFixedReductionItem-${i}`
             newNode.classList.add("grid-item")
             newNode.setAttribute("id", newNodeID)
-            // newNode.style.setProperty("background-color", "#757674")
+            newNode.style.setProperty("background-color", "#757674")
 
             const newImg = document.createElement("input")
             newImg.setAttribute("type", "image")
@@ -605,7 +634,7 @@
             newNode.appendChild(newText)
 
             containerNode.appendChild(newNode)
-            refreshAdditionalFixedReductionNode(newNodeID)
+            // refreshAdditionalFixedReductionNode(newNode)
         }
         const newNode = document.createElement("div")
         newNode.classList.add("grid-item")
@@ -636,15 +665,15 @@
     }
     // % Final Reductions
     // Same as fixed (next 4 functions are duplicates of previous 4)
-    function refreshAdditionalFinalReductionNode(nodeID) {
-        const myNode = document.getElementById(nodeID)
-        if (activeAdditionalFinalResIDS.includes(nodeID)) {
+    function refreshAdditionalFinalReductionNode(nodeObject) {
+        nodeObject.firstChild.title = getLocalisedName( getBaseName(nodeObject.firstChild.title), currentLocaleID)
+        if (activeAdditionalFinalResIDS.includes(nodeObject.id)) {
             // Activate
-            myNode.style.setProperty("background-color", "#267E08")
+            nodeObject.style.setProperty("background-color", "#267E08")
         }
         else {
             // Deactivate
-            myNode.style.setProperty("background-color", "#757674")
+            nodeObject.style.setProperty("background-color", "#757674")
         }
     }
     function toggleAdditionalFinalReduction(nodeID) {
@@ -714,7 +743,7 @@
             const newNodeID = `additionalFinalReductionItem-${i}`
             newNode.classList.add("grid-item")
             newNode.setAttribute("id", newNodeID)
-            // newNode.style.setProperty("background-color", "#757674")
+            newNode.style.setProperty("background-color", "#757674")
 
             const newImg = document.createElement("input")
             newImg.setAttribute("type", "image")
@@ -737,7 +766,7 @@
             newNode.appendChild(newText)
 
             containerNode.appendChild(newNode)
-            refreshAdditionalFinalReductionNode(newNodeID)
+            // refreshAdditionalFinalReductionNode(newNode)
         }
         const newNode = document.createElement("div")
         newNode.classList.add("grid-item")
@@ -842,7 +871,8 @@
 
 <script>
     // Loading and Init
-    refreshLocalisedText()
+    init()
+    
 </script>
 
 </html>
