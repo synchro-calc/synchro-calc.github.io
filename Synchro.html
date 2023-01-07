@@ -15,8 +15,8 @@
         padding: 1px;
     }
     .grid-item {
-        border: 1px solid rgba(0, 0, 0, 0.8);
         padding: 4px;
+        border: 1px solid rgba(0, 0, 0, 0.8);
         font-size: 30px;
         text-align: center;
     }
@@ -131,8 +131,8 @@
     const spellsEN = ["Slow Down", "Souvenir", "Teleportation", "Spontaneous Return", "Rewind", "Reflect", "Xelor's Punch", "Gear", "Frostbite", "Disruption", "Xelor's Sandglass", "Temporal Distortion", "Temporal Dust", "Temporal Suspension", "Rhol Bak", "Temporal Instability", "Loss of Motivation", "Pendulum", "Temporal Paradox", "Time Rift", "Counter", "Temporal Oop Shield", "Flight", "Premonition", "Desynchronisation", "Knell"]
     const spellsFR = ["Ralentissement", "Souvenir", "Téléportation", "Retour Spontané", "Rembobinage", "Renvoi", "Frappe de Xélor", "Engrenage", "Gelure", "Perturbation", "Sablier de Xélor", "Distortion Temporelle", "Poussière Temporelle", "Suspension Temporelle", "Raulebaque", "Instabilité Temporelle", "Démotivation", "Pendule", "Paradoxe Temporel", "Faille Temporelle", "Contre", "Bouclier Temporel", "Fuite", "Prémonition", "Désynchronisation", "Glas"]
 
-    const otherSpellsEN = ["Rampart (Caster)", "Rampart (Ally)", "Fortification", "Valkyr's Embrace", "Ouginak's Rage", "Watchdog", "Feca Shield", "Ataraxia", "Custom Reduction", "Add a spell with a custom amount"]
-    const otherSpellsFR = ["Rempart (Lanceur)", "Rempart (Allié)", "Fortification", "Étreinte de Valkyr", "Rage", "Molosse", "Bouclier Feca", "Ataraxie", "Réduction Custom", "Ajouter une réduction avec une valeur custom"]
+    const otherSpellsEN = ["","Rampart (Caster)", "Rampart (Ally)", "Fortification", "Valkyr's Embrace", "Ouginak's Rage", "Watchdog", "Feca Shield", "Ataraxia", "Custom Reduction", "Add a spell with a custom amount", "Reset", "Validate", "Cancel"]
+    const otherSpellsFR = ["","Rempart (Lanceur)", "Rempart (Allié)", "Fortification", "Étreinte de Valkyr", "Rage", "Molosse", "Bouclier Feca", "Ataraxie", "Réduction Custom", "Ajouter une réduction avec une valeur custom", "Reset", "Valider", "Annuler"]
     
     const availableLocales = ["EN", "FR"]
     const localeFlags = {
@@ -458,7 +458,8 @@
         const rows = layout.length
         spellGridContainerNode.style.setProperty('grid-template-columns', "1fr ".repeat(columns))
         spellGridContainerNode.style.setProperty('grid-template-rows', "1fr ".repeat(2*rows))
-        for (line of layout) {
+        for (lineIndex in layout) {
+            const line = layout[lineIndex]
             const lineA =[]
             const lineB =[]
             for (spell of line) {
@@ -491,30 +492,122 @@
             for (node of lineA) {
                 spellGridContainerNode.appendChild(node)
             }
-            for (let i=0; i< columns - lineA.length; ++i) {
+            
+            for (let i=lineA.length; i< columns - (lineIndex==(rows-1)?1:0); ++i) {
                 const node = document.createElement("div")
                 node.classList.add("grid-item")
+                node.setAttribute("title", "")
                 node.style.setProperty("padding","0px")
                 node.style.setProperty("border","0px")
                 spellGridContainerNode.appendChild(node)
             }
+            // If it's the last line, add the reset "spell" on the last column (second row)
+            if (lineIndex==(rows-1)) {
+                const myImage = document.createElement("input")
+                myImage.setAttribute("id",`spellGridItem-MenuTop`)
+                myImage.setAttribute("title", "")
+                // myImage.style.setProperty("background-color", "#757674")
+                myImage.classList.add("grid-item")
+                // myImage.style.setProperty("border","1px solid rgba(0,0,0,0)")
+                myImage.setAttribute("type", "image")
+                myImage.setAttribute("src", getImagePath("Blank"))
+                myImage.setAttribute("width", "55")
+                myImage.setAttribute("alt", ``)
+                myImage.setAttribute("onclick", ``)
+                spellGridContainerNode.appendChild(myImage)
+            }
+            
             for (node of lineB) {
                 spellGridContainerNode.appendChild(node)
             }
-            for (let i=0; i< columns - lineB.length; ++i) {
+            for (let i=lineB.length; i< columns - (lineIndex==(rows-1)?1:0); ++i) {
                 const node = document.createElement("div")
                 node.classList.add("grid-item")
                 node.style.setProperty("padding","0px")
                 node.style.setProperty("border","0px")
                 spellGridContainerNode.appendChild(node)
             }
+            // If it's the last line, add the reset "spell" on the last column (second row)
+            if (lineIndex==(rows-1)) {
+                const myImage = document.createElement("input")
+                myImage.setAttribute("id",`spellGridItem-MenuBot`)
+                myImage.setAttribute("title", getLocalisedName("Reset", currentLocaleID))
+                myImage.style.setProperty("background-color", "#757674")
+                myImage.classList.add("grid-item")
+                myImage.setAttribute("type", "image")
+                myImage.setAttribute("src", getImagePath("Reset"))
+                myImage.setAttribute("width", "55")
+                myImage.setAttribute("alt", `[ICON : RESET]`)
+                myImage.setAttribute("onclick", `confirmBoostReset();`)
+                spellGridContainerNode.appendChild(myImage)
+            }
         }
+    }
+    function showBoostsUpForReset() {
+        // Change all spells color to indicate what's at play
+        for (spell in boost) {
+            if (boost[spell]) {
+                if (canTelefrag(getVariantOf(spell))) document.getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`).style.setProperty("background-color","#ffce00")
+                if (canTelefrag(spell)) document.getElementById(`spellGridItem-${getShortName(spell)}`).style.setProperty("background-color","#ffce00")
+            }
+        }
+    }
+    // The opposite of above
+    function spellsBackToNormal() {
+        for (spell in boost) {
+            if (boost[spell]) {
+                if (canTelefrag(getVariantOf(spell))) updateSpellNodeColor(getVariantOf(spell))
+                if (canTelefrag(spell)) updateSpellNodeColor(spell)
+            }
+        }
+    }
+    function confirmBoostReset() {
+        showBoostsUpForReset()
+        // Change Menu options
+        const topOptionNode = document.getElementById("spellGridItem-MenuTop")
+        const botOptionNode = document.getElementById("spellGridItem-MenuBot")
+        // Change Images, titles & background
+        topOptionNode.style.setProperty("border","1px solid rgba(0, 0, 0, 0.8);")
+
+        topOptionNode.setAttribute("src", getImagePath("Validate"))
+        botOptionNode.setAttribute("src", getImagePath("Cancel"))
+
+        topOptionNode.setAttribute("title", getLocalisedName("Validate",currentLocaleID))        
+        botOptionNode.setAttribute("title", getLocalisedName("Cancel",currentLocaleID))
+
+        topOptionNode.style.setProperty("background-color", "#757674")
+        
+        // change onclick code
+        topOptionNode.setAttribute("onclick","resetBoosts();resetBoostMenuOptions();")
+        botOptionNode.setAttribute("onclick","spellsBackToNormal();resetBoostMenuOptions();")
+    }
+    function resetBoostMenuOptions() {
+        const topOptionNode = document.getElementById("spellGridItem-MenuTop")
+        const botOptionNode = document.getElementById("spellGridItem-MenuBot")
+        // Change Images & background
+        topOptionNode.setAttribute("src", getImagePath("Blank"))
+        botOptionNode.setAttribute("src", getImagePath("Reset"))
+
+        topOptionNode.setAttribute("title", "")        
+        botOptionNode.setAttribute("title", getLocalisedName("Reset",currentLocaleID))
+        
+        topOptionNode.style.setProperty("background-color", "rgba(0,0,0,0)")
+        // change onclick code
+        topOptionNode.setAttribute("onclick","")
+        botOptionNode.setAttribute("onclick","confirmBoostReset();")
     }
     function refreshSpellGridHoverText() {
         const spellContainer = document.getElementById("spellGridContainer")
         for (node of spellContainer.childNodes) {
             node.title = getLocalisedName(getBaseName(node.title), currentLocaleID)
         }
+    }
+    function resetBoosts() {
+        for (spell in boost) {
+            boost[spell]=0
+            updateSpellNodeColor(spell)
+        }
+        updateExpectedDamage()
     }
     // Reductions
     function refreshAdditionalReductionNodes() {
