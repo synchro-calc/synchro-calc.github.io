@@ -1,5 +1,12 @@
 <!DOCTYPE html>
 <html>
+
+<!-- Color palette :
+    background dark grey : #1E1F1B
+    green : #267E08
+    light gray : #757674
+    very light gray (text) : #EAEBE7
+-->
 <head>
     <title>Synchro Calculator</title>
     <style>
@@ -17,8 +24,47 @@
     .grid-item {
         padding: 4px;
         border: 1px solid rgba(0, 0, 0, 0.8);
+        border-radius : 5px;
         font-size: 30px;
         text-align: center;
+    }
+    input[type="range"]{
+        -webkit-appearance: none;
+        height: 4px;
+        outline: none !important;
+        appearance:none;
+        border: 4px solid black;
+        border-radius:30px;
+    }
+    input[type="range"]:hover {
+        outline:none;
+    }
+    input[type="range"]::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+        background: #757674;
+        cursor: pointer;
+        border-radius:50%;
+        border: 4px solid black;
+        outline:none;
+    }
+    input[type="range"]::-moz-range-progress {
+        background-color: #757674;
+        height: 100%;
+        border-radius:30px;
+    }
+    input[type="range"]::-moz-range-track {  
+        background-color: #757674;
+        border-radius:30px;
+        border:none;
+        height: 100%;
+    }
+
+    input[type="text"]:hover {
+        outline:none;
+    }
+    input[type="text"]:focus {
+        outline:none;
     }
 
     </style>
@@ -30,17 +76,17 @@
             <div class="grid-container" id ="damageGridContainer" style ="grid-template-columns: 1fr 1fr; grid-template-rows: 1fr; width : 80%">
                 <div class="grid-item" id="expectedDamageParentNode-Melee" style="background-color : #757674;">
                     <img src="./images/melee.png" alt ='[MELEE ICON]' style="float:left;padding-left: 20%;">
-                    <div id="expectedDamageNode-Melee" style="color:black">0</div>
+                    <div id="expectedDamageNode-Melee" style="color:black;">0</div>
                 </div>
                 <div class="grid-item" id="expectedDamageParentNode-Range" style="background-color : #757674;">
                     <img src="./images/range.png" alt ='[RANGE ICON]' style="float:left;padding-left: 20%;">
-                    <div id="expectedDamageNode-Range" style="color:black">0</div>
+                    <div id="expectedDamageNode-Range" style="color:black;">0</div>
                 </div>
             </div>
         </div>
         
         <div style="display: grid;justify-items: right;">
-            <div id="localeContainer" class="grid-container" style="grid-template-columns: auto auto;margin-bottom: 20px;">
+            <div id="localeContainer" class="grid-container" style="grid-template-columns: auto auto;margin-bottom: 0px;">
                 <div id="currentLocaleCode" class="grid-item" style="border:0px; font-size: medium; margin-bottom: 0px;">FR</div>
                 <div class="grid-item" style="border:0px; height:18px" >
                     <input id="currentLocaleImageNode" type="image" src="./images/FR-flag.jpeg" alt='[FLAG]' style="float:right;margin : left 10px top 0px" width="32" onclick="cycleLocale()">
@@ -49,7 +95,7 @@
         </div>
     </div>
     <div style="display : grid; justify-items : left; width : 50%">
-        <div style="padding-left: 10%;">
+        <div style="padding-left: 7%;">
             <label for="percentAirRes" id="percentAirResLabel">% Air Res</label>
             <input type="text" id="percentAirRes" oninput="updateExpectedDamage()" style="width : 40px;">
             <label for="fixedAirRes" id="fixedAirResLabel">&nbsp Air Res</label>
@@ -62,6 +108,7 @@
             <input type="text" id="rangeRes" oninput="updateExpectedDamage()" style="width : 40px;"><br>
         </div>
     </div>
+    <br>
 
     <label for="additionalFixedReductionContainer" id="additionalFixedReductionContainerLabel">Fixed Reductions</label>
     <div class="grid-container" id="additionalFixedReductionContainer" style="width: 0px;"></div>
@@ -71,17 +118,17 @@
 
     <div class="spell-grid-container" id ="spellGridContainer" style = "width : 0px;"></div>
     <div id="manualBoostsContainer" class="grid-container" style="grid-template-columns: auto auto auto auto; width:0px;">
-        <div class="grid-item" style="border:1px solid green">
-            <input id="manualBoostSlider" type="range" min="200" max="2600" step="200" value="200" oninput="document.getElementById('manualBoostInput').value = this.value; numberOfBoosts=parseInt(this.value)/200;updateExpectedDamage();" style="width:700px; margin-top:10px;">
+        <div class="grid-item" style="border:0px">
+            <input id="manualBoostSlider" type="range" min="200" max="2600" step="200" value="200" oninput="document.getElementById('manualBoostInput').value = this.value; numberOfBoosts=parseInt(this.value)/200;updateExpectedDamage();" style="width:700px; margin-top:15px;">
         </div>
-        <div class="grid-item" style="border:1px solid green;width:80px;">
-            <input id="manualBoostInput" type="text" oninput="document.getElementById('manualBoostSlider').value = this.value; numberOfBoosts=parseInt(this.value)/200;updateExpectedDamage()" onclick="this.value=''" style="width:60px; background-color: #1E1F1B; border-radius: 10px; border: 4px solid black; text-align: center">
+        <div class="grid-item" style="border:0px;width:80px;">
+            <input id="manualBoostInput" type="text" oninput="document.getElementById('manualBoostSlider').value = this.value; numberOfBoosts=parseInt(this.value)/200;updateExpectedDamage()" onclick="this.value=''" style="width:60px; height:22px; background-color: #1E1F1B; border-radius: 10px; border: 4px solid black; text-align: center; color: #757674;">
         </div>
-        <div class="grid-item" style="border:1px solid green;width:30px;">
-            <input type="image" src="./images/Add.png" onclick="addManualBoost()" width="24px"style="margin: 8px 0 0 0">
+        <div class="grid-item" style="border:0px;width:28px;">
+            <input type="image" src="./images/Add.png" onclick="addManualBoost()" width="28px"style="margin: 7px 0 0 0">
         </div>
-        <div class="grid-item" style="border:1px solid green;width:30px;">
-            <input type="image" src="./images/Substract.png" onclick="removeManualBoost()" width="24px" style="margin: 8px 0 0 0">
+        <div class="grid-item" style="border:0px;width:28px;">
+            <input type="image" src="./images/Substract.png" onclick="removeManualBoost()" width="28px" style="margin: 7px 0 0 0">
         </div>
     </div>
 
