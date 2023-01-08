@@ -20,6 +20,7 @@
         font-size: 30px;
         text-align: center;
     }
+
     </style>
 </head>
 
@@ -68,7 +69,21 @@
     <div class="grid-container" id="additionalFinalReductionContainer" style="width: 0px;"></div>
     <br>
 
-    <div class="spell-grid-container" id ="spellGridContainer" style = "width : 0px; "></div>
+    <div class="spell-grid-container" id ="spellGridContainer" style = "width : 0px;"></div>
+    <div id="manualBoostsContainer" class="grid-container" style="grid-template-columns: auto auto auto auto; width:0px;">
+        <div class="grid-item" style="border:1px solid green">
+            <input id="manualBoostSlider" type="range" min="200" max="2600" step="200" value="200" oninput="document.getElementById('manualBoostInput').value = this.value; numberOfBoosts=parseInt(this.value)/200;updateExpectedDamage();" style="width:700px; margin-top:10px;">
+        </div>
+        <div class="grid-item" style="border:1px solid green;width:80px;">
+            <input id="manualBoostInput" type="text" oninput="document.getElementById('manualBoostSlider').value = this.value; numberOfBoosts=parseInt(this.value)/200;updateExpectedDamage()" onclick="this.value=''" style="width:60px; background-color: #1E1F1B; border-radius: 10px; border: 4px solid black; text-align: center">
+        </div>
+        <div class="grid-item" style="border:1px solid green;width:30px;">
+            <input type="image" src="./images/Add.png" onclick="addManualBoost()" width="24px"style="margin: 8px 0 0 0">
+        </div>
+        <div class="grid-item" style="border:1px solid green;width:30px;">
+            <input type="image" src="./images/Substract.png" onclick="removeManualBoost()" width="24px" style="margin: 8px 0 0 0">
+        </div>
+    </div>
 
 </body>
 
@@ -296,6 +311,8 @@
         refreshLocalisedText()
     }
     function init() {
+        // Hide away manual controls
+        document.getElementById("manualBoostsContainer").style.setProperty("display","none")
         const layoutArray = parseLayoutString(layout)
         createSpellGrid(layoutArray)
         fillAdditionalReductionGrids()
@@ -547,7 +564,7 @@
     function manualBoostOverride() {
         manualBoostMode = true
         // Show manual boost controls
-
+        document.getElementById("manualBoostsContainer").style.setProperty("display","grid")
         // Grey out Normal boost Controls and remove their onclick
         lockBoostNodes()
         // Change Menu Option
@@ -556,6 +573,8 @@
         topOptionNode.setAttribute("title", "") // FIXME : Play
         topOptionNode.setAttribute("alt", "") // FIXME : Play
         topOptionNode.setAttribute("onclick","endManualBoostOverride();")
+        
+        updateExpectedDamage()
     }
     function lockBoostNodes() {
         for (spell in boost) {
@@ -575,10 +594,24 @@
             updateSpellNodeColor(spell)
         }
     }
+    function addManualBoost() {
+        const sliderObj = document.getElementById("manualBoostSlider")
+        const textInputNode = document.getElementById("manualBoostInput")
+        sliderObj.stepUp()
+        textInputNode.value = sliderObj.value
+        updateExpectedDamage()
+    }
+    function removeManualBoost() {
+        const sliderObj = document.getElementById("manualBoostSlider")
+        const textInputNode = document.getElementById("manualBoostInput")
+        sliderObj.stepDown()
+        textInputNode.value = sliderObj.value
+        updateExpectedDamage()
+    }
     function endManualBoostOverride() {
         manualBoostMode = false
         // Hide away manual boost controls
-
+        document.getElementById("manualBoostsContainer").style.setProperty("display","none")
         // unlock Normal boost Controls
         unlockBoostNodes()
         // Change Menu Option
@@ -981,11 +1014,17 @@
         updateExpectedDamageDisplays()
     }
     function refreshBoosts() {
-        s = 0
-        for (spell in boost) {
-            s+= boost[spell] ? 1 : 0
+        if (!manualBoostMode) {
+            s = 0
+            for (spell in boost) {
+                s+= boost[spell] ? 1 : 0
+            }
+            numberOfBoosts = s
         }
-        numberOfBoosts = s
+        else {
+            numberOfBoosts = parseInt(document.getElementById("manualBoostSlider").value)/200
+        }
+        
     }
     function refreshMeleeRes() {
         const myNode = document.getElementById("meleeRes")
