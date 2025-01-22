@@ -1,1123 +1,1371 @@
 <!DOCTYPE html>
 <html>
-
-<!-- Color palette :
+    <!-- Color palette :
     background dark grey : #1E1F1B
     green : #267E08
     light gray : #757674
     very light gray (text) : #EAEBE7
 -->
-<head>
-    <title>Synchro Calculator</title>
-    <style>
-    .spell-grid-container {
-        width : 60%;
-        display: grid;
-        background-color: #1E1F1B;
-        padding: 1px;
-    }
-    .grid-container {
-        display: grid;
-        background-color: #1E1F1B;
-        padding: 1px;
-    }
-    .grid-item {
-        padding: 4px;
-        border: 1px solid rgba(0, 0, 0, 0.8);
-        border-radius : 5px;
-        font-size: 30px;
-        text-align: center;
-    }
-    input[type="range"]{
-        -webkit-appearance: none;
-        height: 4px;
-        outline: none !important;
-        appearance:none;
-        border: 4px solid black;
-        border-radius:30px;
-    }
-    input[type="range"]:hover {
-        outline:none;
-    }
-    input[type="range"]::-moz-range-thumb {
-        width: 18px;
-        height: 18px;
-        background: #757674;
-        cursor: pointer;
-        border-radius:50%;
-        border: 4px solid black;
-        outline:none;
-    }
-    input[type="range"]::-moz-range-progress {
-        background-color: #757674;
-        height: 100%;
-        border-radius:30px;
-    }
-    input[type="range"]::-moz-range-track {  
-        background-color: #757674;
-        border-radius:30px;
-        border:none;
-        height: 100%;
-    }
+    <head>
+        <title>Synchro Calculator</title>
+        <style>
+            .spell-grid-container {
+                width: 60%;
+                display: grid;
+                background-color: #1e1f1b;
+                padding: 1px;
+            }
+            .grid-container {
+                display: grid;
+                background-color: #1e1f1b;
+                padding: 1px;
+            }
+            .grid-item {
+                padding: 4px;
+                border: 1px solid rgba(0, 0, 0, 0.8);
+                border-radius: 5px;
+                font-size: 30px;
+                text-align: center;
+            }
+            input[type='range'] {
+                -webkit-appearance: none;
+                height: 4px;
+                outline: none !important;
+                appearance: none;
+                border: 4px solid black;
+                border-radius: 30px;
+            }
+            input[type='range']:hover {
+                outline: none;
+            }
+            input[type='range']::-moz-range-thumb {
+                width: 18px;
+                height: 18px;
+                background: #757674;
+                cursor: pointer;
+                border-radius: 50%;
+                border: 4px solid black;
+                outline: none;
+            }
+            input[type='range']::-moz-range-progress {
+                background-color: #757674;
+                height: 100%;
+                border-radius: 30px;
+            }
+            input[type='range']::-moz-range-track {
+                background-color: #757674;
+                border-radius: 30px;
+                border: none;
+                height: 100%;
+            }
 
-    input[type="text"]:hover {
-        outline:none;
-    }
-    input[type="text"]:focus {
-        outline:none;
-    }
-    input[type="text"] {
-        border : 1px solid black;
-        border-radius: 5px;
-    }
+            input[type='text']:hover {
+                outline: none;
+            }
+            input[type='text']:focus {
+                outline: none;
+            }
+            input[type='text'] {
+                border: 1px solid black;
+                border-radius: 5px;
+            }
+        </style>
+    </head>
 
-    </style>
-</head>
-
-<body style="background-color: #1E1F1B; font-family: 'Courier New', Courier, monospace; color: #EAEBE7;">
-    <div style="display: grid;grid-template-columns: 1fr 1fr;">
-        <div style="display: grid; justify-items : left;">
-            <div class="grid-container" id ="damageGridContainer" style ="grid-template-columns: 1fr 1fr; grid-template-rows: 1fr; width : 500px">
-                <div class="grid-item" id="expectedDamageParentNode-Melee" style="background-color : #757674;">
-                    <img src="./images/melee.png" alt ='[MELEE ICON]' style="float:left;padding-left: 20%;">
-                    <div id="expectedDamageNode-Melee" style="color:black;">0</div>
+    <body style="background-color: #1e1f1b; font-family: 'Courier New', Courier, monospace; color: #eaebe7">
+        <div style="display: grid; grid-template-columns: 1fr 1fr">
+            <div style="display: grid; justify-items: left">
+                <div
+                    class="grid-container"
+                    id="damageGridContainer"
+                    style="grid-template-columns: 1fr 1fr; grid-template-rows: 1fr; width: 500px"
+                >
+                    <div class="grid-item" id="expectedDamageParentNode-Melee" style="background-color: #757674">
+                        <img src="./images/melee.png" alt="[MELEE ICON]" style="float: left; padding-left: 20%" />
+                        <div id="expectedDamageNode-Melee" style="color: black">0</div>
+                    </div>
+                    <div class="grid-item" id="expectedDamageParentNode-Range" style="background-color: #757674">
+                        <img src="./images/range.png" alt="[RANGE ICON]" style="float: left; padding-left: 20%" />
+                        <div id="expectedDamageNode-Range" style="color: black">0</div>
+                    </div>
                 </div>
-                <div class="grid-item" id="expectedDamageParentNode-Range" style="background-color : #757674;">
-                    <img src="./images/range.png" alt ='[RANGE ICON]' style="float:left;padding-left: 20%;">
-                    <div id="expectedDamageNode-Range" style="color:black;">0</div>
+            </div>
+
+            <div style="display: grid; justify-items: right">
+                <div
+                    id="localeContainer"
+                    class="grid-container"
+                    style="grid-template-columns: auto auto; margin-bottom: 0px"
+                >
+                    <div
+                        id="currentLocaleCode"
+                        class="grid-item"
+                        style="border: 0px; font-size: medium; margin-bottom: 0px"
+                    >
+                        FR
+                    </div>
+                    <div class="grid-item" style="border: 0px; height: 18px">
+                        <input
+                            id="currentLocaleImageNode"
+                            type="image"
+                            src="./images/FR-flag.jpeg"
+                            alt="[FLAG]"
+                            style="float: right; margin: left 10px top 0px"
+                            width="32"
+                            onclick="cycleLocale()"
+                        />
+                    </div>
                 </div>
             </div>
         </div>
-        
-        <div style="display: grid;justify-items: right;">
-            <div id="localeContainer" class="grid-container" style="grid-template-columns: auto auto;margin-bottom: 0px;">
-                <div id="currentLocaleCode" class="grid-item" style="border:0px; font-size: medium; margin-bottom: 0px;">FR</div>
-                <div class="grid-item" style="border:0px; height:18px" >
-                    <input id="currentLocaleImageNode" type="image" src="./images/FR-flag.jpeg" alt='[FLAG]' style="float:right;margin : left 10px top 0px" width="32" onclick="cycleLocale()">
-                </div>
+
+        <div
+            class="grid-container"
+            style="width: 500px; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto auto"
+        >
+            <div style="text-align: center; height: 30px">
+                <label for="percentAirRes" id="percentAirResLabel">% Air Res</label>
+                <input
+                    type="text"
+                    id="percentAirRes"
+                    oninput="updateExpectedDamage()"
+                    style="width: 24px; margin-top: 2px; text-align: center"
+                />
+                <img src="./images/Air_Resistance.png" height="24px" style="position: absolute; margin-top: 0px" />
+            </div>
+            <div style="text-align: center; height: 30px">
+                <label for="meleeRes" id="meleeResLabel">% Melee</label>
+                <input
+                    type="text"
+                    id="meleeRes"
+                    oninput="updateExpectedDamage()"
+                    style="width: 24px; margin-top: 2px; text-align: center"
+                />
+                <img src="./images/Melee_Resistance.png" height="24px" style="position: absolute; margin-top: 0px" />
+            </div>
+            <div style="text-align: center; height: 30px">
+                <label for="fixedAirRes" id="fixedAirResLabel">Air Res</label>
+                <input
+                    type="text"
+                    id="fixedAirRes"
+                    oninput="updateExpectedDamage()"
+                    style="width: 24px; margin-top: 2px; text-align: center"
+                />
+                <img src="./images/Air_Resistance.png" height="24px" style="position: absolute; margin-top: 0px" />
+            </div>
+            <div style="text-align: center; height: 30px">
+                <label for="rangeRes" id="rangeResLabel">% Range</label>
+                <input
+                    type="text"
+                    id="rangeRes"
+                    oninput="updateExpectedDamage()"
+                    style="width: 24px; margin-top: 2px; text-align: center"
+                />
+                <img src="./images/Range_Resistance.png" height="24px" style="position: absolute; margin-top: 0px" />
+            </div>
+            <div>
+                <!-- spacer -->
+            </div>
+            <div style="text-align: center; height: 30px">
+                <label for="baseDamage" id="baseDamageLabel">Dégâts de base</label>
+                <input
+                    type="text"
+                    id="baseDamage"
+                    oninput="updateBaseDamage()"
+                    value="368"
+                    style="width: 30px; margin-top: 2px; text-align: center"
+                />
             </div>
         </div>
-    </div>
 
-    <div class="grid-container" style="width : 500px; grid-template-columns: auto auto; grid-template-rows: auto auto;">
-        <div style="text-align: center; height: 30px;">
-            <label for="percentAirRes" id="percentAirResLabel">% Air Res</label>
-            <input type="text" id="percentAirRes" oninput="updateExpectedDamage()" style="width : 24px; margin-top: 2px; text-align: center;">
-            <img src="./images/Air_Resistance.png" height="24px" style="position: absolute; margin-top: 0px;">
-        </div>
-        <div style="text-align: center; height: 30px;">
-            <label for="meleeRes" id="meleeResLabel">% Melee</label>
-            <input type="text" id="meleeRes" oninput="updateExpectedDamage()" style="width : 24px; margin-top: 2px; text-align: center;">
-            <img src="./images/Melee_Resistance.png" height="24px" style="position: absolute; margin-top: 0px;">
-        </div>
-        <div style="text-align: center; height: 30px;">
-            <label for="fixedAirRes" id="fixedAirResLabel">Air Res</label>
-            <input type="text" id="fixedAirRes" oninput="updateExpectedDamage()" style="width : 24px; margin-top: 2px; text-align: center;">
-            <img src="./images/Air_Resistance.png" height="24px" style="position: absolute; margin-top: 0px;">
-        </div>
-        <div style="text-align: center; height: 30px;">
-            <label for="rangeRes" id="rangeResLabel">% Range</label>
-            <input type="text" id="rangeRes" oninput="updateExpectedDamage()" style="width : 24px; margin-top: 2px; text-align: center;">
-            <img src="./images/Range_Resistance.png" height="24px" style="position: absolute; margin-top: 0px;">
-        </div>
-    </div>
-    
-    <br>
+        <br />
 
-    <label for="additionalFixedReductionContainer" id="additionalFixedReductionContainerLabel">Fixed Reductions</label>
-    <div class="grid-container" id="additionalFixedReductionContainer" style="width: 0px;"></div>
-    <label for="additionalFinalReductionContainer" id="additionalFinalReductionContainerLabel">Final Reductions</label>
-    <div class="grid-container" id="additionalFinalReductionContainer" style="width: 0px;"></div>
-    <br>
+        <label for="additionalFixedReductionContainer" id="additionalFixedReductionContainerLabel"
+            >Fixed Reductions</label
+        >
+        <div class="grid-container" id="additionalFixedReductionContainer" style="width: 0px"></div>
+        <label for="additionalFinalReductionContainer" id="additionalFinalReductionContainerLabel"
+            >Final Reductions</label
+        >
+        <div class="grid-container" id="additionalFinalReductionContainer" style="width: 0px"></div>
+        <br />
 
-    <div class="spell-grid-container" id ="spellGridContainer" style = "width : 0px;"></div>
-    <div id="manualBoostsContainer" class="grid-container" style="grid-template-columns: auto auto auto auto; width:0px;">
-        <div class="grid-item" style="border:0px">
-            <input id="manualBoostSlider" type="range" min="200" max="2600" step="200" value="200" oninput="document.getElementById('manualBoostInput').value = this.value; numberOfBoosts=parseInt(this.value)/200;updateExpectedDamage();" style="width:700px; margin-top:15px;">
+        <div class="spell-grid-container" id="spellGridContainer" style="width: 0px"></div>
+        <div
+            id="manualBoostsContainer"
+            class="grid-container"
+            style="grid-template-columns: auto auto auto auto; width: 0px"
+        >
+            <div class="grid-item" style="border: 0px">
+                <input
+                    id="manualBoostSlider"
+                    type="range"
+                    min="200"
+                    max="2600"
+                    step="200"
+                    value="200"
+                    oninput="document.getElementById('manualBoostInput').value = this.value; numberOfBoosts=parseInt(this.value)/200;updateExpectedDamage();"
+                    style="width: 700px; margin-top: 15px"
+                />
+            </div>
+            <div class="grid-item" style="border: 0px; width: 80px">
+                <input
+                    id="manualBoostInput"
+                    type="text"
+                    oninput="document.getElementById('manualBoostSlider').value = this.value; numberOfBoosts=parseInt(this.value)/200;updateExpectedDamage()"
+                    onclick="this.value=''"
+                    style="
+                        width: 60px;
+                        height: 22px;
+                        background-color: #1e1f1b;
+                        border-radius: 10px;
+                        border: 4px solid black;
+                        text-align: center;
+                        color: #757674;
+                    "
+                />
+            </div>
+            <div class="grid-item" style="border: 0px; width: 28px">
+                <input
+                    type="image"
+                    src="./images/Substract.png"
+                    onclick="removeManualBoost()"
+                    width="28px"
+                    style="margin: 7px 0 0 0"
+                />
+            </div>
+            <div class="grid-item" style="border: 0px; width: 28px">
+                <input
+                    type="image"
+                    src="./images/Add.png"
+                    onclick="addManualBoost()"
+                    width="28px"
+                    style="margin: 7px 0 0 0"
+                />
+            </div>
         </div>
-        <div class="grid-item" style="border:0px;width:80px;">
-            <input id="manualBoostInput" type="text" oninput="document.getElementById('manualBoostSlider').value = this.value; numberOfBoosts=parseInt(this.value)/200;updateExpectedDamage()" onclick="this.value=''" style="width:60px; height:22px; background-color: #1E1F1B; border-radius: 10px; border: 4px solid black; text-align: center; color: #757674;">
-        </div>
-        <div class="grid-item" style="border:0px;width:28px;">
-            <input type="image" src="./images/Substract.png" onclick="removeManualBoost()" width="28px" style="margin: 7px 0 0 0">
-        </div>
-        <div class="grid-item" style="border:0px;width:28px;">
-            <input type="image" src="./images/Add.png" onclick="addManualBoost()" width="28px"style="margin: 7px 0 0 0">
-        </div>
-    </div>
+    </body>
 
-</body>
-
-<script>
-    // Layout of spells
-    const layout = `
+    <script>
+        // Layout of spells
+        const layout = `
         Ralentissement Téléportation Rembobinage Frappe de Xélor Gelure Sablier de Xélor Poussière Temporelle Raulebaque Démotivation Paradoxe Temporel Contre Fuite Désynchronisation
     `
-    // Usual/Default Additional Reductions
-    const FixedReductionBonuses = [{
-        iconSRC : "./images/Rampart.png",
-        alt : "RAMPART",
-        value : 154,
-        spellName : "Rampart (Caster)"
-        },{
-        iconSRC : "./images/Rampart.png",
-        alt : "RAMPART",
-        value : 110,
-        spellName : "Rampart (Ally)"
-        },{
-        iconSRC : "./images/Fortification.png",
-        alt : "FORTIF",
-        value : 220,
-        spellName : "Fortification"
-        },{
-        iconSRC : "./images/Valkyr's_Embrace.png",
-        alt : "VALKYR",
-        value : 132,
-        spellName : "Valkyr's Embrace"
-        },
-    ]
-    const FinalReductionBonuses = [{
-        iconSRC : "./images/Rage.png",
-        alt : "RAGE",
-        value : 10,
-        spellName : "Ouginak's Rage"
-        },{
-        iconSRC : "./images/Rage.png",
-        alt : "RAGE",
-        value : 10,
-        spellName : "Ouginak's Rage"
-        },{
-        iconSRC : "./images/Watchdog.png",
-        alt : "WATCHDOG",
-        value : 15,
-        spellName : "Watchdog"
-        },{
-        iconSRC : "./images/Feca_Shield.png",
-        alt : "F SHIELD",
-        value : 35,
-        spellName : "Feca Shield"
-        },{
-        iconSRC : "./images/Ataraxia.png",
-        alt : "ATARAXIA",
-        value : 75,
-        spellName : "Ataraxia"
-        },
-    ]
-    // Constants
-    const spellsEN = ["Slow Down", "Souvenir", "Teleportation", "Spontaneous Return", "Rewind", "Reflect", "Xelor's Punch", "Gear", "Frostbite", "Disruption", "Xelor's Sandglass", "Temporal Distortion", "Temporal Dust", "Temporal Suspension", "Rhol Bak", "Temporal Instability", "Loss of Motivation", "Pendulum", "Temporal Paradox", "Time Rift", "Counter", "Temporal Oop Shield", "Flight", "Premonition", "Desynchronisation", "Knell"]
-    const spellsFR = ["Ralentissement", "Souvenir", "Téléportation", "Retour Spontané", "Rembobinage", "Renvoi", "Frappe de Xélor", "Engrenage", "Gelure", "Perturbation", "Sablier de Xélor", "Distortion Temporelle", "Poussière Temporelle", "Suspension Temporelle", "Raulebaque", "Instabilité Temporelle", "Démotivation", "Pendule", "Paradoxe Temporel", "Faille Temporelle", "Contre", "Bouclier Temporel", "Fuite", "Prémonition", "Désynchronisation", "Glas"]
+        // Usual/Default Additional Reductions
+        const FixedReductionBonuses = [
+            {
+                iconSRC: './images/Rampart.png',
+                alt: 'RAMPART',
+                value: 154,
+                spellName: 'Rampart (Caster)',
+            },
+            {
+                iconSRC: './images/Rampart.png',
+                alt: 'RAMPART',
+                value: 110,
+                spellName: 'Rampart (Ally)',
+            },
+            {
+                iconSRC: './images/Fortification.png',
+                alt: 'FORTIF',
+                value: 220,
+                spellName: 'Fortification',
+            },
+            {
+                iconSRC: "./images/Valkyr's_Embrace.png",
+                alt: 'VALKYR',
+                value: 132,
+                spellName: "Valkyr's Embrace",
+            },
+        ]
+        const FinalReductionBonuses = [
+            {
+                iconSRC: './images/Rage.png',
+                alt: 'RAGE',
+                value: 10,
+                spellName: "Ouginak's Rage",
+            },
+            {
+                iconSRC: './images/Rage.png',
+                alt: 'RAGE',
+                value: 10,
+                spellName: "Ouginak's Rage",
+            },
+            {
+                iconSRC: './images/Watchdog.png',
+                alt: 'WATCHDOG',
+                value: 15,
+                spellName: 'Watchdog',
+            },
+            {
+                iconSRC: './images/Feca_Shield.png',
+                alt: 'F SHIELD',
+                value: 35,
+                spellName: 'Feca Shield',
+            },
+            {
+                iconSRC: './images/Ataraxia.png',
+                alt: 'ATARAXIA',
+                value: 75,
+                spellName: 'Ataraxia',
+            },
+        ]
+        // Constants
+        const spellsEN = [
+            'Slow Down',
+            'Souvenir',
+            'Teleportation',
+            'Spontaneous Return',
+            'Rewind',
+            'Reflect',
+            "Xelor's Punch",
+            'Gear',
+            'Frostbite',
+            'Disruption',
+            "Xelor's Sandglass",
+            'Temporal Distortion',
+            'Temporal Dust',
+            'Temporal Suspension',
+            'Rhol Bak',
+            'Temporal Instability',
+            'Loss of Motivation',
+            'Pendulum',
+            'Temporal Paradox',
+            'Time Rift',
+            'Counter',
+            'Temporal Oop Shield',
+            'Flight',
+            'Premonition',
+            'Desynchronisation',
+            'Knell',
+        ]
+        const spellsFR = [
+            'Ralentissement',
+            'Souvenir',
+            'Téléportation',
+            'Retour Spontané',
+            'Rembobinage',
+            'Renvoi',
+            'Frappe de Xélor',
+            'Engrenage',
+            'Gelure',
+            'Perturbation',
+            'Sablier de Xélor',
+            'Distortion Temporelle',
+            'Poussière Temporelle',
+            'Suspension Temporelle',
+            'Raulebaque',
+            'Instabilité Temporelle',
+            'Démotivation',
+            'Pendule',
+            'Paradoxe Temporel',
+            'Faille Temporelle',
+            'Contre',
+            'Bouclier Temporel',
+            'Fuite',
+            'Prémonition',
+            'Désynchronisation',
+            'Glas',
+        ]
 
-    const otherSpellsEN = ["","Rampart (Caster)", "Rampart (Ally)", "Fortification", "Valkyr's Embrace", "Ouginak's Rage", "Watchdog", "Feca Shield", "Ataraxia", "Custom Reduction", "Add a spell with a custom amount", "Reset", "Validate", "Cancel", "YES", "NO"]
-    const otherSpellsFR = ["","Rempart (Lanceur)", "Rempart (Allié)", "Fortification", "Étreinte de Valkyr", "Rage", "Molosse", "Bouclier Feca", "Ataraxie", "Réduction Custom", "Ajouter une réduction avec une valeur custom", "Reset", "Valider", "Annuler", "OUI", "NON"]
-    
-    const availableLocales = ["EN", "FR"]
-    const localeFlags = {
-            "FR" : "./images/FR-flag.jpeg",
-            "EN" : "./images/EN-flag.png"
+        const otherSpellsEN = [
+            '',
+            'Rampart (Caster)',
+            'Rampart (Ally)',
+            'Fortification',
+            "Valkyr's Embrace",
+            "Ouginak's Rage",
+            'Watchdog',
+            'Feca Shield',
+            'Ataraxia',
+            'Custom Reduction',
+            'Add a spell with a custom amount',
+            'Reset',
+            'Validate',
+            'Cancel',
+            'YES',
+            'NO',
+        ]
+        const otherSpellsFR = [
+            '',
+            'Rempart (Lanceur)',
+            'Rempart (Allié)',
+            'Fortification',
+            'Étreinte de Valkyr',
+            'Rage',
+            'Molosse',
+            'Bouclier Feca',
+            'Ataraxie',
+            'Réduction Custom',
+            'Ajouter une réduction avec une valeur custom',
+            'Reset',
+            'Valider',
+            'Annuler',
+            'OUI',
+            'NON',
+        ]
+
+        const availableLocales = ['EN', 'FR']
+        const localeFlags = {
+            FR: './images/FR-flag.jpeg',
+            EN: './images/EN-flag.png',
         }
 
-    const spellsALLXelor = [].concat(spellsEN, spellsFR)
-    const variant = {
-        'Slow Down': 'Souvenir',
-        'Souvenir': 'Slow Down',
-        'Teleportation': 'Spontaneous Return',
-        'Spontaneous Return': 'Teleportation',
-        'Rewind': 'Reflect',
-        'Reflect': 'Rewind',
-        "Xelor's Punch": 'Gear',
-        'Gear': "Xelor's Punch",
-        'Frostbite': 'Disruption',
-        'Disruption': 'Frostbite',
-        "Xelor's Sandglass": 'Temporal Distortion',
-        'Temporal Distortion': "Xelor's Sandglass",
-        'Temporal Dust': 'Temporal Suspension',
-        'Temporal Suspension': 'Temporal Dust',
-        'Rhol Bak': 'Temporal Instability',
-        'Temporal Instability': 'Rhol Bak',
-        'Loss of Motivation': 'Pendulum',
-        'Pendulum': 'Loss of Motivation',
-        'Temporal Paradox': 'Time Rift',
-        'Time Rift': 'Temporal Paradox',
-        'Counter': 'Temporal Oop Shield',
-        'Temporal Oop Shield': 'Counter',
-        'Flight': 'Premonition',
-        'Premonition': 'Flight',
-        'Desynchronisation': 'Knell',
-        'Knell': 'Desynchronisation'
-    }
-    const telefrag = {
-        'Slow Down': false,
-        'Souvenir': true,
-        'Teleportation': true,
-        'Spontaneous Return': true,
-        'Rewind': true,
-        'Reflect': true,
-        "Xelor's Punch": true,
-        'Gear': true,
-        'Frostbite': true,
-        'Disruption': true,
-        "Xelor's Sandglass": false,
-        'Temporal Distortion': true,
-        'Temporal Dust': true,
-        'Temporal Suspension': false,
-        'Rhol Bak': true,
-        'Temporal Instability': true,
-        'Loss of Motivation': false,
-        'Pendulum': true,
-        'Temporal Paradox': true,
-        'Time Rift': true,
-        'Counter': false,
-        'Temporal Oop Shield': true,
-        'Flight': true,
-        'Premonition': true,
-        'Desynchronisation': true,
-        'Knell': false
-    }
-    const shortName = {
-    'Slow Down': 'Slow',
-    'Souvenir': 'Souv',
-    'Teleportation': 'TP',
-    'Spontaneous Return': 'SR',
-    'Rewind': 'RW',
-    'Reflect': 'RF',
-    "Xelor's Punch": 'Punch',
-    'Gear': "Gear",
-    'Frostbite': 'FB',
-    'Disruption': 'Disrupt',
-    "Xelor's Sandglass": 'Sandglass',
-    'Temporal Distortion': 'Disto',
-    'Temporal Dust': 'Dust',
-    'Temporal Suspension': 'Susp',
-    'Rhol Bak': 'RB',
-    'Temporal Instability': 'Instab',
-    'Loss of Motivation': 'LOM',
-    'Pendulum': 'Pendulum',
-    'Temporal Paradox': 'Paradox',
-    'Time Rift': 'Rift',
-    'Counter': 'Counter',
-    'Temporal Oop Shield': 'Shield',
-    'Flight': 'Flight',
-    'Premonition': 'Premo',
-    'Desynchronisation': 'Desync',
-    'Knell': 'Knell'
-}
-    // Translation-related stuff
-    // Spell name translation done using the fixed order of spells lists
-    const translateXelorSpells = {}
-    for (let i=0; i< spellsEN.length; ++i) {
-        translateXelorSpells[spellsFR[i]] = spellsEN[i]
-    }
-    const translateOtherSpells = {}
-    for (let i=0; i< otherSpellsEN.length; ++i) {
-        translateOtherSpells[otherSpellsFR[i]] = otherSpellsEN[i]
-    }
-    // Labels are kept here
-    const labels = {
-        "EN" : {
-            "percentAirResLabel" : "% Air Res",
-            "fixedAirResLabel" : "&nbsp Air Res",
-            "meleeResLabel" : "% Melee",
-            "rangeResLabel" : "% Range",
-            "additionalFixedReductionContainerLabel" : "Fixed Reductions",
-            "additionalFinalReductionContainerLabel" : "Final Reductions",
-        },
-        "FR" : {
-            "percentAirResLabel" : "% Res Air",
-            "fixedAirResLabel" : "&nbsp Res Air",
-            "meleeResLabel" : "% Mélée",
-            "rangeResLabel" : "% Dist. ",
-            "additionalFixedReductionContainerLabel" : "Réductions Dégâts Fixes",
-            "additionalFinalReductionContainerLabel" : "Réductions % Finaux",
+        const spellsALLXelor = [].concat(spellsEN, spellsFR)
+        const variant = {
+            'Slow Down': 'Souvenir',
+            Souvenir: 'Slow Down',
+            Teleportation: 'Spontaneous Return',
+            'Spontaneous Return': 'Teleportation',
+            Rewind: 'Reflect',
+            Reflect: 'Rewind',
+            "Xelor's Punch": 'Gear',
+            Gear: "Xelor's Punch",
+            Frostbite: 'Disruption',
+            Disruption: 'Frostbite',
+            "Xelor's Sandglass": 'Temporal Distortion',
+            'Temporal Distortion': "Xelor's Sandglass",
+            'Temporal Dust': 'Temporal Suspension',
+            'Temporal Suspension': 'Temporal Dust',
+            'Rhol Bak': 'Temporal Instability',
+            'Temporal Instability': 'Rhol Bak',
+            'Loss of Motivation': 'Pendulum',
+            Pendulum: 'Loss of Motivation',
+            'Temporal Paradox': 'Time Rift',
+            'Time Rift': 'Temporal Paradox',
+            Counter: 'Temporal Oop Shield',
+            'Temporal Oop Shield': 'Counter',
+            Flight: 'Premonition',
+            Premonition: 'Flight',
+            Desynchronisation: 'Knell',
+            Knell: 'Desynchronisation',
         }
-    }    
-
-    // Globals
-    let numberOfBoosts = 0
-    let expectedDamage = 0
-
-    let finalFactor = 1
-    const activeAdditionalFinalResIDS = []
-    let meleeFactor = 1
-    let rangeFactor = 1
-    let fixedAirRes = 0
-    let fixedAdditionalRes = 0
-    const activeAdditionalFixedResIDS = []
-    let percentAirRes = 0
-
-    let currentLocaleID = "FR"
-
-    let manualBoostMode = false
-
-    const boost = {
-        'Slow Down': 0,
-        'Teleportation': 0,
-        'Rewind': 0,
-        "Xelor's Punch": 0,
-        'Frostbite': 0,
-        "Xelor's Sandglass": 0,
-        'Temporal Dust': 0,
-        'Rhol Bak': 0,
-        'Loss of Motivation': 0,
-        'Temporal Paradox': 0,
-        'Counter': 0,
-        'Flight': 0,
-        'Desynchronisation': 0,
-    }
-
-    // Functions and Methods
-    // Translation
-    function cycleLocale() {
-        const i = availableLocales.indexOf(currentLocaleID)
-        currentLocaleID = availableLocales[(i+1) % availableLocales.length]
-        refreshLocalisedText()
-    }
-    function init() {
-        // Hide away manual controls
-        document.getElementById("manualBoostsContainer").style.setProperty("display","none")
-        const layoutArray = parseLayoutString(layout)
-        createSpellGrid(layoutArray)
-        fillAdditionalReductionGrids()
-        fillLabels()
-    }
-    function refreshLocalisedText() {
-        refreshSpellGridHoverText()
-        refreshAdditionalReductionNodes()
-        fillLabels()
-        const localeCodeNode = document.getElementById("currentLocaleCode")
-        localeCodeNode.replaceChildren()
-        localeCodeNode.appendChild(document.createTextNode(currentLocaleID))
-        const localeImageNode = document.getElementById("currentLocaleImageNode")
-        localeImageNode.setAttribute("src", getLocaleImage(currentLocaleID))
-    }
-    function getLocaleImage(localeID) {
-        return localeFlags[localeID]
-    }
-    function getLabelText(labelID, localeID) {
-        return labels[localeID][labelID]
-    }
-    function fillLabels() {
-        for (labelID in labels["EN"]) {
-            const labelNode = document.getElementById(labelID)
-            labelNode.innerHTML = getLabelText(labelID, currentLocaleID)
+        const telefrag = {
+            'Slow Down': false,
+            Souvenir: true,
+            Teleportation: true,
+            'Spontaneous Return': true,
+            Rewind: true,
+            Reflect: true,
+            "Xelor's Punch": true,
+            Gear: true,
+            Frostbite: true,
+            Disruption: true,
+            "Xelor's Sandglass": false,
+            'Temporal Distortion': true,
+            'Temporal Dust': true,
+            'Temporal Suspension': false,
+            'Rhol Bak': true,
+            'Temporal Instability': true,
+            'Loss of Motivation': false,
+            Pendulum: true,
+            'Temporal Paradox': true,
+            'Time Rift': true,
+            Counter: false,
+            'Temporal Oop Shield': true,
+            Flight: true,
+            Premonition: true,
+            Desynchronisation: true,
+            Knell: false,
         }
-    }
-    function getLocalisedName(baseSpellName, localeID) {
-        const spellID = spellsEN.indexOf(baseSpellName)
-        if (spellID === -1) {
-            const spellIDTry2 = otherSpellsEN.indexOf(baseSpellName)
-            if (spellIDTry2 === -1) {
-                throw new Error("Cannot find spell")
-                return "ERROR"
+        const shortName = {
+            'Slow Down': 'Slow',
+            Souvenir: 'Souv',
+            Teleportation: 'TP',
+            'Spontaneous Return': 'SR',
+            Rewind: 'RW',
+            Reflect: 'RF',
+            "Xelor's Punch": 'Punch',
+            Gear: 'Gear',
+            Frostbite: 'FB',
+            Disruption: 'Disrupt',
+            "Xelor's Sandglass": 'Sandglass',
+            'Temporal Distortion': 'Disto',
+            'Temporal Dust': 'Dust',
+            'Temporal Suspension': 'Susp',
+            'Rhol Bak': 'RB',
+            'Temporal Instability': 'Instab',
+            'Loss of Motivation': 'LOM',
+            Pendulum: 'Pendulum',
+            'Temporal Paradox': 'Paradox',
+            'Time Rift': 'Rift',
+            Counter: 'Counter',
+            'Temporal Oop Shield': 'Shield',
+            Flight: 'Flight',
+            Premonition: 'Premo',
+            Desynchronisation: 'Desync',
+            Knell: 'Knell',
+        }
+        // Translation-related stuff
+        // Spell name translation done using the fixed order of spells lists
+        const translateXelorSpells = {}
+        for (let i = 0; i < spellsEN.length; ++i) {
+            translateXelorSpells[spellsFR[i]] = spellsEN[i]
+        }
+        const translateOtherSpells = {}
+        for (let i = 0; i < otherSpellsEN.length; ++i) {
+            translateOtherSpells[otherSpellsFR[i]] = otherSpellsEN[i]
+        }
+        // Labels are kept here
+        const labels = {
+            EN: {
+                percentAirResLabel: '% Air Res',
+                fixedAirResLabel: '&nbsp Air Res',
+                meleeResLabel: '% Melee',
+                rangeResLabel: '% Range',
+                additionalFixedReductionContainerLabel: 'Fixed Reductions',
+                additionalFinalReductionContainerLabel: 'Final Reductions',
+            },
+            FR: {
+                percentAirResLabel: '% Res Air',
+                fixedAirResLabel: '&nbsp Res Air',
+                meleeResLabel: '% Mélée',
+                rangeResLabel: '% Dist. ',
+                additionalFixedReductionContainerLabel: 'Réductions Dégâts Fixes',
+                additionalFinalReductionContainerLabel: 'Réductions % Finaux',
+            },
+        }
+
+        // Globals
+        let baseDamage = 368
+        let numberOfBoosts = 0
+        let expectedDamage = 0
+
+        let finalFactor = 1
+        const activeAdditionalFinalResIDS = []
+        let meleeFactor = 1
+        let rangeFactor = 1
+        let fixedAirRes = 0
+        let fixedAdditionalRes = 0
+        const activeAdditionalFixedResIDS = []
+        let percentAirRes = 0
+
+        let currentLocaleID = 'FR'
+
+        let manualBoostMode = false
+
+        const boost = {
+            'Slow Down': 0,
+            Teleportation: 0,
+            Rewind: 0,
+            "Xelor's Punch": 0,
+            Frostbite: 0,
+            "Xelor's Sandglass": 0,
+            'Temporal Dust': 0,
+            'Rhol Bak': 0,
+            'Loss of Motivation': 0,
+            'Temporal Paradox': 0,
+            Counter: 0,
+            Flight: 0,
+            Desynchronisation: 0,
+        }
+
+        // Functions and Methods
+        // Translation
+        function cycleLocale() {
+            const i = availableLocales.indexOf(currentLocaleID)
+            currentLocaleID = availableLocales[(i + 1) % availableLocales.length]
+            refreshLocalisedText()
+        }
+        function init() {
+            // Hide away manual controls
+            document.getElementById('manualBoostsContainer').style.setProperty('display', 'none')
+            // reset base dmaage
+            document.getElementById('baseDamage').value = baseDamage
+            // fill grids
+            const layoutArray = parseLayoutString(layout)
+            createSpellGrid(layoutArray)
+            fillAdditionalReductionGrids()
+            fillLabels()
+        }
+        function refreshLocalisedText() {
+            refreshSpellGridHoverText()
+            refreshAdditionalReductionNodes()
+            fillLabels()
+            const localeCodeNode = document.getElementById('currentLocaleCode')
+            localeCodeNode.replaceChildren()
+            localeCodeNode.appendChild(document.createTextNode(currentLocaleID))
+            const localeImageNode = document.getElementById('currentLocaleImageNode')
+            localeImageNode.setAttribute('src', getLocaleImage(currentLocaleID))
+        }
+        function getLocaleImage(localeID) {
+            return localeFlags[localeID]
+        }
+        function getLabelText(labelID, localeID) {
+            return labels[localeID][labelID]
+        }
+        function fillLabels() {
+            for (labelID in labels['EN']) {
+                const labelNode = document.getElementById(labelID)
+                labelNode.innerHTML = getLabelText(labelID, currentLocaleID)
             }
-            switch(localeID) {
-                case "FR" :
-                    return otherSpellsFR[spellIDTry2]
-                case "EN" :
-                    return otherSpellsEN[spellIDTry2]
-                default :
-                    throw new Error("Unexpected locale ID")
-                    return "ERROR"
-            }
         }
-        switch(localeID) {
-            case "FR" :
-                return spellsFR[spellID]
-            case "EN" :
-                return spellsEN[spellID]
-            default :
-                throw new Error("Unexpected locale ID")
-                return "ERROR"
-        }
-    }
-    // utilitary
-    function getBaseName(localisedSpellName) {
-        // console.log(`getBaseName('${localisedSpellName}') :\n  localisedSpellName in spellsALLXelor : ${spellsALLXelor.indexOf(localisedSpellName) > -1}\n    localisedSpellName in spellsEN : ${spellsEN.indexOf(localisedSpellName) > -1}\n  localisedSpellName in otherSpellsEN : ${otherSpellsEN.indexOf(localisedSpellName) > -1}`)
-        if (spellsALLXelor.indexOf(localisedSpellName) > -1) {
-            return (spellsEN.indexOf(localisedSpellName) > -1) ? localisedSpellName : translateXelorSpells[localisedSpellName]
-        }
-        else {
-            return (otherSpellsEN.indexOf(localisedSpellName) > -1) ? localisedSpellName : translateOtherSpells[localisedSpellName]
-        }
-        
-    }
-    function getShortName(spell) {
-        return shortName[spell]
-    }
-    function getVariantOf(spell) {
-        return variant[spell] 
-    }
-    function canTelefrag(spell) {
-        return telefrag[spell]
-    }
-    function getImagePath(spell) {
-        return `./images/${spell.replace(/ /g, '_')}.png`
-    }
-    function extractSpell(string) {
-        for (spellName of spellsALLXelor) {
-            // try to find the spell's name
-            const matchResult = string.match( `^(?<shit> *)(?<spell>${spellName}) ?(?<remaining>.*)$`)
-            if (matchResult) {
-                return matchResult.groups
-            }
-            //console.log()
-        }
-        throw new Error("Unable to extract spell from input string")
-    }
-    function parseLayoutString(layoutString) {
-        const lines = []
-        for (let line of layoutString.split("\n")) {
-            // Parse line into array of spells that exist
-            let remainingString = line
-            const spellsFound = []
-            while (remainingString.length > 0 ) {
-                try {
-                const resultOfExtraction = extractSpell(remainingString)
-                spellsFound.push(getBaseName(resultOfExtraction.spell))
-                remainingString = resultOfExtraction.remaining
+        function getLocalisedName(baseSpellName, localeID) {
+            const spellID = spellsEN.indexOf(baseSpellName)
+            if (spellID === -1) {
+                const spellIDTry2 = otherSpellsEN.indexOf(baseSpellName)
+                if (spellIDTry2 === -1) {
+                    throw new Error('Cannot find spell')
+                    return 'ERROR'
                 }
-                catch (err) {
-                    break
+                switch (localeID) {
+                    case 'FR':
+                        return otherSpellsFR[spellIDTry2]
+                    case 'EN':
+                        return otherSpellsEN[spellIDTry2]
+                    default:
+                        throw new Error('Unexpected locale ID')
+                        return 'ERROR'
                 }
             }
-            lines.push(spellsFound)
-        }
-        if (lines[0].length == 0) {lines.shift()}
-        if (lines[lines.length-1].length == 0) {lines.pop()}
-        return lines
-    }
-    // functional
-    function toggleSpellBoost(spell) {
-        if (!canTelefrag(spell)) {return}
-        const myNode = document.getElementById(`spellGridItem-${getShortName(spell)}`)
-        if (typeof(boost[spell])!=="undefined") {
-            // spell is a base spell, use value 1 to signal the base spell is activated
-            boost[spell] = (boost[spell]>0) ? 0 : 1
-        }
-        else {
-            // spell is a variant, use value 2 to signal the variant spell is activated
-            boost[getVariantOf(spell)] = (boost[getVariantOf(spell)]>0) ? 0 : 2
-        }
-        updateSpellNodeColor(spell)
-        updateExpectedDamage()
-    }
-    function updateSpellNodeColor(spell) {
-        
-        const baseSpell = (typeof(boost[spell])!=="undefined") ? spell : getVariantOf(spell)
-        const val = boost[baseSpell]
-        if (val===1) {
-            activateBoostNode(baseSpell)
-        }
-        else if (val===2) {
-            activateBoostNode(getVariantOf(baseSpell))
-        }
-        else {
-            deactivateBoostNode(baseSpell)
-        }
-    }
-    function activateBoostNode(spell) {
-        const myNode = document.getElementById(`spellGridItem-${getShortName(spell)}`)
-        myNode.style.setProperty("background-color", "#267E08")
-        if (canTelefrag(getVariantOf(spell))) {
-            document.getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`).style.setProperty("background-color", "rgba(255,255,255,0.2)")
-        }
-    }
-    function deactivateBoostNode(spell) {
-        const myNode = document.getElementById(`spellGridItem-${getShortName(spell)}`)
-        // reset background if eligible, also reset for variant if eligible
-        if (canTelefrag(spell)) {
-            myNode.style.setProperty("background-color", "#757674")
-        }
-        if (canTelefrag(getVariantOf(spell))) {
-            document.getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`).style.setProperty("background-color", "#757674")
-        }
-    }
-    function createSpellGrid(layout) {
-        const spellGridContainerNode = document.getElementById("spellGridContainer")
-        spellGridContainerNode.replaceChildren()
-        const columns = layout.reduce((maxCol, line, i) => Math.max(maxCol, line.length + (i===(layout.length-1) ? 1 : 0)), 0)
-        const rows = layout.length
-        spellGridContainerNode.style.setProperty('grid-template-columns', "1fr ".repeat(columns))
-        spellGridContainerNode.style.setProperty('grid-template-rows', "1fr ".repeat(2*rows))
-        for (lineIndex in layout) {
-            const line = layout[lineIndex]
-            const lineA =[]
-            const lineB =[]
-            for (spell of line) {
-                const myImage = document.createElement("input")
-                myImage.setAttribute("id",`spellGridItem-${getShortName(spell)}`)
-                myImage.setAttribute("title", getLocalisedName(spell, currentLocaleID))
-                if (!canTelefrag(spell)) myImage.style.setProperty("background-color", "rgba(0,0,0,0)")
-                else myImage.style.setProperty("background-color", "#757674")
-                myImage.classList.add("grid-item")
-                myImage.setAttribute("type", "image")
-                myImage.setAttribute("src", getImagePath(spell))
-                myImage.setAttribute("alt", `[ICON : ${getShortName(spell)}]`)
-                myImage.setAttribute("onclick", `toggleSpellBoost("${spell}");`)
-                lineA.push(myImage)
-
-                const variantSpell = getVariantOf(spell)
-                const myVariantImage = document.createElement("input")
-                myVariantImage.setAttribute("id",`spellGridItem-${getShortName(variantSpell)}`)
-                myVariantImage.setAttribute("title", getLocalisedName(variantSpell, currentLocaleID))
-                if (!canTelefrag(variantSpell)) myVariantImage.style.setProperty("background-color", "rgba(0,0,0,0)")
-                else myVariantImage.style.setProperty("background-color", "#757674")
-                myVariantImage.classList.add("grid-item")
-                myVariantImage.setAttribute("type", "image")
-                myVariantImage.setAttribute("src", getImagePath(variantSpell))
-                myVariantImage.setAttribute("alt", `[ICON : ${getShortName(variantSpell)}]`)
-                myVariantImage.setAttribute("onclick", `toggleSpellBoost("${variantSpell}");`)
-                lineB.push(myVariantImage)
-
-            }
-            for (node of lineA) {
-                spellGridContainerNode.appendChild(node)
-            }
-            
-            for (let i=lineA.length; i< columns - (lineIndex==(rows-1)?1:0); ++i) {
-                const node = document.createElement("div")
-                node.classList.add("grid-item")
-                node.setAttribute("title", "")
-                node.style.setProperty("padding","0px")
-                node.style.setProperty("border","0px")
-                spellGridContainerNode.appendChild(node)
-            }
-            // If it's the last line, add the reset "spell" on the last column (second row)
-            if (lineIndex==(rows-1)) {
-                const myImage = document.createElement("input")
-                myImage.setAttribute("id",`spellGridItem-MenuTop`)
-                myImage.setAttribute("title", "") // FIXME : Pause
-                myImage.style.setProperty("background-color", "#757674")
-                myImage.classList.add("grid-item")
-                myImage.setAttribute("type", "image")
-                myImage.setAttribute("src", getImagePath("Pause"))
-                myImage.setAttribute("width", "55")
-                myImage.setAttribute("alt", "") // FIXME : Pause
-                myImage.setAttribute("onclick", "manualBoostOverride();")
-                spellGridContainerNode.appendChild(myImage)
-            }
-            
-            for (node of lineB) {
-                spellGridContainerNode.appendChild(node)
-            }
-            for (let i=lineB.length; i< columns - (lineIndex==(rows-1)?1:0); ++i) {
-                const node = document.createElement("div")
-                node.classList.add("grid-item")
-                node.style.setProperty("padding","0px")
-                node.style.setProperty("border","0px")
-                spellGridContainerNode.appendChild(node)
-            }
-            // If it's the last line, add the reset "spell" on the last column (second row)
-            if (lineIndex==(rows-1)) {
-                const myImage = document.createElement("input")
-                myImage.setAttribute("id",`spellGridItem-MenuBot`)
-                myImage.setAttribute("title", getLocalisedName("Reset", currentLocaleID))
-                myImage.style.setProperty("background-color", "#757674")
-                myImage.classList.add("grid-item")
-                myImage.setAttribute("type", "image")
-                myImage.setAttribute("src", getImagePath("Reset"))
-                myImage.setAttribute("width", "55")
-                myImage.setAttribute("alt", `[ICON : RESET]`)
-                myImage.setAttribute("onclick", `confirmBoostReset();`)
-                spellGridContainerNode.appendChild(myImage)
+            switch (localeID) {
+                case 'FR':
+                    return spellsFR[spellID]
+                case 'EN':
+                    return spellsEN[spellID]
+                default:
+                    throw new Error('Unexpected locale ID')
+                    return 'ERROR'
             }
         }
-    }
-    function manualBoostOverride() {
-        manualBoostMode = true
-        // Show manual boost controls
-        document.getElementById("manualBoostsContainer").style.setProperty("display","grid")
-        // Grey out Normal boost Controls and remove their onclick
-        lockBoostNodes()
-        // Change Menu Option
-        const topOptionNode = document.getElementById("spellGridItem-MenuTop")
-        topOptionNode.setAttribute("src", getImagePath("Play"))
-        topOptionNode.setAttribute("title", "") // FIXME : Play
-        topOptionNode.setAttribute("alt", "") // FIXME : Play
-        topOptionNode.setAttribute("onclick","endManualBoostOverride();")
-        
-        updateExpectedDamage()
-    }
-    function lockBoostNodes() {
-        for (spell in boost) {
-            document.getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`).style.setProperty("background-color","rgba(0,0,0,0)")
-            document.getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`).setAttribute("onclick","")
-            document.getElementById(`spellGridItem-${getShortName(spell)}`).style.setProperty("background-color","rgba(0,0,0,0)")
-            document.getElementById(`spellGridItem-${getShortName(spell)}`).setAttribute("onclick","")
+        // utilitary
+        function getBaseName(localisedSpellName) {
+            // console.log(`getBaseName('${localisedSpellName}') :\n  localisedSpellName in spellsALLXelor : ${spellsALLXelor.indexOf(localisedSpellName) > -1}\n    localisedSpellName in spellsEN : ${spellsEN.indexOf(localisedSpellName) > -1}\n  localisedSpellName in otherSpellsEN : ${otherSpellsEN.indexOf(localisedSpellName) > -1}`)
+            if (spellsALLXelor.indexOf(localisedSpellName) > -1) {
+                return spellsEN.indexOf(localisedSpellName) > -1
+                    ? localisedSpellName
+                    : translateXelorSpells[localisedSpellName]
+            } else {
+                return otherSpellsEN.indexOf(localisedSpellName) > -1
+                    ? localisedSpellName
+                    : translateOtherSpells[localisedSpellName]
+            }
         }
-    }
-    function unlockBoostNodes() {
-        for (spell in boost) {
-            document.getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`).style.setProperty("background-color","rgba(0,0,0,0)")
-            document.getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`).setAttribute("onclick",`toggleSpellBoost("${getVariantOf(spell)}");`)
-            updateSpellNodeColor(getVariantOf(spell))
-            document.getElementById(`spellGridItem-${getShortName(spell)}`).style.setProperty("background-color","rgba(0,0,0,0)")
-            document.getElementById(`spellGridItem-${getShortName(spell)}`).setAttribute("onclick",`toggleSpellBoost("${spell}");`)
+        function getShortName(spell) {
+            return shortName[spell]
+        }
+        function getVariantOf(spell) {
+            return variant[spell]
+        }
+        function canTelefrag(spell) {
+            return telefrag[spell]
+        }
+        function getImagePath(spell) {
+            return `./images/${spell.replace(/ /g, '_')}.png`
+        }
+        function extractSpell(string) {
+            for (spellName of spellsALLXelor) {
+                // try to find the spell's name
+                const matchResult = string.match(`^(?<shit> *)(?<spell>${spellName}) ?(?<remaining>.*)$`)
+                if (matchResult) {
+                    return matchResult.groups
+                }
+                //console.log()
+            }
+            throw new Error('Unable to extract spell from input string')
+        }
+        function parseLayoutString(layoutString) {
+            const lines = []
+            for (let line of layoutString.split('\n')) {
+                // Parse line into array of spells that exist
+                let remainingString = line
+                const spellsFound = []
+                while (remainingString.length > 0) {
+                    try {
+                        const resultOfExtraction = extractSpell(remainingString)
+                        spellsFound.push(getBaseName(resultOfExtraction.spell))
+                        remainingString = resultOfExtraction.remaining
+                    } catch (err) {
+                        break
+                    }
+                }
+                lines.push(spellsFound)
+            }
+            if (lines[0].length == 0) {
+                lines.shift()
+            }
+            if (lines[lines.length - 1].length == 0) {
+                lines.pop()
+            }
+            return lines
+        }
+        // functional
+        function toggleSpellBoost(spell) {
+            if (!canTelefrag(spell)) {
+                return
+            }
+            const myNode = document.getElementById(`spellGridItem-${getShortName(spell)}`)
+            if (typeof boost[spell] !== 'undefined') {
+                // spell is a base spell, use value 1 to signal the base spell is activated
+                boost[spell] = boost[spell] > 0 ? 0 : 1
+            } else {
+                // spell is a variant, use value 2 to signal the variant spell is activated
+                boost[getVariantOf(spell)] = boost[getVariantOf(spell)] > 0 ? 0 : 2
+            }
             updateSpellNodeColor(spell)
+            updateExpectedDamage()
         }
-    }
-    function addManualBoost() {
-        const sliderObj = document.getElementById("manualBoostSlider")
-        const textInputNode = document.getElementById("manualBoostInput")
-        sliderObj.stepUp()
-        textInputNode.value = sliderObj.value
-        updateExpectedDamage()
-    }
-    function removeManualBoost() {
-        const sliderObj = document.getElementById("manualBoostSlider")
-        const textInputNode = document.getElementById("manualBoostInput")
-        sliderObj.stepDown()
-        textInputNode.value = sliderObj.value
-        updateExpectedDamage()
-    }
-    function endManualBoostOverride() {
-        manualBoostMode = false
-        // Hide away manual boost controls
-        document.getElementById("manualBoostsContainer").style.setProperty("display","none")
-        // unlock Normal boost Controls
-        unlockBoostNodes()
-        // Change Menu Option
-        const topOptionNode = document.getElementById("spellGridItem-MenuTop")
-        topOptionNode.setAttribute("src", getImagePath("Pause"))
-        topOptionNode.setAttribute("title", "") // FIXME : Pause
-        topOptionNode.setAttribute("alt", "") // FIXME : Pause
-        topOptionNode.setAttribute("onclick","manualBoostOverride();")
-        // Update damage
-        updateExpectedDamage()
-    }
-    function showBoostsUpForReset() {
-        // Change all spells color to indicate what's at play
-        for (spell in boost) {
-            if (boost[spell]) {
-                if (canTelefrag(getVariantOf(spell))) document.getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`).style.setProperty("background-color","#ffce00")
-                if (canTelefrag(spell)) document.getElementById(`spellGridItem-${getShortName(spell)}`).style.setProperty("background-color","#ffce00")
+        function updateSpellNodeColor(spell) {
+            const baseSpell = typeof boost[spell] !== 'undefined' ? spell : getVariantOf(spell)
+            const val = boost[baseSpell]
+            if (val === 1) {
+                activateBoostNode(baseSpell)
+            } else if (val === 2) {
+                activateBoostNode(getVariantOf(baseSpell))
+            } else {
+                deactivateBoostNode(baseSpell)
             }
         }
-    }
-    // The opposite of above
-    function spellsBackToNormal() {
-        if (manualBoostMode) {
+        function activateBoostNode(spell) {
+            const myNode = document.getElementById(`spellGridItem-${getShortName(spell)}`)
+            myNode.style.setProperty('background-color', '#267E08')
+            if (canTelefrag(getVariantOf(spell))) {
+                document
+                    .getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`)
+                    .style.setProperty('background-color', 'rgba(255,255,255,0.2)')
+            }
+        }
+        function deactivateBoostNode(spell) {
+            const myNode = document.getElementById(`spellGridItem-${getShortName(spell)}`)
+            // reset background if eligible, also reset for variant if eligible
+            if (canTelefrag(spell)) {
+                myNode.style.setProperty('background-color', '#757674')
+            }
+            if (canTelefrag(getVariantOf(spell))) {
+                document
+                    .getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`)
+                    .style.setProperty('background-color', '#757674')
+            }
+        }
+        function createSpellGrid(layout) {
+            const spellGridContainerNode = document.getElementById('spellGridContainer')
+            spellGridContainerNode.replaceChildren()
+            const columns = layout.reduce(
+                (maxCol, line, i) => Math.max(maxCol, line.length + (i === layout.length - 1 ? 1 : 0)),
+                0
+            )
+            const rows = layout.length
+            spellGridContainerNode.style.setProperty('grid-template-columns', '1fr '.repeat(columns))
+            spellGridContainerNode.style.setProperty('grid-template-rows', '1fr '.repeat(2 * rows))
+            for (lineIndex in layout) {
+                const line = layout[lineIndex]
+                const lineA = []
+                const lineB = []
+                for (spell of line) {
+                    const myImage = document.createElement('input')
+                    myImage.setAttribute('id', `spellGridItem-${getShortName(spell)}`)
+                    myImage.setAttribute('title', getLocalisedName(spell, currentLocaleID))
+                    if (!canTelefrag(spell)) myImage.style.setProperty('background-color', 'rgba(0,0,0,0)')
+                    else myImage.style.setProperty('background-color', '#757674')
+                    myImage.classList.add('grid-item')
+                    myImage.setAttribute('type', 'image')
+                    myImage.setAttribute('src', getImagePath(spell))
+                    myImage.setAttribute('alt', `[ICON : ${getShortName(spell)}]`)
+                    myImage.setAttribute('onclick', `toggleSpellBoost("${spell}");`)
+                    lineA.push(myImage)
+
+                    const variantSpell = getVariantOf(spell)
+                    const myVariantImage = document.createElement('input')
+                    myVariantImage.setAttribute('id', `spellGridItem-${getShortName(variantSpell)}`)
+                    myVariantImage.setAttribute('title', getLocalisedName(variantSpell, currentLocaleID))
+                    if (!canTelefrag(variantSpell))
+                        myVariantImage.style.setProperty('background-color', 'rgba(0,0,0,0)')
+                    else myVariantImage.style.setProperty('background-color', '#757674')
+                    myVariantImage.classList.add('grid-item')
+                    myVariantImage.setAttribute('type', 'image')
+                    myVariantImage.setAttribute('src', getImagePath(variantSpell))
+                    myVariantImage.setAttribute('alt', `[ICON : ${getShortName(variantSpell)}]`)
+                    myVariantImage.setAttribute('onclick', `toggleSpellBoost("${variantSpell}");`)
+                    lineB.push(myVariantImage)
+                }
+                for (node of lineA) {
+                    spellGridContainerNode.appendChild(node)
+                }
+
+                for (let i = lineA.length; i < columns - (lineIndex == rows - 1 ? 1 : 0); ++i) {
+                    const node = document.createElement('div')
+                    node.classList.add('grid-item')
+                    node.setAttribute('title', '')
+                    node.style.setProperty('padding', '0px')
+                    node.style.setProperty('border', '0px')
+                    spellGridContainerNode.appendChild(node)
+                }
+                // If it's the last line, add the reset "spell" on the last column (first row)
+                if (lineIndex == rows - 1) {
+                    const myImage = document.createElement('input')
+                    myImage.setAttribute('id', `spellGridItem-MenuTop`)
+                    myImage.setAttribute('title', 'Manual Mode') // FIXME : localize
+                    myImage.style.setProperty('background-color', '#757674')
+                    myImage.classList.add('grid-item')
+                    myImage.setAttribute('type', 'image')
+                    myImage.setAttribute('src', getImagePath('Pause'))
+                    myImage.setAttribute('width', '55')
+                    myImage.setAttribute('alt', '[MANUAL MODE]') // FIXME : localize
+                    myImage.setAttribute('onclick', 'manualBoostOverride();')
+                    spellGridContainerNode.appendChild(myImage)
+                }
+
+                for (node of lineB) {
+                    spellGridContainerNode.appendChild(node)
+                }
+                for (let i = lineB.length; i < columns - (lineIndex == rows - 1 ? 1 : 0); ++i) {
+                    const node = document.createElement('div')
+                    node.classList.add('grid-item')
+                    node.style.setProperty('padding', '0px')
+                    node.style.setProperty('border', '0px')
+                    spellGridContainerNode.appendChild(node)
+                }
+                // If it's the last line, add the reset "spell" on the last column (second row)
+                if (lineIndex == rows - 1) {
+                    const myImage = document.createElement('input')
+                    myImage.setAttribute('id', `spellGridItem-MenuBot`)
+                    myImage.setAttribute('title', getLocalisedName('Reset', currentLocaleID))
+                    myImage.style.setProperty('background-color', '#757674')
+                    myImage.classList.add('grid-item')
+                    myImage.setAttribute('type', 'image')
+                    myImage.setAttribute('src', getImagePath('Reset'))
+                    myImage.setAttribute('width', '55')
+                    myImage.setAttribute('alt', `[ICON : RESET]`)
+                    myImage.setAttribute('onclick', `confirmBoostReset();`)
+                    spellGridContainerNode.appendChild(myImage)
+                }
+            }
+        }
+        function manualBoostOverride() {
+            manualBoostMode = true
+            // Show manual boost controls
+            document.getElementById('manualBoostsContainer').style.setProperty('display', 'grid')
+            // Grey out Normal boost Controls and remove their onclick
             lockBoostNodes()
-            return
+            // Change Menu Option
+            const topOptionNode = document.getElementById('spellGridItem-MenuTop')
+            topOptionNode.setAttribute('src', getImagePath('Play'))
+            topOptionNode.setAttribute('title', '') // FIXME : Play
+            topOptionNode.setAttribute('alt', '') // FIXME : Play
+            topOptionNode.setAttribute('onclick', 'endManualBoostOverride();')
+
+            updateExpectedDamage()
         }
-        for (spell in boost) {
-            if (boost[spell]) {
-                if (canTelefrag(getVariantOf(spell))) updateSpellNodeColor(getVariantOf(spell))
-                if (canTelefrag(spell)) updateSpellNodeColor(spell)
-            }
-        }
-    }
-    function confirmBoostReset() {
-        showBoostsUpForReset()
-        // Change Menu options
-        const topOptionNode = document.getElementById("spellGridItem-MenuTop")
-        const botOptionNode = document.getElementById("spellGridItem-MenuBot")
-        // Change Images, titles & alt
-        topOptionNode.setAttribute("src", getImagePath("Validate"))
-        botOptionNode.setAttribute("src", getImagePath("Cancel"))
-
-        topOptionNode.setAttribute("alt", getLocalisedName("YES",currentLocaleID))
-        botOptionNode.setAttribute("alt", getLocalisedName("NO",currentLocaleID))
-
-        topOptionNode.setAttribute("title", getLocalisedName("Validate",currentLocaleID))        
-        botOptionNode.setAttribute("title", getLocalisedName("Cancel",currentLocaleID))
-        
-        // change onclick code
-        topOptionNode.setAttribute("onclick","resetBoosts();resetBoostMenuOptions();")
-        botOptionNode.setAttribute("onclick","spellsBackToNormal();resetBoostMenuOptions();")
-    }
-    function resetBoostMenuOptions() {
-        const topOptionNode = document.getElementById("spellGridItem-MenuTop")
-        const botOptionNode = document.getElementById("spellGridItem-MenuBot")
-        // Change Images
-        topOptionNode.setAttribute("src", manualBoostMode ? getImagePath("Play") : getImagePath("Pause"))
-        botOptionNode.setAttribute("src", getImagePath("Reset"))
-
-        topOptionNode.setAttribute("alt", "") // FIXME : Pause/Play
-        botOptionNode.setAttribute("alt", "[ICON : RESET]")
-
-        topOptionNode.setAttribute("title", "") // FIXME : Pause/Play   
-        botOptionNode.setAttribute("title", getLocalisedName("Reset",currentLocaleID))
-        // change onclick code
-        topOptionNode.setAttribute("onclick",manualBoostMode ? "endManualBoostOverride()" : "manualBoostOverride();")
-        botOptionNode.setAttribute("onclick","confirmBoostReset();")
-    }
-    function refreshSpellGridHoverText() {
-        const spellContainer = document.getElementById("spellGridContainer")
-        for (node of spellContainer.childNodes) {
-            node.title = getLocalisedName(getBaseName(node.title), currentLocaleID)
-        }
-    }
-    function resetBoosts() {
-        for (spell in boost) {
-            boost[spell]=0
-            if (manualBoostMode) {
-                document.getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`).style.setProperty("background-color","rgba(0,0,0,0)")
-                document.getElementById(`spellGridItem-${getShortName(spell)}`).style.setProperty("background-color","rgba(0,0,0,0)")
-            }
-            else updateSpellNodeColor(spell)
-        }
-        if (!manualBoostMode) updateExpectedDamage()
-    }
-    // Reductions
-    function refreshAdditionalReductionNodes() {
-        const fixedContainer = document.getElementById("additionalFixedReductionContainer")
-        const finalContainer = document.getElementById("additionalFinalReductionContainer")
-        for (node of fixedContainer.childNodes) {
-            refreshAdditionalFixedReductionNode(node)
-        }
-        for (node of finalContainer.childNodes) {
-            refreshAdditionalFinalReductionNode(node)
-        }
-    }
-    // Fixed Reductions
-    function refreshAdditionalFixedReductionNode(nodeObject) {
-        nodeObject.firstChild.title = getLocalisedName( getBaseName(nodeObject.firstChild.title), currentLocaleID)
-        if (activeAdditionalFixedResIDS.includes(nodeObject.id)) {
-            // Activate
-            nodeObject.style.setProperty("background-color", "#267E08")
-        }
-        else {
-            // Deactivate
-            nodeObject.style.setProperty("background-color", "#757674")
-        }
-    }
-    function toggleAdditionalFixedReduction(nodeID) {
-        const myNode = document.getElementById(nodeID)
-        if (activeAdditionalFixedResIDS.includes(nodeID)) {
-            // Deactivate
-            myNode.style.setProperty("background-color", "#757674")
-            activeAdditionalFixedResIDS.splice(activeAdditionalFixedResIDS.indexOf(nodeID),1)
-            // Fuck you JS, can't even remove an element properly
-        }
-        else {
-            // Activate
-            myNode.style.setProperty("background-color", "#267E08")
-            activeAdditionalFixedResIDS.push(nodeID)
-        }
-        updateExpectedDamage()
-    }
-    function addNewAdditionalFixedReduction() {
-        const containerNode = document.getElementById("additionalFixedReductionContainer")
-        const width = containerNode.childNodes.length
-        const newValue = document.getElementById("additionalFixedReductionItem-CustomInput").value
-
-        // Only work if the new Value is valid (= Number and ParseInt agree on value)
-        if (newValue !== "" && Number(newValue)==parseInt(newValue)) {
-
-            // make room for 1 more element on the grid
-            containerNode.style.setProperty("grid-template-columns","1fr ".repeat(width +1 ))
-
-            const newNode = document.createElement("div")
-            newNode.classList.add("grid-item")
-            newNode.setAttribute("id", `additionalFixedReductionItem-${width}`)
-            newNode.style.setProperty("background-color", "#757674")
-
-            const newImg = document.createElement("input")
-            newImg.setAttribute("type", "image")
-            newImg.setAttribute("src", "./images/unknown_shield.png") // Dev Note : Find better icon
-            newImg.setAttribute("width", "54px")
-            newImg.setAttribute("alt", "[CUSTOM]")
-            newImg.setAttribute("title", getLocalisedName("Custom Reduction", currentLocaleID))
-            newImg.setAttribute("onclick",`toggleAdditionalFixedReduction("additionalFixedReductionItem-${width}")`)
-            newNode.appendChild(newImg)
-
-            const newText = document.createElement("p")
-            newText.style.setProperty("color","#EAEBE7")
-            newText.style.setProperty("font-size","16px")
-            newText.style.setProperty("text-align","center")
-            newText.style.setProperty("margin-top","-8px")
-            newText.style.setProperty("margin-left","0px")
-            newText.style.setProperty("margin-bottom","-4px")
-
-            const newInput = document.createTextNode(newValue)
-            newText.appendChild(newInput)
-
-            newNode.appendChild(newText)
-
-            containerNode.insertBefore(newNode, containerNode.childNodes[width-1])
-        }
-        else {
-            console.log("invalid custom fixed reduction, not adding")
-        }
-    }
-    function fillAdditionalFixedReductionGrid() {
-        const containerNode = document.getElementById("additionalFixedReductionContainer")
-        containerNode.replaceChildren()
-        containerNode.style.setProperty("grid-template-columns","1fr ".repeat(FixedReductionBonuses.length +1 ))
-        for (i in FixedReductionBonuses) {
-            const newNode = document.createElement("div")
-            const newNodeID = `additionalFixedReductionItem-${i}`
-            newNode.classList.add("grid-item")
-            newNode.setAttribute("id", newNodeID)
-            newNode.style.setProperty("background-color", "#757674")
-
-            const newImg = document.createElement("input")
-            newImg.setAttribute("type", "image")
-            newImg.setAttribute("src", FixedReductionBonuses[i].iconSRC)
-            newImg.setAttribute("alt", FixedReductionBonuses[i].alt)
-            newImg.setAttribute("title", getLocalisedName(FixedReductionBonuses[i].spellName, currentLocaleID))
-            newImg.setAttribute("onclick",`toggleAdditionalFixedReduction("additionalFixedReductionItem-${i}")`)
-            newNode.appendChild(newImg)
-
-            const newText = document.createElement("p")
-            newText.style.setProperty("color","#EAEBE7")
-            newText.style.setProperty("font-size","16px")
-            newText.style.setProperty("text-align","center")
-            newText.style.setProperty("margin-top","-8px")
-            newText.style.setProperty("margin-left","0px")
-            newText.style.setProperty("margin-bottom","-4px")
-            const t = document.createTextNode(FixedReductionBonuses[i].value)
-            newText.appendChild(t)
-
-            newNode.appendChild(newText)
-
-            containerNode.appendChild(newNode)
-            // refreshAdditionalFixedReductionNode(newNode)
-        }
-        const newNode = document.createElement("div")
-        newNode.classList.add("grid-item")
-        newNode.setAttribute("id", 'additionalFixedReductionItem-Custom')
-        newNode.style.setProperty("background-color", "#757674")
-
-        const newImg = document.createElement("input")
-        newImg.setAttribute("type", "image")
-        newImg.setAttribute("src", "./images/New.png")
-        newImg.setAttribute("width", "54px")
-        newImg.setAttribute("alt", "[ADD]")
-        newImg.setAttribute("title", getLocalisedName("Add a spell with a custom amount", currentLocaleID))
-        newImg.setAttribute("onclick","addNewAdditionalFixedReduction()")
-        newNode.appendChild(newImg)
-
-        const newText = document.createElement("div")
-        newText.style.setProperty("margin-top","-20px")
-        newText.style.setProperty("margin-bottom","-10px")
-        const newInput = document.createElement("input")
-        newInput.setAttribute("id", 'additionalFixedReductionItem-CustomInput')
-        newInput.setAttribute("type","text")
-        newInput.style.setProperty("width","30px")
-        newText.appendChild(newInput)
-
-        newNode.appendChild(newText)
-
-        containerNode.appendChild(newNode)
-    }
-    // % Final Reductions
-    // Same as fixed (next 4 functions are duplicates of previous 4)
-    function refreshAdditionalFinalReductionNode(nodeObject) {
-        nodeObject.firstChild.title = getLocalisedName( getBaseName(nodeObject.firstChild.title), currentLocaleID)
-        if (activeAdditionalFinalResIDS.includes(nodeObject.id)) {
-            // Activate
-            nodeObject.style.setProperty("background-color", "#267E08")
-        }
-        else {
-            // Deactivate
-            nodeObject.style.setProperty("background-color", "#757674")
-        }
-    }
-    function toggleAdditionalFinalReduction(nodeID) {
-        const myNode = document.getElementById(nodeID)
-        if (activeAdditionalFinalResIDS.includes(nodeID)) {
-            // Deactivate
-            myNode.style.setProperty("background-color", "#757674")
-            activeAdditionalFinalResIDS.splice(activeAdditionalFinalResIDS.indexOf(nodeID),1)
-            // Fuck you JS, can't even remove an element properly
-        }
-        else {
-            // Activate
-            myNode.style.setProperty("background-color", "#267E08")
-            activeAdditionalFinalResIDS.push(nodeID)
-        }
-        updateExpectedDamage()
-    }
-    function addNewAdditionalFinalReduction() {
-        const containerNode = document.getElementById("additionalFinalReductionContainer")
-        const width = containerNode.childNodes.length
-        const newValue = document.getElementById("additionalFinalReductionItem-CustomInput").value
-
-        // Only work if the new Value is valid (= Number and ParseInt agree on value)
-        if (newValue !== "" && Number(newValue)==parseInt(newValue)) {
-
-            containerNode.style.setProperty("grid-template-columns","1fr ".repeat(width +1 ))
-
-            const newNode = document.createElement("div")
-            newNode.classList.add("grid-item")
-            newNode.setAttribute("id", `additionalFinalReductionItem-${width}`)
-            newNode.style.setProperty("background-color", "#757674")
-
-            const newImg = document.createElement("input")
-            newImg.setAttribute("type", "image")
-            newImg.setAttribute("src", "./images/unknown_shield.png") // Dev Note : Find better icon
-            newImg.setAttribute("width", "54px")
-            newImg.setAttribute("alt", "[CUSTOM]")
-            newImg.setAttribute("title", getLocalisedName("Custom Reduction", currentLocaleID))
-            newImg.setAttribute("onclick",`toggleAdditionalFinalReduction("additionalFinalReductionItem-${width}")`)
-            newNode.appendChild(newImg)
-
-            const newText = document.createElement("p")
-            newText.style.setProperty("color","#EAEBE7")
-            newText.style.setProperty("font-size","16px")
-            newText.style.setProperty("text-align","center")
-            newText.style.setProperty("margin-top","-8px")
-            newText.style.setProperty("margin-left","0px")
-            newText.style.setProperty("margin-bottom","-4px")
-
-            const newInput = document.createTextNode(newValue)
-            newText.appendChild(newInput)
-
-            newNode.appendChild(newText)
-
-            containerNode.insertBefore(newNode, containerNode.childNodes[width-1])
-        }
-        else {
-            console.log("invalid custom final reduction, not adding")
-        }
-    }
-    function fillAdditionalFinalReductionGrid() {
-        const containerNode = document.getElementById("additionalFinalReductionContainer")
-        containerNode.replaceChildren()
-        containerNode.style.setProperty("grid-template-columns","1fr ".repeat(FinalReductionBonuses.length +1 ))
-        for (i in FinalReductionBonuses) {
-            const newNode = document.createElement("div")
-            const newNodeID = `additionalFinalReductionItem-${i}`
-            newNode.classList.add("grid-item")
-            newNode.setAttribute("id", newNodeID)
-            newNode.style.setProperty("background-color", "#757674")
-
-            const newImg = document.createElement("input")
-            newImg.setAttribute("type", "image")
-            newImg.setAttribute("src", FinalReductionBonuses[i].iconSRC)
-            newImg.setAttribute("alt", FinalReductionBonuses[i].alt)
-            newImg.setAttribute("title", getLocalisedName(FinalReductionBonuses[i].spellName, currentLocaleID))
-            newImg.setAttribute("onclick",`toggleAdditionalFinalReduction("additionalFinalReductionItem-${i}")`)
-            newNode.appendChild(newImg)
-
-            const newText = document.createElement("p")
-            newText.style.setProperty("color","#EAEBE7")
-            newText.style.setProperty("font-size","16px")
-            newText.style.setProperty("text-align","center")
-            newText.style.setProperty("margin-top","-8px")
-            newText.style.setProperty("margin-left","0px")
-            newText.style.setProperty("margin-bottom","-4px")
-            const t = document.createTextNode(FinalReductionBonuses[i].value)
-            newText.appendChild(t)
-
-            newNode.appendChild(newText)
-
-            containerNode.appendChild(newNode)
-            // refreshAdditionalFinalReductionNode(newNode)
-        }
-        const newNode = document.createElement("div")
-        newNode.classList.add("grid-item")
-        newNode.setAttribute("id", 'additionalFinalReductionItem-Custom')
-        newNode.style.setProperty("background-color", "#757674")
-
-        const newImg = document.createElement("input")
-        newImg.setAttribute("type", "image")
-        newImg.setAttribute("src", "./images/New.png")
-        newImg.setAttribute("width", "54px")
-        newImg.setAttribute("alt", "[ADD]")
-        newImg.setAttribute("title", getLocalisedName("Add a spell with a custom amount", currentLocaleID))
-        newImg.setAttribute("onclick","addNewAdditionalFinalReduction()")
-        newNode.appendChild(newImg)
-
-        const newText = document.createElement("div")
-        newText.style.setProperty("margin-top","-20px")
-        newText.style.setProperty("margin-bottom","-10px")
-        const newInput = document.createElement("input")
-        newInput.setAttribute("id", 'additionalFinalReductionItem-CustomInput')
-        newInput.setAttribute("type","text")
-        newInput.style.setProperty("width","30px")
-        newText.appendChild(newInput)
-
-        newNode.appendChild(newText)
-
-        containerNode.appendChild(newNode)
-    }
-    function fillAdditionalReductionGrids() {
-        fillAdditionalFixedReductionGrid()
-        fillAdditionalFinalReductionGrid()
-    }
-    function validDamage(floatDamage) {
-        return  Math.max(Math.floor(floatDamage),0)
-    }
-    function recalculateAdditionalFixedRes() {
-        let r = 0
-        for (nodeID of activeAdditionalFixedResIDS) {
-            r += Number(document.getElementById(nodeID).childNodes[1].childNodes[0].textContent)
-        }
-        fixedAdditionalRes = r
-    }
-    function recalculateFinalFactor() {
-        let factor = 1
-        for (nodeID of activeAdditionalFinalResIDS) {
-            // take the value, multiply
-            factor *= 1-(Number(document.getElementById(nodeID).childNodes[1].childNodes[0].textContent)/100)
-        }
-        finalFactor = factor
-    }
-    function recalculateExpectedDamages() {
-        // Dégâts=(368-RéFix)x(1-Ré%Air/100)x(1-Ré%Final/100)x(2xNombreBoosts-1)
-        refreshAllValues()
-        refreshBoosts()
-        recalculateFinalFactor()
-        recalculateAdditionalFixedRes()
-        expectedDamage_melee = validDamage((368 - (fixedAirRes + fixedAdditionalRes)) * (1 - percentAirRes/100) * (finalFactor * meleeFactor) * (2 * numberOfBoosts - 1))
-        expectedDamage_range = validDamage((368 - (fixedAirRes + fixedAdditionalRes)) * (1 - percentAirRes/100) * (finalFactor * rangeFactor) * (2 * numberOfBoosts - 1))
-    }
-    function updateExpectedDamageDisplays() {
-        const myNodeM = document.getElementById("expectedDamageNode-Melee")
-        myNodeM.textContent = String(expectedDamage_melee)
-        const myNodeR = document.getElementById("expectedDamageNode-Range")
-        myNodeR.textContent = String(expectedDamage_range)
-    }
-    function updateExpectedDamage() {
-        recalculateExpectedDamages()
-        updateExpectedDamageDisplays()
-    }
-    function refreshBoosts() {
-        if (!manualBoostMode) {
-            s = 0
+        function lockBoostNodes() {
             for (spell in boost) {
-                s+= boost[spell] ? 1 : 0
+                document
+                    .getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`)
+                    .style.setProperty('background-color', 'rgba(0,0,0,0)')
+                document
+                    .getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`)
+                    .setAttribute('onclick', '')
+                document
+                    .getElementById(`spellGridItem-${getShortName(spell)}`)
+                    .style.setProperty('background-color', 'rgba(0,0,0,0)')
+                document.getElementById(`spellGridItem-${getShortName(spell)}`).setAttribute('onclick', '')
             }
-            numberOfBoosts = s
         }
-        else {
-            numberOfBoosts = parseInt(document.getElementById("manualBoostSlider").value)/200
+        function unlockBoostNodes() {
+            for (spell in boost) {
+                document
+                    .getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`)
+                    .style.setProperty('background-color', 'rgba(0,0,0,0)')
+                document
+                    .getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`)
+                    .setAttribute('onclick', `toggleSpellBoost("${getVariantOf(spell)}");`)
+                updateSpellNodeColor(getVariantOf(spell))
+                document
+                    .getElementById(`spellGridItem-${getShortName(spell)}`)
+                    .style.setProperty('background-color', 'rgba(0,0,0,0)')
+                document
+                    .getElementById(`spellGridItem-${getShortName(spell)}`)
+                    .setAttribute('onclick', `toggleSpellBoost("${spell}");`)
+                updateSpellNodeColor(spell)
+            }
         }
-        
-    }
-    function refreshMeleeRes() {
-        const myNode = document.getElementById("meleeRes")
-        meleeFactor = 1 - Number(myNode.value)/100
-    }
-    function refreshRangeRes() {
-        const myNode = document.getElementById("rangeRes")
-        rangeFactor = 1 - Number(myNode.value)/100
-    }
-    function refreshFixedAirRes() {
-        const myNode = document.getElementById("fixedAirRes")
-        fixedAirRes = Number(myNode.value)
-    }
-    function refreshPercentAirRes() {
-        const myNode = document.getElementById("percentAirRes")
-        percentAirRes = Number(myNode.value)
-    }
+        function addManualBoost() {
+            const sliderObj = document.getElementById('manualBoostSlider')
+            const textInputNode = document.getElementById('manualBoostInput')
+            sliderObj.stepUp()
+            textInputNode.value = sliderObj.value
+            updateExpectedDamage()
+        }
+        function removeManualBoost() {
+            const sliderObj = document.getElementById('manualBoostSlider')
+            const textInputNode = document.getElementById('manualBoostInput')
+            sliderObj.stepDown()
+            textInputNode.value = sliderObj.value
+            updateExpectedDamage()
+        }
+        function endManualBoostOverride() {
+            manualBoostMode = false
+            // Hide away manual boost controls
+            document.getElementById('manualBoostsContainer').style.setProperty('display', 'none')
+            // unlock Normal boost Controls
+            unlockBoostNodes()
+            // Change Menu Option
+            const topOptionNode = document.getElementById('spellGridItem-MenuTop')
+            topOptionNode.setAttribute('src', getImagePath('Pause'))
+            topOptionNode.setAttribute('title', '') // FIXME : Pause
+            topOptionNode.setAttribute('alt', '') // FIXME : Pause
+            topOptionNode.setAttribute('onclick', 'manualBoostOverride();')
+            // Update damage
+            updateExpectedDamage()
+        }
+        function showBoostsUpForReset() {
+            // Change all spells color to indicate what's at play
+            for (spell in boost) {
+                if (boost[spell]) {
+                    if (canTelefrag(getVariantOf(spell)))
+                        document
+                            .getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`)
+                            .style.setProperty('background-color', '#ffce00')
+                    if (canTelefrag(spell))
+                        document
+                            .getElementById(`spellGridItem-${getShortName(spell)}`)
+                            .style.setProperty('background-color', '#ffce00')
+                }
+            }
+        }
+        // The opposite of above
+        function spellsBackToNormal() {
+            if (manualBoostMode) {
+                lockBoostNodes()
+                return
+            }
+            for (spell in boost) {
+                if (boost[spell]) {
+                    if (canTelefrag(getVariantOf(spell))) updateSpellNodeColor(getVariantOf(spell))
+                    if (canTelefrag(spell)) updateSpellNodeColor(spell)
+                }
+            }
+        }
+        function confirmBoostReset() {
+            showBoostsUpForReset()
+            // Change Menu options
+            const topOptionNode = document.getElementById('spellGridItem-MenuTop')
+            const botOptionNode = document.getElementById('spellGridItem-MenuBot')
+            // Change Images, titles & alt
+            topOptionNode.setAttribute('src', getImagePath('Validate'))
+            botOptionNode.setAttribute('src', getImagePath('Cancel'))
 
-    function refreshAllValues() {
-        refreshMeleeRes()
-        refreshRangeRes()
-        refreshFixedAirRes()
-        refreshPercentAirRes()
-    }
+            topOptionNode.setAttribute('alt', getLocalisedName('YES', currentLocaleID))
+            botOptionNode.setAttribute('alt', getLocalisedName('NO', currentLocaleID))
 
-</script>
+            topOptionNode.setAttribute('title', getLocalisedName('Validate', currentLocaleID))
+            botOptionNode.setAttribute('title', getLocalisedName('Cancel', currentLocaleID))
 
-<script>
-    // Loading and Init
-    init()
-    
-</script>
+            // change onclick code
+            topOptionNode.setAttribute('onclick', 'resetBoosts();resetBoostMenuOptions();')
+            botOptionNode.setAttribute('onclick', 'spellsBackToNormal();resetBoostMenuOptions();')
+        }
+        function resetBoostMenuOptions() {
+            const topOptionNode = document.getElementById('spellGridItem-MenuTop')
+            const botOptionNode = document.getElementById('spellGridItem-MenuBot')
+            // Change Images
+            topOptionNode.setAttribute('src', manualBoostMode ? getImagePath('Play') : getImagePath('Pause'))
+            botOptionNode.setAttribute('src', getImagePath('Reset'))
 
+            topOptionNode.setAttribute('alt', '') // FIXME : Pause/Play
+            botOptionNode.setAttribute('alt', '[ICON : RESET]')
+
+            topOptionNode.setAttribute('title', '') // FIXME : Pause/Play
+            botOptionNode.setAttribute('title', getLocalisedName('Reset', currentLocaleID))
+            // change onclick code
+            topOptionNode.setAttribute(
+                'onclick',
+                manualBoostMode ? 'endManualBoostOverride()' : 'manualBoostOverride();'
+            )
+            botOptionNode.setAttribute('onclick', 'confirmBoostReset();')
+        }
+        function refreshSpellGridHoverText() {
+            const spellContainer = document.getElementById('spellGridContainer')
+            for (node of spellContainer.childNodes) {
+                node.title = getLocalisedName(getBaseName(node.title), currentLocaleID)
+            }
+        }
+        function resetBoosts() {
+            for (spell in boost) {
+                boost[spell] = 0
+                if (manualBoostMode) {
+                    document
+                        .getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`)
+                        .style.setProperty('background-color', 'rgba(0,0,0,0)')
+                    document
+                        .getElementById(`spellGridItem-${getShortName(spell)}`)
+                        .style.setProperty('background-color', 'rgba(0,0,0,0)')
+                } else updateSpellNodeColor(spell)
+            }
+            if (!manualBoostMode) updateExpectedDamage()
+        }
+        // Base Damage
+        function getBaseDamage() {
+            // TODO : find formula (scales with level)
+            return baseDamage
+        }
+        function updateBaseDamage() {
+            baseDamage = Math.floor(Number(document.getElementById('baseDamage').value))
+            updateExpectedDamage()
+        }
+
+        // Reductions
+        function refreshAdditionalReductionNodes() {
+            const fixedContainer = document.getElementById('additionalFixedReductionContainer')
+            const finalContainer = document.getElementById('additionalFinalReductionContainer')
+            for (node of fixedContainer.childNodes) {
+                refreshAdditionalFixedReductionNode(node)
+            }
+            for (node of finalContainer.childNodes) {
+                refreshAdditionalFinalReductionNode(node)
+            }
+        }
+        // Fixed Reductions
+        function refreshAdditionalFixedReductionNode(nodeObject) {
+            nodeObject.firstChild.title = getLocalisedName(getBaseName(nodeObject.firstChild.title), currentLocaleID)
+            if (activeAdditionalFixedResIDS.includes(nodeObject.id)) {
+                // Activate
+                nodeObject.style.setProperty('background-color', '#267E08')
+            } else {
+                // Deactivate
+                nodeObject.style.setProperty('background-color', '#757674')
+            }
+        }
+        function toggleAdditionalFixedReduction(nodeID) {
+            const myNode = document.getElementById(nodeID)
+            if (activeAdditionalFixedResIDS.includes(nodeID)) {
+                // Deactivate
+                myNode.style.setProperty('background-color', '#757674')
+                activeAdditionalFixedResIDS.splice(activeAdditionalFixedResIDS.indexOf(nodeID), 1)
+                // Fuck you JS, can't even remove an element properly
+            } else {
+                // Activate
+                myNode.style.setProperty('background-color', '#267E08')
+                activeAdditionalFixedResIDS.push(nodeID)
+            }
+            updateExpectedDamage()
+        }
+        function addNewAdditionalFixedReduction() {
+            const containerNode = document.getElementById('additionalFixedReductionContainer')
+            const width = containerNode.childNodes.length
+            const newValue = document.getElementById('additionalFixedReductionItem-CustomInput').value
+
+            // Only work if the new Value is valid (= Number and ParseInt agree on value)
+            if (newValue !== '' && Number(newValue) == parseInt(newValue)) {
+                // make room for 1 more element on the grid
+                containerNode.style.setProperty('grid-template-columns', '1fr '.repeat(width + 1))
+
+                const newNode = document.createElement('div')
+                newNode.classList.add('grid-item')
+                newNode.setAttribute('id', `additionalFixedReductionItem-${width}`)
+                newNode.style.setProperty('background-color', '#757674')
+
+                const newImg = document.createElement('input')
+                newImg.setAttribute('type', 'image')
+                newImg.setAttribute('src', './images/unknown_shield.png') // Dev Note : Find better icon
+                newImg.setAttribute('width', '54px')
+                newImg.setAttribute('alt', '[CUSTOM]')
+                newImg.setAttribute('title', getLocalisedName('Custom Reduction', currentLocaleID))
+                newImg.setAttribute(
+                    'onclick',
+                    `toggleAdditionalFixedReduction("additionalFixedReductionItem-${width}")`
+                )
+                newNode.appendChild(newImg)
+
+                const newText = document.createElement('p')
+                newText.style.setProperty('color', '#EAEBE7')
+                newText.style.setProperty('font-size', '16px')
+                newText.style.setProperty('text-align', 'center')
+                newText.style.setProperty('margin-top', '-8px')
+                newText.style.setProperty('margin-left', '0px')
+                newText.style.setProperty('margin-bottom', '-4px')
+
+                const newInput = document.createTextNode(newValue)
+                newText.appendChild(newInput)
+
+                newNode.appendChild(newText)
+
+                containerNode.insertBefore(newNode, containerNode.childNodes[width - 1])
+            } else {
+                console.log('invalid custom fixed reduction, not adding')
+            }
+        }
+        function fillAdditionalFixedReductionGrid() {
+            const containerNode = document.getElementById('additionalFixedReductionContainer')
+            containerNode.replaceChildren()
+            containerNode.style.setProperty('grid-template-columns', '1fr '.repeat(FixedReductionBonuses.length + 1))
+            for (i in FixedReductionBonuses) {
+                const newNode = document.createElement('div')
+                const newNodeID = `additionalFixedReductionItem-${i}`
+                newNode.classList.add('grid-item')
+                newNode.setAttribute('id', newNodeID)
+                newNode.style.setProperty('background-color', '#757674')
+
+                const newImg = document.createElement('input')
+                newImg.setAttribute('type', 'image')
+                newImg.setAttribute('src', FixedReductionBonuses[i].iconSRC)
+                newImg.setAttribute('alt', FixedReductionBonuses[i].alt)
+                newImg.setAttribute('title', getLocalisedName(FixedReductionBonuses[i].spellName, currentLocaleID))
+                newImg.setAttribute('onclick', `toggleAdditionalFixedReduction("additionalFixedReductionItem-${i}")`)
+                newNode.appendChild(newImg)
+
+                const newText = document.createElement('p')
+                newText.style.setProperty('color', '#EAEBE7')
+                newText.style.setProperty('font-size', '16px')
+                newText.style.setProperty('text-align', 'center')
+                newText.style.setProperty('margin-top', '-8px')
+                newText.style.setProperty('margin-left', '0px')
+                newText.style.setProperty('margin-bottom', '-4px')
+                const t = document.createTextNode(FixedReductionBonuses[i].value)
+                newText.appendChild(t)
+
+                newNode.appendChild(newText)
+
+                containerNode.appendChild(newNode)
+                // refreshAdditionalFixedReductionNode(newNode)
+            }
+            const newNode = document.createElement('div')
+            newNode.classList.add('grid-item')
+            newNode.setAttribute('id', 'additionalFixedReductionItem-Custom')
+            newNode.style.setProperty('background-color', '#757674')
+
+            const newImg = document.createElement('input')
+            newImg.setAttribute('type', 'image')
+            newImg.setAttribute('src', './images/New.png')
+            newImg.setAttribute('width', '54px')
+            newImg.setAttribute('alt', '[ADD]')
+            newImg.setAttribute('title', getLocalisedName('Add a spell with a custom amount', currentLocaleID))
+            newImg.setAttribute('onclick', 'addNewAdditionalFixedReduction()')
+            newNode.appendChild(newImg)
+
+            const newText = document.createElement('div')
+            newText.style.setProperty('margin-top', '-20px')
+            newText.style.setProperty('margin-bottom', '-10px')
+            const newInput = document.createElement('input')
+            newInput.setAttribute('id', 'additionalFixedReductionItem-CustomInput')
+            newInput.setAttribute('type', 'text')
+            newInput.style.setProperty('width', '30px')
+            newText.appendChild(newInput)
+
+            newNode.appendChild(newText)
+
+            containerNode.appendChild(newNode)
+        }
+        // % Final Reductions
+        // Same as fixed (next 4 functions are duplicates of previous 4)
+        function refreshAdditionalFinalReductionNode(nodeObject) {
+            nodeObject.firstChild.title = getLocalisedName(getBaseName(nodeObject.firstChild.title), currentLocaleID)
+            if (activeAdditionalFinalResIDS.includes(nodeObject.id)) {
+                // Activate
+                nodeObject.style.setProperty('background-color', '#267E08')
+            } else {
+                // Deactivate
+                nodeObject.style.setProperty('background-color', '#757674')
+            }
+        }
+        function toggleAdditionalFinalReduction(nodeID) {
+            const myNode = document.getElementById(nodeID)
+            if (activeAdditionalFinalResIDS.includes(nodeID)) {
+                // Deactivate
+                myNode.style.setProperty('background-color', '#757674')
+                activeAdditionalFinalResIDS.splice(activeAdditionalFinalResIDS.indexOf(nodeID), 1)
+                // Fuck you JS, can't even remove an element properly
+            } else {
+                // Activate
+                myNode.style.setProperty('background-color', '#267E08')
+                activeAdditionalFinalResIDS.push(nodeID)
+            }
+            updateExpectedDamage()
+        }
+        function addNewAdditionalFinalReduction() {
+            const containerNode = document.getElementById('additionalFinalReductionContainer')
+            const width = containerNode.childNodes.length
+            const newValue = document.getElementById('additionalFinalReductionItem-CustomInput').value
+
+            // Only work if the new Value is valid (= Number and ParseInt agree on value)
+            if (newValue !== '' && Number(newValue) == parseInt(newValue)) {
+                containerNode.style.setProperty('grid-template-columns', '1fr '.repeat(width + 1))
+
+                const newNode = document.createElement('div')
+                newNode.classList.add('grid-item')
+                newNode.setAttribute('id', `additionalFinalReductionItem-${width}`)
+                newNode.style.setProperty('background-color', '#757674')
+
+                const newImg = document.createElement('input')
+                newImg.setAttribute('type', 'image')
+                newImg.setAttribute('src', './images/unknown_shield.png') // Dev Note : Find better icon
+                newImg.setAttribute('width', '54px')
+                newImg.setAttribute('alt', '[CUSTOM]')
+                newImg.setAttribute('title', getLocalisedName('Custom Reduction', currentLocaleID))
+                newImg.setAttribute(
+                    'onclick',
+                    `toggleAdditionalFinalReduction("additionalFinalReductionItem-${width}")`
+                )
+                newNode.appendChild(newImg)
+
+                const newText = document.createElement('p')
+                newText.style.setProperty('color', '#EAEBE7')
+                newText.style.setProperty('font-size', '16px')
+                newText.style.setProperty('text-align', 'center')
+                newText.style.setProperty('margin-top', '-8px')
+                newText.style.setProperty('margin-left', '0px')
+                newText.style.setProperty('margin-bottom', '-4px')
+
+                const newInput = document.createTextNode(newValue)
+                newText.appendChild(newInput)
+
+                newNode.appendChild(newText)
+
+                containerNode.insertBefore(newNode, containerNode.childNodes[width - 1])
+            } else {
+                console.log('invalid custom final reduction, not adding')
+            }
+        }
+        function fillAdditionalFinalReductionGrid() {
+            const containerNode = document.getElementById('additionalFinalReductionContainer')
+            containerNode.replaceChildren()
+            containerNode.style.setProperty('grid-template-columns', '1fr '.repeat(FinalReductionBonuses.length + 1))
+            for (i in FinalReductionBonuses) {
+                const newNode = document.createElement('div')
+                const newNodeID = `additionalFinalReductionItem-${i}`
+                newNode.classList.add('grid-item')
+                newNode.setAttribute('id', newNodeID)
+                newNode.style.setProperty('background-color', '#757674')
+
+                const newImg = document.createElement('input')
+                newImg.setAttribute('type', 'image')
+                newImg.setAttribute('src', FinalReductionBonuses[i].iconSRC)
+                newImg.setAttribute('alt', FinalReductionBonuses[i].alt)
+                newImg.setAttribute('title', getLocalisedName(FinalReductionBonuses[i].spellName, currentLocaleID))
+                newImg.setAttribute('onclick', `toggleAdditionalFinalReduction("additionalFinalReductionItem-${i}")`)
+                newNode.appendChild(newImg)
+
+                const newText = document.createElement('p')
+                newText.style.setProperty('color', '#EAEBE7')
+                newText.style.setProperty('font-size', '16px')
+                newText.style.setProperty('text-align', 'center')
+                newText.style.setProperty('margin-top', '-8px')
+                newText.style.setProperty('margin-left', '0px')
+                newText.style.setProperty('margin-bottom', '-4px')
+                const t = document.createTextNode(FinalReductionBonuses[i].value)
+                newText.appendChild(t)
+
+                newNode.appendChild(newText)
+
+                containerNode.appendChild(newNode)
+                // refreshAdditionalFinalReductionNode(newNode)
+            }
+            const newNode = document.createElement('div')
+            newNode.classList.add('grid-item')
+            newNode.setAttribute('id', 'additionalFinalReductionItem-Custom')
+            newNode.style.setProperty('background-color', '#757674')
+
+            const newImg = document.createElement('input')
+            newImg.setAttribute('type', 'image')
+            newImg.setAttribute('src', './images/New.png')
+            newImg.setAttribute('width', '54px')
+            newImg.setAttribute('alt', '[ADD]')
+            newImg.setAttribute('title', getLocalisedName('Add a spell with a custom amount', currentLocaleID))
+            newImg.setAttribute('onclick', 'addNewAdditionalFinalReduction()')
+            newNode.appendChild(newImg)
+
+            const newText = document.createElement('div')
+            newText.style.setProperty('margin-top', '-20px')
+            newText.style.setProperty('margin-bottom', '-10px')
+            const newInput = document.createElement('input')
+            newInput.setAttribute('id', 'additionalFinalReductionItem-CustomInput')
+            newInput.setAttribute('type', 'text')
+            newInput.style.setProperty('width', '30px')
+            newText.appendChild(newInput)
+
+            newNode.appendChild(newText)
+
+            containerNode.appendChild(newNode)
+        }
+        function fillAdditionalReductionGrids() {
+            fillAdditionalFixedReductionGrid()
+            fillAdditionalFinalReductionGrid()
+        }
+        function validDamage(floatDamage) {
+            return Math.max(Math.floor(floatDamage), 0)
+        }
+        function recalculateAdditionalFixedRes() {
+            let r = 0
+            for (nodeID of activeAdditionalFixedResIDS) {
+                r += Number(document.getElementById(nodeID).childNodes[1].childNodes[0].textContent)
+            }
+            fixedAdditionalRes = r
+        }
+        function recalculateFinalFactor() {
+            let factor = 1
+            for (nodeID of activeAdditionalFinalResIDS) {
+                // take the value, multiply
+                factor *= 1 - Number(document.getElementById(nodeID).childNodes[1].childNodes[0].textContent) / 100
+            }
+            finalFactor = factor
+        }
+        function recalculateExpectedDamages() {
+            // Base damage is 368 max rank
+            // rank 1 varies with level ?
+            // Dégâts=(368-RéFix)x(1-Ré%Air/100)x(1-Ré%Final/100)x(2xNombreBoosts-1)
+            const baseDamage = getBaseDamage()
+            refreshAllValues()
+            refreshBoosts()
+            recalculateFinalFactor()
+            recalculateAdditionalFixedRes()
+            expectedDamage_melee = validDamage(
+                validDamage((baseDamage - (fixedAirRes + fixedAdditionalRes)) * (1 - percentAirRes / 100)) *
+                    (finalFactor * meleeFactor) *
+                    (2 * numberOfBoosts - 1)
+            )
+            expectedDamage_range = validDamage(
+                validDamage((baseDamage - (fixedAirRes + fixedAdditionalRes)) * (1 - percentAirRes / 100)) *
+                    (finalFactor * rangeFactor) *
+                    (2 * numberOfBoosts - 1)
+            )
+        }
+        function updateExpectedDamageDisplays() {
+            const myNodeM = document.getElementById('expectedDamageNode-Melee')
+            myNodeM.textContent = String(expectedDamage_melee)
+            const myNodeR = document.getElementById('expectedDamageNode-Range')
+            myNodeR.textContent = String(expectedDamage_range)
+        }
+        function updateExpectedDamage() {
+            recalculateExpectedDamages()
+            updateExpectedDamageDisplays()
+        }
+        function refreshBoosts() {
+            if (!manualBoostMode) {
+                s = 0
+                for (spell in boost) {
+                    s += boost[spell] ? 1 : 0
+                }
+                numberOfBoosts = s
+            } else {
+                numberOfBoosts = parseInt(document.getElementById('manualBoostSlider').value) / 200
+            }
+        }
+        function refreshMeleeRes() {
+            const myNode = document.getElementById('meleeRes')
+            meleeFactor = 1 - Number(myNode.value) / 100
+        }
+        function refreshRangeRes() {
+            const myNode = document.getElementById('rangeRes')
+            rangeFactor = 1 - Number(myNode.value) / 100
+        }
+        function refreshFixedAirRes() {
+            const myNode = document.getElementById('fixedAirRes')
+            fixedAirRes = Number(myNode.value)
+        }
+        function refreshPercentAirRes() {
+            const myNode = document.getElementById('percentAirRes')
+            percentAirRes = Number(myNode.value)
+        }
+
+        function refreshAllValues() {
+            refreshMeleeRes()
+            refreshRangeRes()
+            refreshFixedAirRes()
+            refreshPercentAirRes()
+        }
+    </script>
+
+    <script>
+        // Loading and Init
+        init()
+    </script>
 </html>
-
