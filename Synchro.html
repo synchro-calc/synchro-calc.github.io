@@ -415,6 +415,7 @@
             'Ataraxia',
             'Custom Reduction',
             'Add a spell with a custom amount',
+            'Manual Mode',
             'Reset',
             'Validate',
             'Cancel',
@@ -433,6 +434,7 @@
             'Ataraxie',
             'Réduction Custom',
             'Ajouter une réduction avec une valeur custom',
+            'Mode Manuel',
             'Reset',
             'Valider',
             'Annuler',
@@ -642,7 +644,7 @@
             if (spellID === -1) {
                 const spellIDTry2 = otherSpellsEN.indexOf(baseSpellName)
                 if (spellIDTry2 === -1) {
-                    throw new Error('Cannot find spell')
+                    throw new Error('Cannot find spell' + baseSpellName)
                     return 'ERROR'
                 }
                 switch (localeID) {
@@ -831,13 +833,13 @@
                 if (lineIndex == rows - 1) {
                     const myImage = document.createElement('input')
                     myImage.setAttribute('id', `spellGridItem-MenuTop`)
-                    myImage.setAttribute('title', 'Manual Mode') // FIXME : localize
+                    myImage.setAttribute('title', 'Manual Mode')
                     myImage.style.setProperty('background-color', '#757674')
                     myImage.classList.add('grid-item')
                     myImage.setAttribute('type', 'image')
                     myImage.setAttribute('src', getImagePath('Pause'))
                     myImage.setAttribute('width', '55')
-                    myImage.setAttribute('alt', '[MANUAL MODE]') // FIXME : localize
+                    myImage.setAttribute('alt', '[MANUAL MODE]')
                     myImage.setAttribute('onclick', 'manualBoostOverride();')
                     spellGridContainerNode.appendChild(myImage)
                 }
