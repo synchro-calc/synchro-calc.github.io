@@ -236,7 +236,7 @@
                     id="manualBoostSlider"
                     type="range"
                     min="200"
-                    max="2600"
+                    max="2400"
                     step="200"
                     value="200"
                     oninput="document.getElementById('manualBoostInput').value = this.value; numberOfBoosts=parseInt(this.value)/200;updateExpectedDamage();"
@@ -284,7 +284,7 @@
     <script>
         // Layout of spells
         const layout = `
-            Ralentissement Téléportation Rembobinage Frappe de Xélor Gelure Sablier de Xélor Poussière Temporelle Raulebaque Démotivation Paradoxe Temporel Contre Fuite Désynchronisation
+            Perturbation Gelure Souvenir Frappe de Xélor Téléportation Engrenage Fuite Raulebaque Rembobinage Paradoxe Distortion Désynchronisation
         `
         // Usual/Default Additional Reductions
         const FixedReductionBonuses = [
@@ -346,6 +346,8 @@
             },
         ]
         // Constants
+        /**
+         * OLD Spells
         const spellsEN = [
             'Slow Down',
             'Souvenir',
@@ -402,6 +404,59 @@
             'Désynchronisation',
             'Glas',
         ]
+        */
+        const spellsEN = [
+            'Spontaneous Return, but bad',
+            'Disruption',
+            'Dropper',
+            'Dust',
+            'Gear',
+            'Paradox',
+            'Pendulum',
+            'Premonition',
+            'Rewind',
+            'Rift',
+            'Souvenir',
+            'Teleportation',
+            'Cog',
+            'Desynchronisation',
+            'Distortion',
+            'Frostbite',
+            'Instability',
+            'Passage of Time',
+            'Permutation',
+            'Remanence',
+            'Rhol Bak',
+            'Sands of Time',
+            'Spacetime',
+            "Xelor's Punch",
+        ]
+        const spellsFR = [
+            'Astrochiasse',
+            'Perturbation',
+            'Compte-Goutte',
+            'Poussière',
+            'Engrenage',
+            'Paradoxe',
+            'Pendule',
+            'Prémonition',
+            'Rembobinage',
+            'Faille',
+            'Souvenir',
+            'Téléportation',
+            'Rouage',
+            'Désynchronisation',
+            'Distortion',
+            'Gelure',
+            'Instabilité',
+            'Fuite',
+            'Permutation',
+            'Rémanence',
+            'Raulebaque',
+            'Sables du Temps',
+            'Espace-Temps',
+            'Frappe de Xélor',
+        ]
 
         const otherSpellsEN = [
             '',
@@ -448,8 +503,34 @@
             EN: './images/EN-flag.png',
         }
 
-        const spellsALLXelor = [].concat(spellsEN, spellsFR)
+        const spellsALLXelor = [].concat(spellsFR, spellsEN)
         const variant = {
+            Teleportation: 'Spontaneous Return, but bad',
+            Disruption: 'Cog',
+            Gear: 'Dropper',
+            Frostbite: 'Dust',
+            Paradox: 'Rift',
+            "Xelor's Punch": 'Pendulum',
+            'Passage of Time': 'Premonition',
+            Rewind: 'Remanence',
+            Souvenir: 'Permutation',
+            Desynchronisation: 'Spacetime',
+            Distortion: 'Sands of Time',
+            'Rhol Bak': 'Instability',
+            'Spontaneous Return, but bad': 'Teleportation',
+            Cog: 'Disruption',
+            Dropper: 'Gear',
+            Dust: 'Frostbite',
+            Rift: 'Paradox',
+            Pendulum: "Xelor's Punch",
+            Premonition: 'Passage of Time',
+            Remanence: 'Rewind',
+            Permutation: 'Souvenir',
+            Spacetime: 'Desynchronisation',
+            'Sands of Time': 'Distortion',
+            Instability: 'Rhol Bak',
+            /*
+            * OLD
             'Slow Down': 'Souvenir',
             Souvenir: 'Slow Down',
             Teleportation: 'Spontaneous Return',
@@ -476,8 +557,35 @@
             Premonition: 'Flight',
             Desynchronisation: 'Knell',
             Knell: 'Desynchronisation',
+            */
         }
         const telefrag = {
+            'Spontaneous Return, but bad': true,
+            Disruption: true,
+            Dropper: true,
+            Dust: true,
+            Gear: true,
+            Paradox: true,
+            Pendulum: true,
+            Premonition: true,
+            Rewind: true,
+            Rift: true,
+            Souvenir: true,
+            Teleportation: true,
+            Cog: true,
+            Desynchronisation: true,
+            Distortion: true,
+            Frostbite: true,
+            Instability: true,
+            'Passage of Time': true,
+            Permutation: true,
+            Remanence: true,
+            'Rhol Bak': true,
+            'Sands of Time': true,
+            Spacetime: true,
+            "Xelor's Punch": true,
+            /*
+            * OLD
             'Slow Down': false,
             Souvenir: true,
             Teleportation: true,
@@ -504,8 +612,34 @@
             Premonition: true,
             Desynchronisation: true,
             Knell: false,
+            */
         }
         const shortName = {
+            'Spontaneous Return, but bad': 'SRBB',
+            Disruption: 'Disruption',
+            Dropper: 'Dropper',
+            Dust: 'Dust',
+            Gear: 'Gear',
+            Paradox: 'Paradox',
+            Pendulum: 'Pendulum',
+            Premonition: 'Premo',
+            Rewind: 'Rewind',
+            Rift: 'Rift',
+            Souvenir: 'Souvenir',
+            Teleportation: 'TP',
+            Cog: 'Cog',
+            Desynchronisation: 'Desynch',
+            Distortion: 'Disto',
+            Frostbite: 'Frosbite',
+            Instability: 'Instab',
+            'Passage of Time': 'PoT',
+            Permutation: 'Permutation',
+            Remanence: 'Remanence',
+            'Rhol Bak': 'RB',
+            'Sands of Time': 'Sands',
+            Spacetime: 'Spacetime',
+            "Xelor's Punch": 'Punch',
+            /*
             'Slow Down': 'Slow',
             Souvenir: 'Souv',
             Teleportation: 'TP',
@@ -532,6 +666,7 @@
             Premonition: 'Premo',
             Desynchronisation: 'Desync',
             Knell: 'Knell',
+            */
         }
         // Translation-related stuff
         // Spell name translation done using the fixed order of spells lists
@@ -584,6 +719,19 @@
         let manualBoostMode = false
 
         const boost = {
+            Teleportation: 0,
+            Disruption: 0,
+            Gear: 0,
+            Frostbite: 0,
+            Paradox: 0,
+            "Xelor's Punch": 0,
+            'Passage of Time': 0,
+            Rewind: 0,
+            Souvenir: 0,
+            Desynchronisation: 0,
+            Distortion: 0,
+            'Rhol Bak': 0,
+            /* OLD
             'Slow Down': 0,
             Teleportation: 0,
             Rewind: 0,
@@ -597,6 +745,7 @@
             Counter: 0,
             Flight: 0,
             Desynchronisation: 0,
+            */
         }
 
         // Functions and Methods
@@ -690,7 +839,7 @@
             return telefrag[spell]
         }
         function getImagePath(spell) {
-            return `./images/spells_old/${spell.replace(/ /g, '_')}.png`
+            return `./images/spells/${spell.replace(/ /g, '_')}.png`
         }
         function getIconPath(iconName) {
             return `./images/${iconName.replace(/ /g, '_')}.png`
@@ -715,6 +864,7 @@
                 while (remainingString.length > 0) {
                     try {
                         const resultOfExtraction = extractSpell(remainingString)
+                        console.log(resultOfExtraction)
                         spellsFound.push(getBaseName(resultOfExtraction.spell))
                         remainingString = resultOfExtraction.remaining
                     } catch (err) {
@@ -729,6 +879,7 @@
             if (lines[lines.length - 1].length == 0) {
                 lines.pop()
             }
+            console.log(lines)
             return lines
         }
         // functional
@@ -802,6 +953,7 @@
                     myImage.classList.add('grid-item')
                     myImage.setAttribute('type', 'image')
                     myImage.setAttribute('src', getImagePath(spell))
+                    myImage.setAttribute('width', '55')
                     myImage.setAttribute('alt', `[ICON : ${getShortName(spell)}]`)
                     myImage.setAttribute('onclick', `toggleSpellBoost("${spell}");`)
                     lineA.push(myImage)
@@ -816,6 +968,7 @@
                     myVariantImage.classList.add('grid-item')
                     myVariantImage.setAttribute('type', 'image')
                     myVariantImage.setAttribute('src', getImagePath(variantSpell))
+                    myVariantImage.setAttribute('width', '55')
                     myVariantImage.setAttribute('alt', `[ICON : ${getShortName(variantSpell)}]`)
                     myVariantImage.setAttribute('onclick', `toggleSpellBoost("${variantSpell}");`)
                     lineB.push(myVariantImage)
@@ -890,6 +1043,7 @@
         }
         function lockBoostNodes() {
             for (spell in boost) {
+                console.log(spell)
                 document
                     .getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`)
                     .style.setProperty('background-color', 'rgba(0,0,0,0)')
