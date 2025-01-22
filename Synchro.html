@@ -163,8 +163,19 @@
                 />
                 <img src="./images/Range_Resistance.png" height="24px" style="position: absolute; margin-top: 0px" />
             </div>
+            <div style="height: 30px"></div>
+            <div style="height: 30px"></div>
             <div>
-                <!-- spacer -->
+                <div style="text-align: center; height: 30px">
+                    <label for="levelXel" id="levelXelLabel">&nbsp;&nbsp; Niveau</label>
+                    <input
+                        type="text"
+                        id="levelXel"
+                        oninput="updateXelorLevel()"
+                        value="200"
+                        style="width: 30px; margin-top: 2px; text-align: center"
+                    />
+                </div>
             </div>
             <div style="text-align: center; height: 30px">
                 <label for="baseDamage" id="baseDamageLabel">Dégâts de base</label>
@@ -175,6 +186,30 @@
                     value="368"
                     style="width: 30px; margin-top: 2px; text-align: center"
                 />
+            </div>
+            <div>
+                <div style="text-align: center; height: 30px">
+                    <label for="powerBoost" id="powerBoostLabel">&nbsp;&nbsp; Puissance</label>
+                    <input
+                        type="text"
+                        id="powerBoost"
+                        oninput="updatePowerBoost()"
+                        value=""
+                        style="width: 24px; margin-top: 2px; text-align: center"
+                    />
+                    <img src="./images/puissance.png" height="24px" style="position: absolute; margin-top: 0px" />
+                </div>
+            </div>
+            <div style="text-align: center; height: 30px">
+                <label for="damageBoost" id="damageBoostLabel">Do Fixes</label>
+                <input
+                    type="text"
+                    id="damageBoost"
+                    oninput="updateDamageBoost()"
+                    value=""
+                    style="width: 24px; margin-top: 2px; text-align: center"
+                />
+                <img src="./images/do_fixes.png" height="24px" style="position: absolute; margin-top: 0px" />
             </div>
         </div>
 
@@ -249,8 +284,8 @@
     <script>
         // Layout of spells
         const layout = `
-        Ralentissement Téléportation Rembobinage Frappe de Xélor Gelure Sablier de Xélor Poussière Temporelle Raulebaque Démotivation Paradoxe Temporel Contre Fuite Désynchronisation
-    `
+            Ralentissement Téléportation Rembobinage Frappe de Xélor Gelure Sablier de Xélor Poussière Temporelle Raulebaque Démotivation Paradoxe Temporel Contre Fuite Désynchronisation
+        `
         // Usual/Default Additional Reductions
         const FixedReductionBonuses = [
             {
@@ -537,6 +572,8 @@
         let rangeFactor = 1
         let fixedAirRes = 0
         let fixedAdditionalRes = 0
+        let powerBoost = 0
+        let damageBoost = 0
         const activeAdditionalFixedResIDS = []
         let percentAirRes = 0
 
@@ -994,12 +1031,43 @@
             if (!manualBoostMode) updateExpectedDamage()
         }
         // Base Damage
-        function getBaseDamage() {
-            // TODO : find formula (scales with level)
-            return baseDamage
-        }
         function updateBaseDamage() {
             baseDamage = Math.floor(Number(document.getElementById('baseDamage').value))
+            // reset xelor level displayed
+            document.getElementById('levelXel').value = 'N/A'
+            updateExpectedDamage()
+        }
+        function updateXelorLevel() {
+            // Use 42Scientist's conclusions :
+            /**
+             * Spell is 23 damage
+             * Synchro has 0 damage stat
+             * Synchro has 666 base power
+             *  + 100 at rank 2 (level 157)
+             *  + scale linearly
+             */
+            const baseLevel = 90
+            // Bind level to a number between 90 and 200, also an int
+            // lv200 if cannot parse
+            const xelorLvl = Math.min(
+                Math.max(Math.floor(Number(document.getElementById('levelXel').value) || 200), 90),
+                200
+            )
+            // Calculate power stat
+            // We know Synchro has 1600 power at level 200, of which 100 from rank 2
+            const power = Math.ceil(
+                666 + (xelorLvl >= 157 ? 100 : 0) + ((xelorLvl - baseLevel) / (200 - baseLevel)) * (1500 - 666)
+            )
+            baseDamage = Math.floor((power / 100) * 23)
+            document.getElementById('baseDamage').value = baseDamage.toFixed(0)
+            updateExpectedDamage()
+        }
+        function updatePowerBoost() {
+            powerBoost = Math.floor(Number(document.getElementById('powerBoost').value))
+            updateExpectedDamage()
+        }
+        function updateDamageBoost() {
+            damageBoost = Math.floor(Number(document.getElementById('damageBoost').value))
             updateExpectedDamage()
         }
 
@@ -1302,21 +1370,19 @@
             // Base damage is 368 max rank
             // rank 1 varies with level ?
             // Dégâts=(368-RéFix)x(1-Ré%Air/100)x(1-Ré%Final/100)x(2xNombreBoosts-1)
-            const baseDamage = getBaseDamage()
             refreshAllValues()
             refreshBoosts()
             recalculateFinalFactor()
             recalculateAdditionalFixedRes()
-            expectedDamage_melee = validDamage(
-                validDamage((baseDamage - (fixedAirRes + fixedAdditionalRes)) * (1 - percentAirRes / 100)) *
-                    (finalFactor * meleeFactor) *
-                    (2 * numberOfBoosts - 1)
-            )
-            expectedDamage_range = validDamage(
-                validDamage((baseDamage - (fixedAirRes + fixedAdditionalRes)) * (1 - percentAirRes / 100)) *
-                    (finalFactor * rangeFactor) *
-                    (2 * numberOfBoosts - 1)
-            )
+            const intermediate =
+                validDamage(
+                    (baseDamage + 23 * (powerBoost / 100) + damageBoost - (fixedAirRes + fixedAdditionalRes)) *
+                        (1 - percentAirRes / 100)
+                ) *
+                finalFactor *
+                (2 * numberOfBoosts - 1)
+            expectedDamage_melee = validDamage(intermediate * meleeFactor)
+            expectedDamage_range = validDamage(intermediate * rangeFactor)
         }
         function updateExpectedDamageDisplays() {
             const myNodeM = document.getElementById('expectedDamageNode-Melee')
