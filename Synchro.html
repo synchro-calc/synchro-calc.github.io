@@ -690,7 +690,10 @@
             return telefrag[spell]
         }
         function getImagePath(spell) {
-            return `./images/${spell.replace(/ /g, '_')}.png`
+            return `./images/spells_old/${spell.replace(/ /g, '_')}.png`
+        }
+        function getIconPath(iconName) {
+            return `./images/${iconName.replace(/ /g, '_')}.png`
         }
         function extractSpell(string) {
             for (spellName of spellsALLXelor) {
@@ -837,7 +840,7 @@
                     myImage.style.setProperty('background-color', '#757674')
                     myImage.classList.add('grid-item')
                     myImage.setAttribute('type', 'image')
-                    myImage.setAttribute('src', getImagePath('Pause'))
+                    myImage.setAttribute('src', getIconPath('Pause'))
                     myImage.setAttribute('width', '55')
                     myImage.setAttribute('alt', '[MANUAL MODE]')
                     myImage.setAttribute('onclick', 'manualBoostOverride();')
@@ -862,7 +865,7 @@
                     myImage.style.setProperty('background-color', '#757674')
                     myImage.classList.add('grid-item')
                     myImage.setAttribute('type', 'image')
-                    myImage.setAttribute('src', getImagePath('Reset'))
+                    myImage.setAttribute('src', getIconPath('Reset'))
                     myImage.setAttribute('width', '55')
                     myImage.setAttribute('alt', `[ICON : RESET]`)
                     myImage.setAttribute('onclick', `confirmBoostReset();`)
@@ -878,7 +881,7 @@
             lockBoostNodes()
             // Change Menu Option
             const topOptionNode = document.getElementById('spellGridItem-MenuTop')
-            topOptionNode.setAttribute('src', getImagePath('Play'))
+            topOptionNode.setAttribute('src', getIconPath('Play'))
             topOptionNode.setAttribute('title', '') // FIXME : Play
             topOptionNode.setAttribute('alt', '') // FIXME : Play
             topOptionNode.setAttribute('onclick', 'endManualBoostOverride();')
@@ -939,7 +942,7 @@
             unlockBoostNodes()
             // Change Menu Option
             const topOptionNode = document.getElementById('spellGridItem-MenuTop')
-            topOptionNode.setAttribute('src', getImagePath('Pause'))
+            topOptionNode.setAttribute('src', getIconPath('Pause'))
             topOptionNode.setAttribute('title', '') // FIXME : Pause
             topOptionNode.setAttribute('alt', '') // FIXME : Pause
             topOptionNode.setAttribute('onclick', 'manualBoostOverride();')
@@ -980,8 +983,8 @@
             const topOptionNode = document.getElementById('spellGridItem-MenuTop')
             const botOptionNode = document.getElementById('spellGridItem-MenuBot')
             // Change Images, titles & alt
-            topOptionNode.setAttribute('src', getImagePath('Validate'))
-            botOptionNode.setAttribute('src', getImagePath('Cancel'))
+            topOptionNode.setAttribute('src', getIconPath('Validate'))
+            botOptionNode.setAttribute('src', getIconPath('Cancel'))
 
             topOptionNode.setAttribute('alt', getLocalisedName('YES', currentLocaleID))
             botOptionNode.setAttribute('alt', getLocalisedName('NO', currentLocaleID))
@@ -997,8 +1000,8 @@
             const topOptionNode = document.getElementById('spellGridItem-MenuTop')
             const botOptionNode = document.getElementById('spellGridItem-MenuBot')
             // Change Images
-            topOptionNode.setAttribute('src', manualBoostMode ? getImagePath('Play') : getImagePath('Pause'))
-            botOptionNode.setAttribute('src', getImagePath('Reset'))
+            topOptionNode.setAttribute('src', manualBoostMode ? getIconPath('Play') : getIconPath('Pause'))
+            botOptionNode.setAttribute('src', getIconPath('Reset'))
 
             topOptionNode.setAttribute('alt', '') // FIXME : Pause/Play
             botOptionNode.setAttribute('alt', '[ICON : RESET]')
