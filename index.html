@@ -1204,15 +1204,35 @@
              *    -> on each portion ?
              */
             const baseLevel = 90
-            const at90 = 666
-            const at156 = 1185 // in the 1176 - 1194 range
+            const at90 = 566
+            // The 157 - 200 range seems pretty good so keep this as a reference
+            const at157 = 1285 // in the 1276 - 1294 range
+            // Adjust here
+            const at156 = at157 - 230
             // Note :
             /**
+             * The 90-156 zone has exceptionnally flat
+             *  scaling toward the end from data points
+             *  I received, which is pretty weird.
+             *
+             * 90 : 153
+             *
+             *
+             *
+             * 142 : 243 | 245 ?
+             *
+             * 145 : 248 ? seems flat
+             * 146 : 249 ? seems flat
+             * 147 : 250
+             *
+             * 164 : 326
+             *
+             *
              * 191 : 357
              * 197 : 364
              * 199 : 366
              */
-            const at157 = at156 + 100
+
             // Bind level to a number between 90 and 200, also an int
             // lv200 if cannot parse
             const xelorLvl = Math.min(
