@@ -8,7 +8,7 @@ Made by Goz (Discord: "\_\_goz\_\_" <@272394963642220545>), started 2023/01/04
 
 ## <img src="https://raw.githubusercontent.com/synchro-calc/synchro-calc.github.io/refs/heads/master/images/FR-flag.jpeg" height="10px"> Français
 
-[Jump to English Section](https://github.com/synchro-calc/synchro-calc.github.io?tab=readme-ov-file#usage-1)
+[Jump to English Section](https://github.com/synchro-calc/synchro-calc.github.io?tab=readme-ov-file#-english)
 
 ## Usage
 
@@ -60,7 +60,7 @@ Vous pouvez aider ce projet en :
 
 ## <img src="https://raw.githubusercontent.com/synchro-calc/synchro-calc.github.io/refs/heads/master/images/EN-flag.png" height="12px"> English
 
-[Sauter vers la section Française](https://github.com/synchro-calc/synchro-calc.github.io?tab=readme-ov-file#usage)
+[Sauter vers la section Française](https://github.com/synchro-calc/synchro-calc.github.io?tab=readme-ov-file#-fran%C3%A7ais)
 
 ## Usage
 
