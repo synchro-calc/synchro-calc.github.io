@@ -1200,9 +1200,19 @@
              * Synchro has 0 damage stat
              * Synchro has 666 base power
              *  + 100 at rank 2 (level 157)
-             *  + scale linearly
+             *  + scale linearly ?
+             *    -> on each portion ?
              */
             const baseLevel = 90
+            const at90 = 666
+            const at156 = 1185 // in the 1176 - 1194 range
+            // Note :
+            /**
+             * 191 : 357
+             * 197 : 364
+             * 199 : 366
+             */
+            const at157 = at156 + 100
             // Bind level to a number between 90 and 200, also an int
             // lv200 if cannot parse
             const xelorLvl = Math.min(
@@ -1210,11 +1220,15 @@
                 200
             )
             // Calculate power stat
-            // We know Synchro has 1600 power at level 200, of which 100 from rank 2
-            const power = Math.ceil(
-                666 + (xelorLvl >= 157 ? 100 : 0) + ((xelorLvl - baseLevel) / (200 - baseLevel)) * (1500 - 666)
-            )
-            baseDamage = Math.floor((power / 100) * 23)
+            // Assume linear on two zones
+            if (xelorLvl >= 157) {
+                const power = Math.floor(((xelorLvl - 157) / (200 - 157)) * (1500 - at157) + at157)
+                baseDamage = Math.floor((1 + power / 100) * 23)
+            } else {
+                const power = Math.floor(((xelorLvl - 90) / (156 - 90)) * (at156 - at90) + at90)
+                baseDamage = Math.floor((1 + power / 100) * 23)
+            }
+
             document.getElementById('baseDamage').value = baseDamage.toFixed(0)
             updateExpectedDamage()
         }
