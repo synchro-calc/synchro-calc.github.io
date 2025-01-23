@@ -766,8 +766,15 @@
         function init() {
             // Hide away manual controls
             document.getElementById('manualBoostsContainer').style.setProperty('display', 'none')
-            // reset base dmaage
-            document.getElementById('baseDamage').value = baseDamage
+            // store baseDamage from input value
+            // or reset input to default value of baseDamage
+            if (document.getElementById('baseDamage').value) {
+                // If the broswer has a cached value for this, use it
+                baseDamage = Math.floor(Number(document.getElementById('baseDamage').value))
+            } else {
+                // reset
+                document.getElementById('baseDamage').value = baseDamage
+            }
             // fill grids
             const layoutArray = parseLayoutString(layout)
             createSpellGrid(layoutArray)
