@@ -4,7 +4,11 @@
 
 Made by Goz (Discord: "\_\_goz\_\_" <@272394963642220545>), started 2023/01/04
 
-<img src="https://raw.githubusercontent.com/synchro-calc/synchro-calc.github.io/refs/heads/master/images/FR-flag.jpeg" height="10px"> Français
+---
+
+## <img src="https://raw.githubusercontent.com/synchro-calc/synchro-calc.github.io/refs/heads/master/images/FR-flag.jpeg" height="10px"> Français
+
+[Jump to English Section](https://github.com/synchro-calc/synchro-calc.github.io?tab=readme-ov-file#usage-1)
 
 ## Usage
 
@@ -32,9 +36,9 @@ Le calculateur supporte 2 modes de fonctionnement :
 -   le mode "suivi", par défaut, où l'utilisateur clique sur les sorts pour booster la Synchro
 -   le mode "manuel", qui permet de saisir directement le %age de dégâts finaux affichés par la Synchro via un slider ou une saisie manuelle
 
-Le changement entre les deux modes se fait en utilisant les boutons <img src="https://raw.githubusercontent.com/synchro-calc/synchro-calc.github.io/refs/heads/master/images/Pause.png" width="16px" style="position:absolute; margin-top:3px">&nbsp;&nbsp;&nbsp;&nbsp;et&nbsp;<img src="https://raw.githubusercontent.com/synchro-calc/synchro-calc.github.io/refs/heads/master/images/Play.png" width="16px" style="position:absolute; margin-top:3px">&nbsp;&nbsp;&nbsp;&nbsp;.
+Le changement entre les deux modes se fait en utilisant les boutons <img src="https://raw.githubusercontent.com/synchro-calc/synchro-calc.github.io/refs/heads/master/images/Pause.png" width="16px"> et <img src="https://raw.githubusercontent.com/synchro-calc/synchro-calc.github.io/refs/heads/master/images/Play.png" width="16px" >.
 
-Le bouton <img src="https://raw.githubusercontent.com/synchro-calc/synchro-calc.github.io/refs/heads/master/images/Reset.png" width="16px" style="position:absolute; margin-top:3px"> &nbsp;&nbsp;&nbsp;&nbsp; permet de remettre à zéro la liste des sorts ayant boosté la Synchro.<br>
+Le bouton <img src="https://raw.githubusercontent.com/synchro-calc/synchro-calc.github.io/refs/heads/master/images/Reset.png" width="16px"> permet de remettre à zéro la liste des sorts ayant boosté la Synchro.<br>
 Une confirmation est demandée pour valider le reset (les sorts concernés sont mis en surbrillance).
 
 ## Remerciements
@@ -54,7 +58,9 @@ Vous pouvez aider ce projet en :
 
 ---
 
-<img src="https://raw.githubusercontent.com/synchro-calc/synchro-calc.github.io/refs/heads/master/images/EN-flag.png" height="12px"> English
+## <img src="https://raw.githubusercontent.com/synchro-calc/synchro-calc.github.io/refs/heads/master/images/EN-flag.png" height="12px"> English
+
+[Sauter vers la section Française](https://github.com/synchro-calc/synchro-calc.github.io?tab=readme-ov-file#usage)
 
 ## Usage
 
@@ -82,9 +88,9 @@ The calculator has 2 modes :
 -   the default "tracking" mode, where the user can click on spells to boost the Synchro
 -   the "manual" mode, that allows for manual input of the %damage displayed by the synchro in-game via a slider or an input
 
-Swapping between modes is done by using the <img src="https://raw.githubusercontent.com/synchro-calc/synchro-calc.github.io/refs/heads/master/images/Pause.png" width="16px" style="position:absolute; margin-top:3px">&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;<img src="https://raw.githubusercontent.com/synchro-calc/synchro-calc.github.io/refs/heads/master/images/Play.png" width="16px" style="position:absolute; margin-top:3px">&nbsp;&nbsp;&nbsp;&nbsp;buttons.
+Swapping between modes is done by using the <img src="https://raw.githubusercontent.com/synchro-calc/synchro-calc.github.io/refs/heads/master/images/Pause.png" width="16px"> and <img src="https://raw.githubusercontent.com/synchro-calc/synchro-calc.github.io/refs/heads/master/images/Play.png" width="16px"> buttons.
 
-The <img src="https://raw.githubusercontent.com/synchro-calc/synchro-calc.github.io/refs/heads/master/images/Reset.png" width="16px" style="position:absolute; margin-top:3px"> &nbsp;&nbsp;&nbsp;&nbsp; button resets the Synchro's boosts.<br>
+The <img src="https://raw.githubusercontent.com/synchro-calc/synchro-calc.github.io/refs/heads/master/images/Reset.png" width="16px" > button resets the Synchro's boosts.<br>
 A confirmation is required for the reset (affected spells will be highlighted).
 
 ## Thanks
