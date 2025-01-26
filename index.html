@@ -9,6 +9,16 @@
     <head>
         <title>Synchro Calculator</title>
         <style>
+            :root {
+                --unit: calc(min(max(min(5vh, 5vw), 50px), 100px));
+                --text-medium: calc(24 / 55 * var(--unit));
+                --text-small: calc(19 / 55 * var(--unit));
+                --text-smaller: calc(16 / 55 * var(--unit));
+                --text-big: calc(40 / 55 * var(--unit));
+                --icon-width: calc(28 / 55 * var(--unit));
+                --offset: calc(-3 / 55 * var(--unit));
+                --border-width: calc(4 / 50 * var(--unit));
+            }
             .spell-grid-container {
                 width: 60%;
                 display: grid;
@@ -21,30 +31,70 @@
                 padding: 1px;
             }
             .grid-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
                 padding: 4px;
                 border: 1px solid rgba(0, 0, 0, 0.8);
                 border-radius: 5px;
-                font-size: 30px;
+                font-size: 40px;
                 text-align: center;
+            }
+            .center-vertical {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+            }
+            .grid-item > p {
+                margin-top: 5%;
+                margin-bottom: -5%;
+            }
+            .add-new > input[type='text'] {
+                height: var(--text-small);
+                font-size: var(--text-small);
+                margin-top: 5%;
+                margin-bottom: -5%;
+            }
+            .damageDisplay > div {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: black;
+                font-size: var(--text-big);
+            }
+            .settings {
+                height: calc(30 / 55 * var(--unit));
+                font-size: var(--text-small);
+                text-align: center;
+                align-content: center;
+            }
+            .settings > input[type='text'] {
+                height: var(--text-small);
+                font-size: var(--text-smaller);
+                width: var(--icon-width);
+                text-align: center;
+            }
+            .sectionLabel {
+                font-size: var(--text-medium);
             }
             input[type='range'] {
                 -webkit-appearance: none;
-                height: 4px;
+                height: var(--border-width);
                 outline: none !important;
                 appearance: none;
-                border: 4px solid black;
+                border: var(--border-width) solid black;
                 border-radius: 30px;
             }
             input[type='range']:hover {
                 outline: none;
             }
             input[type='range']::-moz-range-thumb {
-                width: 18px;
-                height: 18px;
+                width: var(--text-smaller);
+                height: var(--text-smaller);
                 background: #757674;
                 cursor: pointer;
                 border-radius: 50%;
-                border: 4px solid black;
+                border: var(--border-width) solid black;
                 outline: none;
             }
             input[type='range']::-moz-range-progress {
@@ -78,15 +128,31 @@
                 <div
                     class="grid-container"
                     id="damageGridContainer"
-                    style="grid-template-columns: 1fr 1fr; grid-template-rows: 1fr; width: 500px"
+                    style="grid-template-columns: 1fr 1fr; grid-template-rows: 1fr; width: calc(10 * var(--unit))"
                 >
-                    <div class="grid-item" id="expectedDamageParentNode-Melee" style="background-color: #757674">
-                        <img src="./images/melee.png" alt="[MELEE ICON]" style="float: left; padding-left: 20%" />
-                        <div id="expectedDamageNode-Melee" style="color: black">0</div>
+                    <div
+                        class="grid-item damageDisplay"
+                        id="expectedDamageParentNode-Melee"
+                        style="background-color: #757674; display: grid; grid-template-columns: 1fr 2fr"
+                    >
+                        <img
+                            src="./images/melee.png"
+                            alt="[MELEE ICON]"
+                            style="float: left; padding-left: 40%; width: var(--unit)"
+                        />
+                        <div id="expectedDamageNode-Melee">0</div>
                     </div>
-                    <div class="grid-item" id="expectedDamageParentNode-Range" style="background-color: #757674">
-                        <img src="./images/range.png" alt="[RANGE ICON]" style="float: left; padding-left: 20%" />
-                        <div id="expectedDamageNode-Range" style="color: black">0</div>
+                    <div
+                        class="grid-item damageDisplay"
+                        id="expectedDamageParentNode-Range"
+                        style="background-color: #757674; display: grid; grid-template-columns: 1fr 2fr"
+                    >
+                        <img
+                            src="./images/range.png"
+                            alt="[RANGE ICON]"
+                            style="float: left; padding-left: 40%; width: var(--unit)"
+                        />
+                        <div id="expectedDamageNode-Range">0</div>
                     </div>
                 </div>
             </div>
@@ -100,7 +166,7 @@
                     <div
                         id="currentLocaleCode"
                         class="grid-item"
-                        style="border: 0px; font-size: medium; margin-bottom: 0px"
+                        style="border: 0px; font-size: var(--text-small); margin-bottom: 0px"
                     >
                         FR
                     </div>
@@ -110,8 +176,7 @@
                             type="image"
                             src="./images/FR-flag.jpeg"
                             alt="[FLAG]"
-                            style="float: right; margin: left 10px top 0px"
-                            width="32"
+                            style="float: right; margin: left 10px top 0px; width: calc(32 / 55 * var(--unit))"
                             onclick="cycleLocale()"
                         />
                     </div>
@@ -121,105 +186,91 @@
 
         <div
             class="grid-container"
-            style="width: 500px; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto auto"
+            style="width: calc(10 * var(--unit)); grid-template-columns: 1fr 1fr; grid-template-rows: auto auto auto"
         >
-            <div style="text-align: center; height: 30px">
+            <div class="settings">
                 <label for="percentAirRes" id="percentAirResLabel">% Air Res</label>
-                <input
-                    type="text"
-                    id="percentAirRes"
-                    oninput="updateExpectedDamage()"
-                    style="width: 24px; margin-top: 2px; text-align: center"
+                <input type="text" id="percentAirRes" oninput="updateExpectedDamage()" />
+                <img
+                    src="./images/Air_Resistance.png"
+                    style="position: absolute; margin-top: var(--offset); width: var(--icon-width)"
                 />
-                <img src="./images/Air_Resistance.png" height="24px" style="position: absolute; margin-top: 0px" />
             </div>
-            <div style="text-align: center; height: 30px">
+            <div class="settings">
                 <label for="meleeRes" id="meleeResLabel">% Melee</label>
-                <input
-                    type="text"
-                    id="meleeRes"
-                    oninput="updateExpectedDamage()"
-                    style="width: 24px; margin-top: 2px; text-align: center"
+                <input type="text" id="meleeRes" oninput="updateExpectedDamage()" />
+                <img
+                    src="./images/Melee_Resistance.png"
+                    style="position: absolute; margin-top: var(--offset); width: var(--icon-width)"
                 />
-                <img src="./images/Melee_Resistance.png" height="24px" style="position: absolute; margin-top: 0px" />
             </div>
-            <div style="text-align: center; height: 30px">
+            <div class="settings">
                 <label for="fixedAirRes" id="fixedAirResLabel">Air Res</label>
-                <input
-                    type="text"
-                    id="fixedAirRes"
-                    oninput="updateExpectedDamage()"
-                    style="width: 24px; margin-top: 2px; text-align: center"
+                <input type="text" id="fixedAirRes" oninput="updateExpectedDamage()" />
+                <img
+                    src="./images/Air_Resistance.png"
+                    style="position: absolute; margin-top: var(--offset); width: var(--icon-width)"
                 />
-                <img src="./images/Air_Resistance.png" height="24px" style="position: absolute; margin-top: 0px" />
             </div>
-            <div style="text-align: center; height: 30px">
+            <div class="settings">
                 <label for="rangeRes" id="rangeResLabel">% Range</label>
-                <input
-                    type="text"
-                    id="rangeRes"
-                    oninput="updateExpectedDamage()"
-                    style="width: 24px; margin-top: 2px; text-align: center"
+                <input type="text" id="rangeRes" oninput="updateExpectedDamage()" />
+                <img
+                    src="./images/Range_Resistance.png"
+                    style="position: absolute; margin-top: var(--offset); width: var(--icon-width)"
                 />
-                <img src="./images/Range_Resistance.png" height="24px" style="position: absolute; margin-top: 0px" />
             </div>
-            <div style="height: 30px"></div>
-            <div style="height: 30px"></div>
+            <div class="settings"></div>
+            <div class="settings"></div>
             <div>
-                <div style="text-align: center; height: 30px">
+                <div class="settings">
                     <label for="levelXel" id="levelXelLabel">&nbsp;&nbsp; Niveau</label>
                     <input
                         type="text"
                         id="levelXel"
                         oninput="updateXelorLevel()"
                         value="200"
-                        style="width: 30px; margin-top: 2px; text-align: center"
+                        style="width: calc(6 / 5 * var(--icon-width)); text-align: center"
                     />
                 </div>
             </div>
-            <div style="text-align: center; height: 30px">
+            <div class="settings">
                 <label for="baseDamage" id="baseDamageLabel">Dégâts de base</label>
                 <input
                     type="text"
                     id="baseDamage"
                     oninput="updateBaseDamage()"
                     value="368"
-                    style="width: 30px; margin-top: 2px; text-align: center"
+                    style="width: calc(6 / 5 * var(--icon-width)); text-align: center"
                 />
             </div>
             <div>
-                <div style="text-align: center; height: 30px">
+                <div class="settings">
                     <label for="powerBoost" id="powerBoostLabel">&nbsp;&nbsp; Puissance</label>
-                    <input
-                        type="text"
-                        id="powerBoost"
-                        oninput="updatePowerBoost()"
-                        value=""
-                        style="width: 24px; margin-top: 2px; text-align: center"
+                    <input type="text" id="powerBoost" oninput="updatePowerBoost()" value="" />
+                    <img
+                        src="./images/puissance.png"
+                        style="position: absolute; margin-top: var(--offset); width: var(--icon-width)"
                     />
-                    <img src="./images/puissance.png" height="24px" style="position: absolute; margin-top: 0px" />
                 </div>
             </div>
-            <div style="text-align: center; height: 30px">
+            <div class="settings">
                 <label for="damageBoost" id="damageBoostLabel">Do Fixes</label>
-                <input
-                    type="text"
-                    id="damageBoost"
-                    oninput="updateDamageBoost()"
-                    value=""
-                    style="width: 24px; margin-top: 2px; text-align: center"
+                <input type="text" id="damageBoost" oninput="updateDamageBoost()" value="" />
+                <img
+                    src="./images/do_fixes.png"
+                    style="position: absolute; margin-top: var(--offset); width: var(--icon-width)"
                 />
-                <img src="./images/do_fixes.png" height="24px" style="position: absolute; margin-top: 0px" />
             </div>
         </div>
 
         <br />
 
-        <label for="additionalFixedReductionContainer" id="additionalFixedReductionContainerLabel"
+        <label class="sectionLabel" for="additionalFixedReductionContainer" id="additionalFixedReductionContainerLabel"
             >Fixed Reductions</label
         >
         <div class="grid-container" id="additionalFixedReductionContainer" style="width: 0px"></div>
-        <label for="additionalFinalReductionContainer" id="additionalFinalReductionContainerLabel"
+        <label class="sectionLabel" for="additionalFinalReductionContainer" id="additionalFinalReductionContainerLabel"
             >Final Reductions</label
         >
         <div class="grid-container" id="additionalFinalReductionContainer" style="width: 0px"></div>
@@ -231,7 +282,7 @@
             class="grid-container"
             style="grid-template-columns: auto auto auto auto; width: 0px"
         >
-            <div class="grid-item" style="border: 0px">
+            <div class="grid-item center-vertical" style="border: 0px">
                 <input
                     id="manualBoostSlider"
                     type="range"
@@ -240,42 +291,42 @@
                     step="200"
                     value="200"
                     oninput="document.getElementById('manualBoostInput').value = this.value; numberOfBoosts=parseInt(this.value)/200;updateExpectedDamage();"
-                    style="width: 700px; margin-top: 15px"
+                    style="width: calc(7 * var(--unit))"
                 />
             </div>
-            <div class="grid-item" style="border: 0px; width: 80px">
+            <div class="grid-item" style="display: grid; border: 0px; width: calc(8 / 5 * var(--unit))">
                 <input
                     id="manualBoostInput"
                     type="text"
                     oninput="document.getElementById('manualBoostSlider').value = this.value; numberOfBoosts=parseInt(this.value)/200;updateExpectedDamage()"
                     onclick="this.value=''"
                     style="
-                        width: 60px;
-                        height: 22px;
+                        width: calc(6 / 5 * var(--unit));
+                        height: var(--text-small);
+                        font-size: var(--text-small);
                         background-color: #1e1f1b;
                         border-radius: 10px;
-                        border: 4px solid black;
+                        border: var(--border-width) solid black;
                         text-align: center;
+                        justify-self: center;
                         color: #757674;
                     "
                 />
             </div>
-            <div class="grid-item" style="border: 0px; width: 28px">
+            <div class="grid-item center-vertical" style="border: 0px; width: var(--icon-width)">
                 <input
                     type="image"
                     src="./images/Substract.png"
                     onclick="removeManualBoost()"
-                    width="28px"
-                    style="margin: 7px 0 0 0"
+                    style="width: var(--icon-width)"
                 />
             </div>
-            <div class="grid-item" style="border: 0px; width: 28px">
+            <div class="grid-item center-vertical" style="border: 0px; width: var(--icon-width)">
                 <input
                     type="image"
                     src="./images/Add.png"
                     onclick="addManualBoost()"
-                    width="28px"
-                    style="margin: 7px 0 0 0"
+                    style="width: var(--icon-width)"
                 />
             </div>
         </div>
@@ -967,7 +1018,7 @@
                     myImage.classList.add('grid-item')
                     myImage.setAttribute('type', 'image')
                     myImage.setAttribute('src', getImagePath(spell))
-                    myImage.setAttribute('width', '55')
+                    myImage.style.width = 'var(--unit)'
                     myImage.setAttribute('alt', `[ICON : ${getShortName(spell)}]`)
                     myImage.setAttribute('onclick', `toggleSpellBoost("${spell}");`)
                     lineA.push(myImage)
@@ -982,7 +1033,7 @@
                     myVariantImage.classList.add('grid-item')
                     myVariantImage.setAttribute('type', 'image')
                     myVariantImage.setAttribute('src', getImagePath(variantSpell))
-                    myVariantImage.setAttribute('width', '55')
+                    myVariantImage.style.width = 'var(--unit)'
                     myVariantImage.setAttribute('alt', `[ICON : ${getShortName(variantSpell)}]`)
                     myVariantImage.setAttribute('onclick', `toggleSpellBoost("${variantSpell}");`)
                     lineB.push(myVariantImage)
@@ -1008,7 +1059,7 @@
                     myImage.classList.add('grid-item')
                     myImage.setAttribute('type', 'image')
                     myImage.setAttribute('src', getIconPath('Pause'))
-                    myImage.setAttribute('width', '55')
+                    myImage.style.width = 'var(--unit)'
                     myImage.setAttribute('alt', '[MANUAL MODE]')
                     myImage.setAttribute('onclick', 'manualBoostOverride();')
                     spellGridContainerNode.appendChild(myImage)
@@ -1033,7 +1084,7 @@
                     myImage.classList.add('grid-item')
                     myImage.setAttribute('type', 'image')
                     myImage.setAttribute('src', getIconPath('Reset'))
-                    myImage.setAttribute('width', '55')
+                    myImage.style.width = 'var(--unit)'
                     myImage.setAttribute('alt', `[ICON : RESET]`)
                     myImage.setAttribute('onclick', `confirmBoostReset();`)
                     spellGridContainerNode.appendChild(myImage)
@@ -1335,7 +1386,7 @@
                 const newImg = document.createElement('input')
                 newImg.setAttribute('type', 'image')
                 newImg.setAttribute('src', './images/unknown_shield.png') // Dev Note : Find better icon
-                newImg.setAttribute('width', '54px')
+                newImg.style.width = 'var(--unit)'
                 newImg.setAttribute('alt', '[CUSTOM]')
                 newImg.setAttribute('title', getLocalisedName('Custom Reduction', currentLocaleID))
                 newImg.setAttribute(
@@ -1346,11 +1397,8 @@
 
                 const newText = document.createElement('p')
                 newText.style.setProperty('color', '#EAEBE7')
-                newText.style.setProperty('font-size', '16px')
+                newText.style.fontSize = 'var(--text-small)'
                 newText.style.setProperty('text-align', 'center')
-                newText.style.setProperty('margin-top', '-8px')
-                newText.style.setProperty('margin-left', '0px')
-                newText.style.setProperty('margin-bottom', '-4px')
 
                 const newInput = document.createTextNode(newValue)
                 newText.appendChild(newInput)
@@ -1379,15 +1427,13 @@
                 newImg.setAttribute('alt', FixedReductionBonuses[i].alt)
                 newImg.setAttribute('title', getLocalisedName(FixedReductionBonuses[i].spellName, currentLocaleID))
                 newImg.setAttribute('onclick', `toggleAdditionalFixedReduction("additionalFixedReductionItem-${i}")`)
+                newImg.style.width = 'var(--unit)'
                 newNode.appendChild(newImg)
 
                 const newText = document.createElement('p')
                 newText.style.setProperty('color', '#EAEBE7')
-                newText.style.setProperty('font-size', '16px')
+                newText.style.fontSize = 'var(--text-small)'
                 newText.style.setProperty('text-align', 'center')
-                newText.style.setProperty('margin-top', '-8px')
-                newText.style.setProperty('margin-left', '0px')
-                newText.style.setProperty('margin-bottom', '-4px')
                 const t = document.createTextNode(FixedReductionBonuses[i].value)
                 newText.appendChild(t)
 
@@ -1398,28 +1444,25 @@
             }
             const newNode = document.createElement('div')
             newNode.classList.add('grid-item')
+            newNode.classList.add('add-new')
             newNode.setAttribute('id', 'additionalFixedReductionItem-Custom')
             newNode.style.setProperty('background-color', '#757674')
 
             const newImg = document.createElement('input')
             newImg.setAttribute('type', 'image')
             newImg.setAttribute('src', './images/New.png')
-            newImg.setAttribute('width', '54px')
+            newImg.style.width = 'var(--unit)'
             newImg.setAttribute('alt', '[ADD]')
             newImg.setAttribute('title', getLocalisedName('Add a spell with a custom amount', currentLocaleID))
             newImg.setAttribute('onclick', 'addNewAdditionalFixedReduction()')
             newNode.appendChild(newImg)
 
-            const newText = document.createElement('div')
-            newText.style.setProperty('margin-top', '-20px')
-            newText.style.setProperty('margin-bottom', '-10px')
             const newInput = document.createElement('input')
             newInput.setAttribute('id', 'additionalFixedReductionItem-CustomInput')
             newInput.setAttribute('type', 'text')
-            newInput.style.setProperty('width', '30px')
-            newText.appendChild(newInput)
+            newInput.style.width = 'var(--icon-width)'
 
-            newNode.appendChild(newText)
+            newNode.appendChild(newInput)
 
             containerNode.appendChild(newNode)
         }
@@ -1466,7 +1509,7 @@
                 const newImg = document.createElement('input')
                 newImg.setAttribute('type', 'image')
                 newImg.setAttribute('src', './images/unknown_shield.png') // Dev Note : Find better icon
-                newImg.setAttribute('width', '54px')
+                newImg.style.width = 'var(--unit)'
                 newImg.setAttribute('alt', '[CUSTOM]')
                 newImg.setAttribute('title', getLocalisedName('Custom Reduction', currentLocaleID))
                 newImg.setAttribute(
@@ -1477,11 +1520,8 @@
 
                 const newText = document.createElement('p')
                 newText.style.setProperty('color', '#EAEBE7')
-                newText.style.setProperty('font-size', '16px')
+                newText.style.fontSize = 'var(--text-small)'
                 newText.style.setProperty('text-align', 'center')
-                newText.style.setProperty('margin-top', '-8px')
-                newText.style.setProperty('margin-left', '0px')
-                newText.style.setProperty('margin-bottom', '-4px')
 
                 const newInput = document.createTextNode(newValue)
                 newText.appendChild(newInput)
@@ -1510,15 +1550,13 @@
                 newImg.setAttribute('alt', FinalReductionBonuses[i].alt)
                 newImg.setAttribute('title', getLocalisedName(FinalReductionBonuses[i].spellName, currentLocaleID))
                 newImg.setAttribute('onclick', `toggleAdditionalFinalReduction("additionalFinalReductionItem-${i}")`)
+                newImg.style.width = 'var(--unit)'
                 newNode.appendChild(newImg)
 
                 const newText = document.createElement('p')
                 newText.style.setProperty('color', '#EAEBE7')
-                newText.style.setProperty('font-size', '16px')
+                newText.style.fontSize = 'var(--text-small)'
                 newText.style.setProperty('text-align', 'center')
-                newText.style.setProperty('margin-top', '-8px')
-                newText.style.setProperty('margin-left', '0px')
-                newText.style.setProperty('margin-bottom', '-4px')
                 const t = document.createTextNode(FinalReductionBonuses[i].value)
                 newText.appendChild(t)
 
@@ -1529,28 +1567,25 @@
             }
             const newNode = document.createElement('div')
             newNode.classList.add('grid-item')
+            newNode.classList.add('add-new')
             newNode.setAttribute('id', 'additionalFinalReductionItem-Custom')
             newNode.style.setProperty('background-color', '#757674')
 
             const newImg = document.createElement('input')
             newImg.setAttribute('type', 'image')
             newImg.setAttribute('src', './images/New.png')
-            newImg.setAttribute('width', '54px')
+            newImg.style.width = 'var(--unit)'
             newImg.setAttribute('alt', '[ADD]')
             newImg.setAttribute('title', getLocalisedName('Add a spell with a custom amount', currentLocaleID))
             newImg.setAttribute('onclick', 'addNewAdditionalFinalReduction()')
             newNode.appendChild(newImg)
 
-            const newText = document.createElement('div')
-            newText.style.setProperty('margin-top', '-20px')
-            newText.style.setProperty('margin-bottom', '-10px')
             const newInput = document.createElement('input')
             newInput.setAttribute('id', 'additionalFinalReductionItem-CustomInput')
             newInput.setAttribute('type', 'text')
-            newInput.style.setProperty('width', '30px')
-            newText.appendChild(newInput)
+            newInput.style.width = 'var(--icon-width)'
 
-            newNode.appendChild(newText)
+            newNode.appendChild(newInput)
 
             containerNode.appendChild(newNode)
         }
