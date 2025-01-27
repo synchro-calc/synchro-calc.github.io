@@ -284,33 +284,34 @@
     <script>
         // Layout of spells
         const layout = `
-            Perturbation Gelure Souvenir Frappe de Xélor Téléportation Engrenage Fuite Raulebaque Rembobinage Paradoxe Distortion Désynchronisation
+            Perturbation Gelure Souvenir Frappe de Xélor Téléportation Engrenage
+            Fuite Raulebaque Rembobinage Paradoxe Distortion Désynchronisation
         `
         // Usual/Default Additional Reductions
         const FixedReductionBonuses = [
             {
                 iconSRC: './images/Rampart.png',
                 alt: 'RAMPART',
-                value: 154,
-                spellName: 'Rampart (Caster)',
-            },
-            {
-                iconSRC: './images/Rampart.png',
-                alt: 'RAMPART',
-                value: 110,
-                spellName: 'Rampart (Ally)',
+                value: 132,
+                spellName: 'Rampart',
             },
             {
                 iconSRC: './images/Fortification.png',
                 alt: 'FORTIF',
-                value: 220,
+                value: 176,
                 spellName: 'Fortification',
             },
             {
                 iconSRC: "./images/Valkyr's_Embrace.png",
                 alt: 'VALKYR',
-                value: 132,
+                value: 99,
                 spellName: "Valkyr's Embrace",
+            },
+            {
+                iconSRC: './images/Remission.png',
+                alt: 'REMISSION',
+                value: 220,
+                spellName: 'Remission',
             },
         ]
         const FinalReductionBonuses = [
@@ -460,10 +461,10 @@
 
         const otherSpellsEN = [
             '',
-            'Rampart (Caster)',
-            'Rampart (Ally)',
+            'Rampart',
             'Fortification',
             "Valkyr's Embrace",
+            'Remission',
             "Ouginak's Rage",
             'Watchdog',
             'Feca Shield',
@@ -479,10 +480,10 @@
         ]
         const otherSpellsFR = [
             '',
-            'Rempart (Lanceur)',
-            'Rempart (Allié)',
+            'Rempart',
             'Fortification',
             'Étreinte de Valkyr',
+            'Rémission',
             'Rage',
             'Molosse',
             'Bouclier Feca',
