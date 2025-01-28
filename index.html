@@ -276,6 +276,9 @@
             >Final Reductions</label
         >
         <div class="grid-container" id="additionalFinalReductionContainer" style="width: 0px"></div>
+        <label class="sectionLabel" for="sacrierBloodContainer" id="sacrierBloodContainerLabel">Sacrier's Blood</label>
+        <div class="grid-container" id="sacrierBloodContainer" style="width: 0px"></div>
+
         <br />
 
         <div class="spell-grid-container" id="spellGridContainer" style="width: 0px"></div>
@@ -406,6 +409,7 @@
                 spellName: 'Ataraxia',
             },
         ]
+        const SacrierReduction = [0, 1, 3, 5, 9, 14, 19, 23, 26, 28, 30]
         // Constants
         /**
          * OLD Spells
@@ -531,6 +535,7 @@
             'Ataraxia',
             'Custom Reduction',
             'Add a spell with a custom amount',
+            "Sacrier's Blood",
             'Manual Mode',
             'Reset',
             'Validate',
@@ -550,6 +555,7 @@
             'Ataraxie',
             'Réduction Custom',
             'Ajouter une réduction avec une valeur custom',
+            'Passif Sacrieur',
             'Mode Manuel',
             'Reset',
             'Valider',
@@ -748,6 +754,7 @@
                 rangeResLabel: '% Range',
                 additionalFixedReductionContainerLabel: 'Fixed Reductions',
                 additionalFinalReductionContainerLabel: 'Final Reductions',
+                sacrierBloodContainerLabel: "Sacrier's Blood",
                 levelXelLabel: 'Level',
                 baseDamageLabel: 'Base Damage',
                 powerBoostLabel: 'Power',
@@ -760,6 +767,7 @@
                 rangeResLabel: '% Dist. ',
                 additionalFixedReductionContainerLabel: 'Réductions Dégâts Fixes',
                 additionalFinalReductionContainerLabel: 'Réductions % Finaux',
+                sacrierBloodContainerLabel: 'Passif Sacrieur',
                 levelXelLabel: 'Niveau',
                 baseDamageLabel: 'Dégâts de base',
                 powerBoostLabel: 'Puissance',
@@ -782,6 +790,8 @@
         let damageBoost = 0
         const activeAdditionalFixedResIDS = []
         let percentAirRes = 0
+        let currentlyActiveSacrierReduction = 1
+        let currentlyActiveSacrierReductionLevel = 0
 
         let currentLocaleID = 'FR'
 
@@ -816,6 +826,12 @@
             Desynchronisation: 0,
             */
         }
+
+        const green = '#267E08'
+        const lightGray = '#757674'
+        const black = 'rgba(0,0,0,0)'
+        const white = '#EAEBE7'
+        const yellow = '#ffce00'
 
         // Functions and Methods
         // Translation
@@ -985,7 +1001,7 @@
         }
         function activateBoostNode(spell) {
             const myNode = document.getElementById(`spellGridItem-${getShortName(spell)}`)
-            myNode.style.setProperty('background-color', '#267E08')
+            myNode.style.setProperty('background-color', green)
             if (canTelefrag(getVariantOf(spell))) {
                 document
                     .getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`)
@@ -996,12 +1012,12 @@
             const myNode = document.getElementById(`spellGridItem-${getShortName(spell)}`)
             // reset background if eligible, also reset for variant if eligible
             if (canTelefrag(spell)) {
-                myNode.style.setProperty('background-color', '#757674')
+                myNode.style.setProperty('background-color', lightGray)
             }
             if (canTelefrag(getVariantOf(spell))) {
                 document
                     .getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`)
-                    .style.setProperty('background-color', '#757674')
+                    .style.setProperty('background-color', lightGray)
             }
         }
         function createSpellGrid(layout) {
@@ -1022,8 +1038,8 @@
                     const myImage = document.createElement('input')
                     myImage.setAttribute('id', `spellGridItem-${getShortName(spell)}`)
                     myImage.setAttribute('title', getLocalisedName(spell, currentLocaleID))
-                    if (!canTelefrag(spell)) myImage.style.setProperty('background-color', 'rgba(0,0,0,0)')
-                    else myImage.style.setProperty('background-color', '#757674')
+                    if (!canTelefrag(spell)) myImage.style.setProperty('background-color', black)
+                    else myImage.style.setProperty('background-color', lightGray)
                     myImage.classList.add('grid-item')
                     myImage.setAttribute('type', 'image')
                     myImage.setAttribute('src', getImagePath(spell))
@@ -1036,9 +1052,8 @@
                     const myVariantImage = document.createElement('input')
                     myVariantImage.setAttribute('id', `spellGridItem-${getShortName(variantSpell)}`)
                     myVariantImage.setAttribute('title', getLocalisedName(variantSpell, currentLocaleID))
-                    if (!canTelefrag(variantSpell))
-                        myVariantImage.style.setProperty('background-color', 'rgba(0,0,0,0)')
-                    else myVariantImage.style.setProperty('background-color', '#757674')
+                    if (!canTelefrag(variantSpell)) myVariantImage.style.setProperty('background-color', black)
+                    else myVariantImage.style.setProperty('background-color', lightGray)
                     myVariantImage.classList.add('grid-item')
                     myVariantImage.setAttribute('type', 'image')
                     myVariantImage.setAttribute('src', getImagePath(variantSpell))
@@ -1064,7 +1079,7 @@
                     const myImage = document.createElement('input')
                     myImage.setAttribute('id', `spellGridItem-MenuTop`)
                     myImage.setAttribute('title', 'Manual Mode')
-                    myImage.style.setProperty('background-color', '#757674')
+                    myImage.style.setProperty('background-color', lightGray)
                     myImage.classList.add('grid-item')
                     myImage.setAttribute('type', 'image')
                     myImage.setAttribute('src', getIconPath('Pause'))
@@ -1089,7 +1104,7 @@
                     const myImage = document.createElement('input')
                     myImage.setAttribute('id', `spellGridItem-MenuBot`)
                     myImage.setAttribute('title', getLocalisedName('Reset', currentLocaleID))
-                    myImage.style.setProperty('background-color', '#757674')
+                    myImage.style.setProperty('background-color', lightGray)
                     myImage.classList.add('grid-item')
                     myImage.setAttribute('type', 'image')
                     myImage.setAttribute('src', getIconPath('Reset'))
@@ -1119,13 +1134,13 @@
             for (spell in boost) {
                 document
                     .getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`)
-                    .style.setProperty('background-color', 'rgba(0,0,0,0)')
+                    .style.setProperty('background-color', black)
                 document
                     .getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`)
                     .setAttribute('onclick', '')
                 document
                     .getElementById(`spellGridItem-${getShortName(spell)}`)
-                    .style.setProperty('background-color', 'rgba(0,0,0,0)')
+                    .style.setProperty('background-color', black)
                 document.getElementById(`spellGridItem-${getShortName(spell)}`).setAttribute('onclick', '')
             }
         }
@@ -1133,14 +1148,14 @@
             for (spell in boost) {
                 document
                     .getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`)
-                    .style.setProperty('background-color', 'rgba(0,0,0,0)')
+                    .style.setProperty('background-color', black)
                 document
                     .getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`)
                     .setAttribute('onclick', `toggleSpellBoost("${getVariantOf(spell)}");`)
                 updateSpellNodeColor(getVariantOf(spell))
                 document
                     .getElementById(`spellGridItem-${getShortName(spell)}`)
-                    .style.setProperty('background-color', 'rgba(0,0,0,0)')
+                    .style.setProperty('background-color', black)
                 document
                     .getElementById(`spellGridItem-${getShortName(spell)}`)
                     .setAttribute('onclick', `toggleSpellBoost("${spell}");`)
@@ -1183,11 +1198,11 @@
                     if (canTelefrag(getVariantOf(spell)))
                         document
                             .getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`)
-                            .style.setProperty('background-color', '#ffce00')
+                            .style.setProperty('background-color', yellow)
                     if (canTelefrag(spell))
                         document
                             .getElementById(`spellGridItem-${getShortName(spell)}`)
-                            .style.setProperty('background-color', '#ffce00')
+                            .style.setProperty('background-color', yellow)
                 }
             }
         }
@@ -1254,10 +1269,10 @@
                 if (manualBoostMode) {
                     document
                         .getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`)
-                        .style.setProperty('background-color', 'rgba(0,0,0,0)')
+                        .style.setProperty('background-color', black)
                     document
                         .getElementById(`spellGridItem-${getShortName(spell)}`)
-                        .style.setProperty('background-color', 'rgba(0,0,0,0)')
+                        .style.setProperty('background-color', black)
                 } else updateSpellNodeColor(spell)
             }
             if (!manualBoostMode) updateExpectedDamage()
@@ -1352,27 +1367,77 @@
                 refreshAdditionalFinalReductionNode(node)
             }
         }
+        // Sacrier Passive
+        function getSacrierIconSRC(level) {
+            return `./images/Sacrier's_Blood/blood-${level.toString().padStart(2, '0')}.png`
+        }
+        function refreshCurrentSacrierPassiveValues(level) {
+            // Color back the previously selected node (deactivate)
+            const oldSelectedValue = document.getElementById(`sacrierBloodNode-${currentlyActiveSacrierReductionLevel}`)
+            oldSelectedValue.style.setProperty('background-color', lightGray)
+            // Color the new one (activate)
+            const newSelectedValue = document.getElementById(`sacrierBloodNode-${level}`)
+            newSelectedValue.style.setProperty('background-color', green)
+            // Update globals
+            currentlyActiveSacrierReduction = 1 - SacrierReduction[level] / 100
+            currentlyActiveSacrierReductionLevel = level
+            updateExpectedDamage()
+        }
+        function fillSacrierPassiveGrid() {
+            const containerNode = document.getElementById('sacrierBloodContainer')
+            containerNode.style.setProperty(
+                'grid-template-columns',
+                '1fr '.repeat(Math.ceil(SacrierReduction.length / 2))
+            )
+            for (let i = 0; i < SacrierReduction.length; ++i) {
+                const newNode = document.createElement('div')
+                const newNodeID = `sacrierBloodNode-${i}`
+                newNode.classList.add('grid-item')
+                newNode.setAttribute('id', newNodeID)
+                newNode.style.setProperty('background-color', lightGray)
+                newNode.onclick = () => refreshCurrentSacrierPassiveValues(i)
+
+                const newImg = document.createElement('img')
+                newImg.setAttribute('src', getSacrierIconSRC(i))
+                newImg.setAttribute('alt', `SACRIER-${i}`)
+                newImg.setAttribute('title', `${getLocalisedName("Sacrier's Blood", currentLocaleID)} - ${i}`)
+                newImg.style.width = 'var(--unit)'
+                newNode.appendChild(newImg)
+
+                const newText = document.createElement('p')
+                newText.style.setProperty('color', white)
+                newText.style.fontSize = 'var(--text-small)'
+                newText.style.setProperty('text-align', 'center')
+                const t = document.createTextNode(SacrierReduction[i])
+                newText.appendChild(t)
+
+                newNode.appendChild(newText)
+
+                containerNode.appendChild(newNode)
+            }
+            refreshCurrentSacrierPassiveValues(0)
+        }
         // Fixed Reductions
         function refreshAdditionalFixedReductionNode(nodeObject) {
             nodeObject.firstChild.title = getLocalisedName(getBaseName(nodeObject.firstChild.title), currentLocaleID)
             if (activeAdditionalFixedResIDS.includes(nodeObject.id)) {
                 // Activate
-                nodeObject.style.setProperty('background-color', '#267E08')
+                nodeObject.style.setProperty('background-color', green)
             } else {
                 // Deactivate
-                nodeObject.style.setProperty('background-color', '#757674')
+                nodeObject.style.setProperty('background-color', lightGray)
             }
         }
         function toggleAdditionalFixedReduction(nodeID) {
             const myNode = document.getElementById(nodeID)
             if (activeAdditionalFixedResIDS.includes(nodeID)) {
                 // Deactivate
-                myNode.style.setProperty('background-color', '#757674')
+                myNode.style.setProperty('background-color', lightGray)
                 activeAdditionalFixedResIDS.splice(activeAdditionalFixedResIDS.indexOf(nodeID), 1)
                 // Fuck you JS, can't even remove an element properly
             } else {
                 // Activate
-                myNode.style.setProperty('background-color', '#267E08')
+                myNode.style.setProperty('background-color', green)
                 activeAdditionalFixedResIDS.push(nodeID)
             }
             updateExpectedDamage()
@@ -1390,7 +1455,7 @@
                 const newNode = document.createElement('div')
                 newNode.classList.add('grid-item')
                 newNode.setAttribute('id', `additionalFixedReductionItem-${width}`)
-                newNode.style.setProperty('background-color', '#757674')
+                newNode.style.setProperty('background-color', lightGray)
 
                 const newImg = document.createElement('input')
                 newImg.setAttribute('type', 'image')
@@ -1405,7 +1470,7 @@
                 newNode.appendChild(newImg)
 
                 const newText = document.createElement('p')
-                newText.style.setProperty('color', '#EAEBE7')
+                newText.style.setProperty('color', white)
                 newText.style.fontSize = 'var(--text-small)'
                 newText.style.setProperty('text-align', 'center')
 
@@ -1428,7 +1493,7 @@
                 const newNodeID = `additionalFixedReductionItem-${i}`
                 newNode.classList.add('grid-item')
                 newNode.setAttribute('id', newNodeID)
-                newNode.style.setProperty('background-color', '#757674')
+                newNode.style.setProperty('background-color', lightGray)
 
                 const newImg = document.createElement('input')
                 newImg.setAttribute('type', 'image')
@@ -1440,7 +1505,7 @@
                 newNode.appendChild(newImg)
 
                 const newText = document.createElement('p')
-                newText.style.setProperty('color', '#EAEBE7')
+                newText.style.setProperty('color', white)
                 newText.style.fontSize = 'var(--text-small)'
                 newText.style.setProperty('text-align', 'center')
                 const t = document.createTextNode(FixedReductionBonuses[i].value)
@@ -1455,7 +1520,7 @@
             newNode.classList.add('grid-item')
             newNode.classList.add('add-new')
             newNode.setAttribute('id', 'additionalFixedReductionItem-Custom')
-            newNode.style.setProperty('background-color', '#757674')
+            newNode.style.setProperty('background-color', lightGray)
 
             const newImg = document.createElement('input')
             newImg.setAttribute('type', 'image')
@@ -1481,22 +1546,22 @@
             nodeObject.firstChild.title = getLocalisedName(getBaseName(nodeObject.firstChild.title), currentLocaleID)
             if (activeAdditionalFinalResIDS.includes(nodeObject.id)) {
                 // Activate
-                nodeObject.style.setProperty('background-color', '#267E08')
+                nodeObject.style.setProperty('background-color', green)
             } else {
                 // Deactivate
-                nodeObject.style.setProperty('background-color', '#757674')
+                nodeObject.style.setProperty('background-color', lightGray)
             }
         }
         function toggleAdditionalFinalReduction(nodeID) {
             const myNode = document.getElementById(nodeID)
             if (activeAdditionalFinalResIDS.includes(nodeID)) {
                 // Deactivate
-                myNode.style.setProperty('background-color', '#757674')
+                myNode.style.setProperty('background-color', lightGray)
                 activeAdditionalFinalResIDS.splice(activeAdditionalFinalResIDS.indexOf(nodeID), 1)
                 // Fuck you JS, can't even remove an element properly
             } else {
                 // Activate
-                myNode.style.setProperty('background-color', '#267E08')
+                myNode.style.setProperty('background-color', green)
                 activeAdditionalFinalResIDS.push(nodeID)
             }
             updateExpectedDamage()
@@ -1513,7 +1578,7 @@
                 const newNode = document.createElement('div')
                 newNode.classList.add('grid-item')
                 newNode.setAttribute('id', `additionalFinalReductionItem-${width}`)
-                newNode.style.setProperty('background-color', '#757674')
+                newNode.style.setProperty('background-color', lightGray)
 
                 const newImg = document.createElement('input')
                 newImg.setAttribute('type', 'image')
@@ -1528,7 +1593,7 @@
                 newNode.appendChild(newImg)
 
                 const newText = document.createElement('p')
-                newText.style.setProperty('color', '#EAEBE7')
+                newText.style.setProperty('color', white)
                 newText.style.fontSize = 'var(--text-small)'
                 newText.style.setProperty('text-align', 'center')
 
@@ -1551,7 +1616,7 @@
                 const newNodeID = `additionalFinalReductionItem-${i}`
                 newNode.classList.add('grid-item')
                 newNode.setAttribute('id', newNodeID)
-                newNode.style.setProperty('background-color', '#757674')
+                newNode.style.setProperty('background-color', lightGray)
 
                 const newImg = document.createElement('input')
                 newImg.setAttribute('type', 'image')
@@ -1563,7 +1628,7 @@
                 newNode.appendChild(newImg)
 
                 const newText = document.createElement('p')
-                newText.style.setProperty('color', '#EAEBE7')
+                newText.style.setProperty('color', white)
                 newText.style.fontSize = 'var(--text-small)'
                 newText.style.setProperty('text-align', 'center')
                 const t = document.createTextNode(FinalReductionBonuses[i].value)
@@ -1578,7 +1643,7 @@
             newNode.classList.add('grid-item')
             newNode.classList.add('add-new')
             newNode.setAttribute('id', 'additionalFinalReductionItem-Custom')
-            newNode.style.setProperty('background-color', '#757674')
+            newNode.style.setProperty('background-color', lightGray)
 
             const newImg = document.createElement('input')
             newImg.setAttribute('type', 'image')
@@ -1601,6 +1666,7 @@
         function fillAdditionalReductionGrids() {
             fillAdditionalFixedReductionGrid()
             fillAdditionalFinalReductionGrid()
+            fillSacrierPassiveGrid()
         }
         function validDamage(floatDamage) {
             return Math.max(Math.floor(floatDamage), 0)
@@ -1618,7 +1684,7 @@
                 // take the value, multiply
                 factor *= 1 - Number(document.getElementById(nodeID).childNodes[1].childNodes[0].textContent) / 100
             }
-            finalFactor = factor
+            finalFactor = factor * currentlyActiveSacrierReduction
         }
         function recalculateExpectedDamages() {
             // Base damage is 368 max rank
