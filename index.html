@@ -1030,11 +1030,11 @@
             const rows = layout.length
             spellGridContainerNode.style.setProperty('grid-template-columns', '1fr '.repeat(columns))
             spellGridContainerNode.style.setProperty('grid-template-rows', '1fr '.repeat(2 * rows))
-            for (lineIndex in layout) {
+            for (const lineIndex in layout) {
                 const line = layout[lineIndex]
                 const lineA = []
                 const lineB = []
-                for (spell of line) {
+                for (const spell of line) {
                     const myImage = document.createElement('input')
                     myImage.setAttribute('id', `spellGridItem-${getShortName(spell)}`)
                     myImage.setAttribute('title', getLocalisedName(spell, currentLocaleID))
@@ -1045,7 +1045,7 @@
                     myImage.setAttribute('src', getImagePath(spell))
                     myImage.style.width = 'var(--unit)'
                     myImage.setAttribute('alt', `[ICON : ${getShortName(spell)}]`)
-                    myImage.setAttribute('onclick', `toggleSpellBoost("${spell}");`)
+                    myImage.onclick = () => toggleSpellBoost(spell)
                     lineA.push(myImage)
 
                     const variantSpell = getVariantOf(spell)
@@ -1059,10 +1059,10 @@
                     myVariantImage.setAttribute('src', getImagePath(variantSpell))
                     myVariantImage.style.width = 'var(--unit)'
                     myVariantImage.setAttribute('alt', `[ICON : ${getShortName(variantSpell)}]`)
-                    myVariantImage.setAttribute('onclick', `toggleSpellBoost("${variantSpell}");`)
+                    myVariantImage.onclick = () => toggleSpellBoost(variantSpell)
                     lineB.push(myVariantImage)
                 }
-                for (node of lineA) {
+                for (const node of lineA) {
                     spellGridContainerNode.appendChild(node)
                 }
 
@@ -1085,11 +1085,11 @@
                     myImage.setAttribute('src', getIconPath('Pause'))
                     myImage.style.width = 'var(--unit)'
                     myImage.setAttribute('alt', '[MANUAL MODE]')
-                    myImage.setAttribute('onclick', 'manualBoostOverride();')
+                    myImage.onclick = () => manualBoostOverride()
                     spellGridContainerNode.appendChild(myImage)
                 }
 
-                for (node of lineB) {
+                for (const node of lineB) {
                     spellGridContainerNode.appendChild(node)
                 }
                 for (let i = lineB.length; i < columns - (lineIndex == rows - 1 ? 1 : 0); ++i) {
@@ -1110,7 +1110,7 @@
                     myImage.setAttribute('src', getIconPath('Reset'))
                     myImage.style.width = 'var(--unit)'
                     myImage.setAttribute('alt', `[ICON : RESET]`)
-                    myImage.setAttribute('onclick', `confirmBoostReset();`)
+                    myImage.onclick = () => confirmBoostReset()
                     spellGridContainerNode.appendChild(myImage)
                 }
             }
@@ -1126,7 +1126,7 @@
             topOptionNode.setAttribute('src', getIconPath('Play'))
             topOptionNode.setAttribute('title', '') // FIXME : Play
             topOptionNode.setAttribute('alt', '') // FIXME : Play
-            topOptionNode.setAttribute('onclick', 'endManualBoostOverride();')
+            topOptionNode.onclick = () => endManualBoostOverride()
 
             updateExpectedDamage()
         }
@@ -1135,30 +1135,25 @@
                 document
                     .getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`)
                     .style.setProperty('background-color', black)
-                document
-                    .getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`)
-                    .setAttribute('onclick', '')
+                document.getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`).onclick = () => {}
                 document
                     .getElementById(`spellGridItem-${getShortName(spell)}`)
                     .style.setProperty('background-color', black)
-                document.getElementById(`spellGridItem-${getShortName(spell)}`).setAttribute('onclick', '')
+                document.getElementById(`spellGridItem-${getShortName(spell)}`).onclick = () => {}
             }
         }
         function unlockBoostNodes() {
-            for (spell in boost) {
+            for (const spell in boost) {
                 document
                     .getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`)
                     .style.setProperty('background-color', black)
-                document
-                    .getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`)
-                    .setAttribute('onclick', `toggleSpellBoost("${getVariantOf(spell)}");`)
+                document.getElementById(`spellGridItem-${getShortName(getVariantOf(spell))}`).onclick = () =>
+                    toggleSpellBoost(getVariantOf(spell))
                 updateSpellNodeColor(getVariantOf(spell))
                 document
                     .getElementById(`spellGridItem-${getShortName(spell)}`)
                     .style.setProperty('background-color', black)
-                document
-                    .getElementById(`spellGridItem-${getShortName(spell)}`)
-                    .setAttribute('onclick', `toggleSpellBoost("${spell}");`)
+                document.getElementById(`spellGridItem-${getShortName(spell)}`).onclick = () => toggleSpellBoost(spell)
                 updateSpellNodeColor(spell)
             }
         }
@@ -1187,7 +1182,7 @@
             topOptionNode.setAttribute('src', getIconPath('Pause'))
             topOptionNode.setAttribute('title', '') // FIXME : Pause
             topOptionNode.setAttribute('alt', '') // FIXME : Pause
-            topOptionNode.setAttribute('onclick', 'manualBoostOverride();')
+            topOptionNode.onclick = () => manualBoostOverride()
             // Update damage
             updateExpectedDamage()
         }
@@ -1235,8 +1230,14 @@
             botOptionNode.setAttribute('title', getLocalisedName('Cancel', currentLocaleID))
 
             // change onclick code
-            topOptionNode.setAttribute('onclick', 'resetBoosts();resetBoostMenuOptions();')
-            botOptionNode.setAttribute('onclick', 'spellsBackToNormal();resetBoostMenuOptions();')
+            topOptionNode.onclick = () => {
+                resetBoosts()
+                resetBoostMenuOptions()
+            }
+            botOptionNode.onclick = () => {
+                spellsBackToNormal()
+                resetBoostMenuOptions()
+            }
         }
         function resetBoostMenuOptions() {
             const topOptionNode = document.getElementById('spellGridItem-MenuTop')
@@ -1251,11 +1252,9 @@
             topOptionNode.setAttribute('title', '') // FIXME : Pause/Play
             botOptionNode.setAttribute('title', getLocalisedName('Reset', currentLocaleID))
             // change onclick code
-            topOptionNode.setAttribute(
-                'onclick',
-                manualBoostMode ? 'endManualBoostOverride()' : 'manualBoostOverride();'
-            )
-            botOptionNode.setAttribute('onclick', 'confirmBoostReset();')
+            topOptionNode.onclick = manualBoostMode ? () => endManualBoostOverride() : () => manualBoostOverride()
+
+            botOptionNode.onclick = () => confirmBoostReset()
         }
         function refreshSpellGridHoverText() {
             const spellContainer = document.getElementById('spellGridContainer')
@@ -1456,6 +1455,7 @@
                 newNode.classList.add('grid-item')
                 newNode.setAttribute('id', `additionalFixedReductionItem-${width}`)
                 newNode.style.setProperty('background-color', lightGray)
+                newNode.onclick = () => toggleAdditionalFixedReduction(`additionalFixedReductionItem-${width}`)
 
                 const newImg = document.createElement('input')
                 newImg.setAttribute('type', 'image')
@@ -1463,10 +1463,7 @@
                 newImg.style.width = 'var(--unit)'
                 newImg.setAttribute('alt', '[CUSTOM]')
                 newImg.setAttribute('title', getLocalisedName('Custom Reduction', currentLocaleID))
-                newImg.setAttribute(
-                    'onclick',
-                    `toggleAdditionalFixedReduction("additionalFixedReductionItem-${width}")`
-                )
+
                 newNode.appendChild(newImg)
 
                 const newText = document.createElement('p')
@@ -1494,13 +1491,13 @@
                 newNode.classList.add('grid-item')
                 newNode.setAttribute('id', newNodeID)
                 newNode.style.setProperty('background-color', lightGray)
+                newNode.onclick = () => toggleAdditionalFixedReduction(newNodeID)
 
                 const newImg = document.createElement('input')
                 newImg.setAttribute('type', 'image')
                 newImg.setAttribute('src', FixedReductionBonuses[i].iconSRC)
                 newImg.setAttribute('alt', FixedReductionBonuses[i].alt)
                 newImg.setAttribute('title', getLocalisedName(FixedReductionBonuses[i].spellName, currentLocaleID))
-                newImg.setAttribute('onclick', `toggleAdditionalFixedReduction("additionalFixedReductionItem-${i}")`)
                 newImg.style.width = 'var(--unit)'
                 newNode.appendChild(newImg)
 
@@ -1528,7 +1525,7 @@
             newImg.style.width = 'var(--unit)'
             newImg.setAttribute('alt', '[ADD]')
             newImg.setAttribute('title', getLocalisedName('Add a spell with a custom amount', currentLocaleID))
-            newImg.setAttribute('onclick', 'addNewAdditionalFixedReduction()')
+            newImg.onclick = () => addNewAdditionalFixedReduction()
             newNode.appendChild(newImg)
 
             const newInput = document.createElement('input')
@@ -1579,6 +1576,7 @@
                 newNode.classList.add('grid-item')
                 newNode.setAttribute('id', `additionalFinalReductionItem-${width}`)
                 newNode.style.setProperty('background-color', lightGray)
+                newNode.onclick = () => toggleAdditionalFinalReduction(`additionalFinalReductionItem-${width}`)
 
                 const newImg = document.createElement('input')
                 newImg.setAttribute('type', 'image')
@@ -1586,10 +1584,7 @@
                 newImg.style.width = 'var(--unit)'
                 newImg.setAttribute('alt', '[CUSTOM]')
                 newImg.setAttribute('title', getLocalisedName('Custom Reduction', currentLocaleID))
-                newImg.setAttribute(
-                    'onclick',
-                    `toggleAdditionalFinalReduction("additionalFinalReductionItem-${width}")`
-                )
+
                 newNode.appendChild(newImg)
 
                 const newText = document.createElement('p')
@@ -1617,13 +1612,13 @@
                 newNode.classList.add('grid-item')
                 newNode.setAttribute('id', newNodeID)
                 newNode.style.setProperty('background-color', lightGray)
+                newNode.onclick = () => toggleAdditionalFinalReduction(newNodeID)
 
                 const newImg = document.createElement('input')
                 newImg.setAttribute('type', 'image')
                 newImg.setAttribute('src', FinalReductionBonuses[i].iconSRC)
                 newImg.setAttribute('alt', FinalReductionBonuses[i].alt)
                 newImg.setAttribute('title', getLocalisedName(FinalReductionBonuses[i].spellName, currentLocaleID))
-                newImg.setAttribute('onclick', `toggleAdditionalFinalReduction("additionalFinalReductionItem-${i}")`)
                 newImg.style.width = 'var(--unit)'
                 newNode.appendChild(newImg)
 
@@ -1651,7 +1646,7 @@
             newImg.style.width = 'var(--unit)'
             newImg.setAttribute('alt', '[ADD]')
             newImg.setAttribute('title', getLocalisedName('Add a spell with a custom amount', currentLocaleID))
-            newImg.setAttribute('onclick', 'addNewAdditionalFinalReduction()')
+            newImg.onclick = () => addNewAdditionalFinalReduction()
             newNode.appendChild(newImg)
 
             const newInput = document.createElement('input')
