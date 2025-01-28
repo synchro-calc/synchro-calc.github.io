@@ -1693,10 +1693,11 @@
             recalculateAdditionalFixedRes()
             const intermediate =
                 validDamage(
-                    (baseDamage + 23 * (powerBoost / 100) + damageBoost - (fixedAirRes + fixedAdditionalRes)) *
-                        (1 - percentAirRes / 100)
+                    validDamage(
+                        (baseDamage + 23 * (powerBoost / 100) + damageBoost - (fixedAirRes + fixedAdditionalRes)) *
+                            (1 - percentAirRes / 100)
+                    ) * finalFactor
                 ) *
-                finalFactor *
                 (2 * numberOfBoosts - 1)
             expectedDamage_melee = validDamage(intermediate * meleeFactor)
             expectedDamage_range = validDamage(intermediate * rangeFactor)
