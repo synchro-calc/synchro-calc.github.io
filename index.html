@@ -1368,7 +1368,8 @@
         }
         // Sacrier Passive
         function getSacrierIconSRC(level) {
-            return `./images/Sacrier's_Blood/blood-${level.toString().padStart(2, '0')}.png`
+            // Note : change with blood-${} to get black numbers if you read it better
+            return `./images/Sacrier's_Blood/${level.toString().padStart(2, '0')}.png`
         }
         function refreshCurrentSacrierPassiveValues(level) {
             // Color back the previously selected node (deactivate)

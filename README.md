@@ -22,6 +22,7 @@ Le calculateur permet d'ajuster :
 
 -   les résistances de la cible (_%air_ / _ré fixes_ / _%res distance/mélée_)
 -   les effets sur la cible (_réductions fixes_ / _réductions en %do_)
+-   le passif (broken) de la classe préférée de Crocus
 -   les boosts externes sur la Synchro (_+Puissance_ / _+Dommages_)
 
 Le calculateur est disponible dans 2 langues :
@@ -74,6 +75,7 @@ This calculator allows you to adjust :
 
 -   the target's resistances (_%air_ / _fixed res_ / _%res distance/melee_)
 -   effect on the target (_fixed reductions_ / _%damage reductions_)
+-   the level of Sacrier's passive
 -   external boosts given to the Synchro (_+Power_ / _+Damages_)
 
 The calculator is available in 2 languages :
