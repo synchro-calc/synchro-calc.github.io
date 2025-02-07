@@ -121,6 +121,10 @@
                 border: 1px solid black;
                 border-radius: 5px;
             }
+
+            a {
+                text-decoration: none;
+            }
         </style>
     </head>
 
@@ -335,6 +339,23 @@
                 />
             </div>
         </div>
+
+        <a
+            id="checkLicense"
+            style="position: fixed; bottom: 1vh; left: 1vw"
+            href="https://github.com/synchro-calc/synchro-calc.github.io/blob/master/license.md"
+            target="_blank"
+        >
+            Check license
+        </a>
+        <a
+            id="reportBug"
+            style="position: fixed; bottom: 1vh; right: 1vw"
+            href="https://github.com/synchro-calc/synchro-calc.github.io/issues/new?template=Blank+issue"
+            target="_blank"
+        >
+            Report a bug
+        </a>
 
         <!-- Preload all images not currently visible -->
         <link rel="preload" href="./images/EN-flag.png" as="image" />
@@ -759,6 +780,8 @@
                 baseDamageLabel: 'Base Damage',
                 powerBoostLabel: 'Power',
                 damageBoostLabel: 'Fixed +Dmg',
+                reportBug: 'Report a bug',
+                checkLicense: 'Check license',
             },
             FR: {
                 percentAirResLabel: '% Res Air',
@@ -772,6 +795,8 @@
                 baseDamageLabel: 'Dégâts de base',
                 powerBoostLabel: 'Puissance',
                 damageBoostLabel: 'Do Fixes',
+                reportBug: 'Rapporter un bug',
+                checkLicense: 'Voir la license',
             },
         }
 
