@@ -226,12 +226,12 @@
             <div class="settings"></div>
             <div>
                 <div class="settings">
-                    <label for="levelXel" id="levelXelLabel">&nbsp;&nbsp; Niveau</label>
+                    <label for="xelorLevel" id="xelorLevelLabel">&nbsp;&nbsp; Niveau</label>
                     <input
                         type="text"
-                        id="levelXel"
-                        oninput="updateXelorLevel()"
+                        id="xelorLevel"
                         value="200"
+                        oninput="updateXelorLevel()"
                         style="width: calc(6 / 5 * var(--icon-width)); text-align: center"
                     />
                 </div>
@@ -241,8 +241,8 @@
                 <input
                     type="text"
                     id="baseDamage"
-                    oninput="updateBaseDamage()"
                     value="368"
+                    oninput="updateBaseDamage()"
                     style="width: calc(6 / 5 * var(--icon-width)); text-align: center"
                 />
             </div>
@@ -755,7 +755,7 @@
                 additionalFixedReductionContainerLabel: 'Fixed Reductions',
                 additionalFinalReductionContainerLabel: 'Final Reductions',
                 sacrierBloodContainerLabel: "Sacrier's Blood",
-                levelXelLabel: 'Level',
+                xelorLevelLabel: 'Level',
                 baseDamageLabel: 'Base Damage',
                 powerBoostLabel: 'Power',
                 damageBoostLabel: 'Fixed +Dmg',
@@ -768,15 +768,19 @@
                 additionalFixedReductionContainerLabel: 'Réductions Dégâts Fixes',
                 additionalFinalReductionContainerLabel: 'Réductions % Finaux',
                 sacrierBloodContainerLabel: 'Passif Sacrieur',
-                levelXelLabel: 'Niveau',
+                xelorLevelLabel: 'Niveau',
                 baseDamageLabel: 'Dégâts de base',
                 powerBoostLabel: 'Puissance',
                 damageBoostLabel: 'Do Fixes',
             },
         }
 
+        // Synchro damage per level (computed at startup so we can try to find level from damage)
+        const synchroDamage = new Array(201).fill(0, 90).map((_, i) => (i >= 90 ? damageFromLevel(i) : _))
+
         // Globals
         let baseDamage = 368
+        let xelorLevel = 200
         let numberOfBoosts = 0
         let expectedDamage = 0
 
@@ -843,15 +847,9 @@
         function init() {
             // Hide away manual controls
             document.getElementById('manualBoostsContainer').style.setProperty('display', 'none')
-            // store baseDamage from input value
-            // or reset input to default value of baseDamage
-            if (document.getElementById('baseDamage').value) {
-                // If the broswer has a cached value for this, use it
-                baseDamage = Math.floor(Number(document.getElementById('baseDamage').value))
-            } else {
-                // reset
-                document.getElementById('baseDamage').value = baseDamage
-            }
+            // grab values of level & damage
+            xelorLevel = parseInt(document.getElementById('xelorLevel').value) || 0
+            baseDamage = parseInt(document.getElementById('baseDamage').value) || 0
             // fill grids
             const layoutArray = parseLayoutString(layout)
             createSpellGrid(layoutArray)
@@ -1278,34 +1276,37 @@
         }
         // Base Damage
         function updateBaseDamage() {
-            baseDamage = Math.floor(Number(document.getElementById('baseDamage').value))
-            // reset xelor level displayed
-            document.getElementById('levelXel').value = 'N/A'
+            baseDamage = parseInt(document.getElementById('baseDamage').value) || 0
+            // set Xelor level in acccordance
+            const currentlyDisplayedLevel = parseInt(document.getElementById('xelorLevel')) || 0
+            const suggestedLevel = synchroDamage.indexOf(baseDamage)
+            // If plausible level, don't change it
+            if (suggestedLevel === -1) {
+                document.getElementById('xelorLevel').value = ''
+            }
+            if (
+                suggestedLevel !== -1 &&
+                (currentlyDisplayedLevel < suggestedLevel ||
+                    currentlyDisplayedLevel > synchroDamage.lastIndexOf(baseDamage))
+            ) {
+                document.getElementById('xelorLevel').value = suggestedLevel
+                xelorLevel = suggestedLevel
+            }
             updateExpectedDamage()
         }
-        function updateXelorLevel() {
+        function damageFromLevel(level) {
             // Use 42Scientist's conclusions :
             /**
              * Spell is 23 damage
              * Synchro has 0 damage stat
-             * Synchro has 666 base power
-             *  + 100 at rank 2 (level 157)
-             *  + scale linearly ?
-             *    -> on each portion ?
-             */
-            const baseLevel = 90
-            const at90 = 760
-            // The 157 - 200 range seems pretty good so keep this as a reference
-            const at157 = 1285 // in the 1276 - 1294 range
-            const at156 = 1024 // at157 - 261
-
-            // Note :
-            /**
+             * Synchro has 760 base power (was 666 before)
+             *  + bump at rank 2 (level 157)
+             *  + scales linearly on each portion
+             *
              * It seems some of our data for level 90/some lv1XX points
              *  was from before the changes to the rank 1 Synchro
              *
-             *
-             * 90 : 197 (not confirmed)
+             * 90 : 197
              * 96 : 203
              * 106 : 212
              * 112 : 218
@@ -1325,33 +1326,37 @@
              * 199 : 366
              */
 
-            // Bind level to a number between 90 and 200, also an int
-            // lv200 if cannot parse
-            const xelorLvl = Math.min(
-                Math.max(Math.floor(Number(document.getElementById('levelXel').value) || 200), 90),
-                200
-            )
-            // Calculate power stat
-            // Assume linear on two zones
-            if (xelorLvl >= 157) {
+            const at90 = 760
+            // The 157 - 200 range seems pretty good so keep this as a reference
+            const at157 = 1285 // in the 1276 - 1294 range
+            const at156 = 1024 // at157 - 261
+
+            if (level >= 157) {
                 // This means a 5 power/level increase
-                const power = Math.floor(((xelorLvl - 157) / (200 - 157)) * (1500 - at157) + at157)
-                baseDamage = Math.floor((1 + power / 100) * 23)
+                const power = Math.floor(((level - 157) / (200 - 157)) * (1500 - at157) + at157)
+                return Math.floor((1 + power / 100) * 23)
             } else {
                 // This means a 4 power/level increase
-                const power = Math.floor(((xelorLvl - 90) / (156 - 90)) * (at156 - at90) + at90)
-                baseDamage = Math.floor((1 + power / 100) * 23)
+                const power = Math.floor(((level - 90) / (156 - 90)) * (at156 - at90) + at90)
+                return Math.floor((1 + power / 100) * 23)
             }
+        }
+        function updateXelorLevel() {
+            // Bind level to a number between 90 and 200, also an int
+            // lv200 if cannot parse
+            xelorLevel = Math.min(Math.max(parseInt(document.getElementById('xelorLevel').value || 200), 90), 200)
 
-            document.getElementById('baseDamage').value = baseDamage.toFixed(0)
+            baseDamage = damageFromLevel(xelorLevel)
+            document.getElementById('baseDamage').value = baseDamage
+
             updateExpectedDamage()
         }
         function updatePowerBoost() {
-            powerBoost = Math.floor(Number(document.getElementById('powerBoost').value))
+            powerBoost = Math.floor(parseInt(document.getElementById('powerBoost').value))
             updateExpectedDamage()
         }
         function updateDamageBoost() {
-            damageBoost = Math.floor(Number(document.getElementById('damageBoost').value))
+            damageBoost = Math.floor(parseInt(document.getElementById('damageBoost').value))
             updateExpectedDamage()
         }
 
@@ -1671,7 +1676,7 @@
         function recalculateAdditionalFixedRes() {
             let r = 0
             for (nodeID of activeAdditionalFixedResIDS) {
-                r += Number(document.getElementById(nodeID).childNodes[1].childNodes[0].textContent)
+                r += parseInt(document.getElementById(nodeID).childNodes[1].childNodes[0].textContent)
             }
             fixedAdditionalRes = r
         }
@@ -1679,7 +1684,7 @@
             let factor = 1
             for (nodeID of activeAdditionalFinalResIDS) {
                 // take the value, multiply
-                factor *= 1 - Number(document.getElementById(nodeID).childNodes[1].childNodes[0].textContent) / 100
+                factor *= 1 - parseInt(document.getElementById(nodeID).childNodes[1].childNodes[0].textContent) / 100
             }
             finalFactor = factor * currentlyActiveSacrierReduction
         }
@@ -1725,19 +1730,19 @@
         }
         function refreshMeleeRes() {
             const myNode = document.getElementById('meleeRes')
-            meleeFactor = 1 - Number(myNode.value) / 100
+            meleeFactor = 1 - (parseInt(myNode.value) || 0) / 100
         }
         function refreshRangeRes() {
             const myNode = document.getElementById('rangeRes')
-            rangeFactor = 1 - Number(myNode.value) / 100
+            rangeFactor = 1 - (parseInt(myNode.value) || 0) / 100
         }
         function refreshFixedAirRes() {
             const myNode = document.getElementById('fixedAirRes')
-            fixedAirRes = Number(myNode.value)
+            fixedAirRes = parseInt(myNode.value) || 0
         }
         function refreshPercentAirRes() {
             const myNode = document.getElementById('percentAirRes')
-            percentAirRes = Number(myNode.value)
+            percentAirRes = parseInt(myNode.value) || 0
         }
 
         function refreshAllValues() {
@@ -1746,10 +1751,7 @@
             refreshFixedAirRes()
             refreshPercentAirRes()
         }
-    </script>
 
-    <script>
-        // Loading and Init
-        init()
+        addEventListener('load', init)
     </script>
 </html>
