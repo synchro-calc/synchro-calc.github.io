@@ -1370,7 +1370,10 @@
         function updateXelorLevel() {
             // Bind level to a number between 90 and 200, also an int
             // lv200 if cannot parse
-            xelorLevel = Math.min(Math.max(parseInt(document.getElementById('xelorLevel').value || 200), 90), 200)
+            // NEW : unlocked maximum for infinite dreams
+            const xelorLevelNoMax = Math.max(parseInt(document.getElementById('xelorLevel').value || 200), 90)
+            // xelorLevel = Math.min(xelorLevelNoMax, 200) 
+            xelorLevel = xelorLevelNoMax
 
             baseDamage = damageFromLevel(xelorLevel)
             document.getElementById('baseDamage').value = baseDamage
