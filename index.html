@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
     <!-- Color palette :
     background dark grey : #1E1F1B
@@ -300,7 +300,11 @@
                     max="2400"
                     step="200"
                     value="200"
-                    oninput="document.getElementById('manualBoostInput').value = this.value; numberOfBoosts=parseInt(this.value)/200;updateExpectedDamage();"
+                    oninput="
+                        document.getElementById('manualBoostInput').value = this.value
+                        numberOfBoosts = parseInt(this.value) / 200
+                        updateExpectedDamage()
+                    "
                     style="width: calc(7 * var(--unit))"
                 />
             </div>
@@ -308,8 +312,12 @@
                 <input
                     id="manualBoostInput"
                     type="text"
-                    oninput="document.getElementById('manualBoostSlider').value = this.value; numberOfBoosts=parseInt(this.value)/200;updateExpectedDamage()"
-                    onclick="this.value=''"
+                    oninput="
+                        document.getElementById('manualBoostSlider').value = this.value
+                        numberOfBoosts = parseInt(this.value) / 200
+                        updateExpectedDamage()
+                    "
+                    onclick="this.value = ''"
                     style="
                         width: calc(6 / 5 * var(--unit));
                         height: var(--text-small);
@@ -1372,7 +1380,7 @@
             // lv200 if cannot parse
             // NEW : unlocked maximum for infinite dreams
             const xelorLevelNoMax = Math.max(parseInt(document.getElementById('xelorLevel').value || 200), 90)
-            // xelorLevel = Math.min(xelorLevelNoMax, 200) 
+            // xelorLevel = Math.min(xelorLevelNoMax, 200)
             xelorLevel = xelorLevelNoMax
 
             baseDamage = damageFromLevel(xelorLevel)
@@ -1381,11 +1389,11 @@
             updateExpectedDamage()
         }
         function updatePowerBoost() {
-            powerBoost = Math.floor(parseInt(document.getElementById('powerBoost').value))
+            powerBoost = Math.floor(parseInt(document.getElementById('powerBoost').value) || 0)
             updateExpectedDamage()
         }
         function updateDamageBoost() {
-            damageBoost = Math.floor(parseInt(document.getElementById('damageBoost').value))
+            damageBoost = Math.floor(parseInt(document.getElementById('damageBoost').value) || 0)
             updateExpectedDamage()
         }
 
